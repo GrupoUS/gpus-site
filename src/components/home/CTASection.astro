@@ -1,12 +1,19 @@
 ---
 import Button from "../shared/Button.astro";
-import { LampContainer } from "../ui/lamp";
+import { LampBackdrop } from "../ui/lamp";
 
 const whatsappUrl = "https://wa.me/5511920474028";
 ---
 
-<LampContainer client:visible className="bg-navy rounded-none">
-	<div class="relative z-50 mx-auto max-w-3xl text-center">
+<div
+	class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-navy w-full rounded-none z-0"
+	id="cta-lamp-section"
+>
+	<LampBackdrop client:visible />
+	<div
+		class="relative z-50 flex w-full -translate-y-80 flex-col items-center px-5"
+	>
+		<div class="relative z-50 mx-auto max-w-3xl text-center">
 		<h2
 			class="font-serif text-3xl font-bold leading-tight text-text-primary md:text-4xl lg:text-5xl"
 			data-reveal="up"
@@ -51,5 +58,6 @@ const whatsappUrl = "https://wa.me/5511920474028";
 				Entre em contato
 			</Button>
 		</div>
+		</div>
 	</div>
-</LampContainer>
+</div>

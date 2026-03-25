@@ -1,6 +1,6 @@
 "use client";
 import { motion, stagger, useAnimate } from "motion/react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export const TextGenerateEffect = ({
@@ -15,9 +15,38 @@ export const TextGenerateEffect = ({
 	duration?: number;
 }) => {
 	const [scope, animate] = useAnimate();
+	const [runMotion, setRunMotion] = useState(false);
 	const wordsArray = useMemo(() => words.split(" "), [words]);
+
+	useEffect(() => {
+		setRunMotion(true);
+	}, []);
+
+	// #region agent log
+	useEffect(() => {
+		if (!runMotion) return;
+		fetch("http://127.0.0.1:7777/ingest/0a9ce74c-a29a-4996-bf5d-a24a8b2822f7", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-Debug-Session-Id": "651d29",
+			},
+			body: JSON.stringify({
+				sessionId: "651d29",
+				location: "text-generate-effect.tsx:runMotion",
+				message: "motion headline phase active",
+				data: { wordCount: wordsArray.length },
+				timestamp: Date.now(),
+				hypothesisId: "C",
+				runId: "verify",
+			}),
+		}).catch(() => {});
+	}, [runMotion, wordsArray.length]);
+	// #endregion
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: new spans mount when `wordsArray` changes; `animate("span")` must run again for those nodes
 	useEffect(() => {
+		if (!runMotion) return;
 		animate(
 			"span",
 			{
@@ -29,7 +58,19 @@ export const TextGenerateEffect = ({
 				delay: stagger(0.2),
 			},
 		);
-	}, [wordsArray, filter, duration, animate]);
+	}, [wordsArray, filter, duration, animate, runMotion]);
+
+	if (!runMotion) {
+		return (
+			<div className={cn("font-bold", className)}>
+				<div className="mt-4">
+					<p className="text-text-primary leading-snug tracking-wide">
+						{words}
+					</p>
+				</div>
+			</div>
+		);
+	}
 
 	const renderWords = () => {
 		return (
