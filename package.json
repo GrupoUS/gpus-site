@@ -12,7 +12,7 @@
     "astro": "astro",
     "lint": "bunx biome check src astro.config.mjs && bunx oxlint src",
     "lint:fix": "bunx biome check src astro.config.mjs --write && bunx oxlint src --fix --fix-suggestions",
-    "prepare": "lefthook install"
+    "prepare": "lefthook install || true"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
