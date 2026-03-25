@@ -1,6 +1,8 @@
 ---
+import { getCollection } from "astro:content";
 import Footer from "../components/layout/Footer.astro";
 import Header from "../components/layout/Header.astro";
+import { productNavLinksFromCollection } from "../lib/productsNav";
 import "../styles/global.css";
 
 interface Props {
@@ -16,6 +18,10 @@ const {
 	ogImage = "/og-image.jpg",
 	activeNav,
 } = Astro.props;
+
+const productNavLinks = productNavLinksFromCollection(
+	await getCollection("products"),
+);
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
@@ -109,13 +115,13 @@ const organizationSchema = {
 			Pular para o conteudo principal
 		</a>
 
-		<Header activeNav={activeNav} />
+		<Header activeNav={activeNav} productNavLinks={productNavLinks} />
 
 		<main id="conteudo-principal" tabindex="-1">
 			<slot />
 		</main>
 
-		<Footer />
+		<Footer productNavLinks={productNavLinks} />
 
 		<!-- IntersectionObserver for scroll-reveal animations -->
 		<script>

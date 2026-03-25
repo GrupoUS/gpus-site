@@ -1,19 +1,16 @@
 ---
+interface Props {
+	productNavLinks: { label: string; href: string }[];
+}
+
+const { productNavLinks } = Astro.props;
+
 const currentYear = new Date().getFullYear();
 
 const quickLinks = [
 	{ label: "Home", href: "/" },
 	{ label: "Sobre", href: "/sobre" },
 	{ label: "Contato", href: "/contato" },
-];
-
-const products = [
-	{ label: "TRINTAE3", href: "/trintae3" },
-	{ label: "OTB", href: "/otb" },
-	{ label: "Mentoria Black NEON", href: "/mentoria-black-neon" },
-	{ label: "Comunidade US", href: "/comunidade-us" },
-	{ label: "Curso de Auriculo", href: "/curso-auriculo" },
-	{ label: "Na Mesa Certa", href: "/na-mesa-certa" },
 ];
 
 const legalLinks = [
@@ -130,7 +127,7 @@ const legalLinks = [
 					Produtos
 				</h3>
 				<ul class="mt-4 flex flex-col gap-2.5" role="list">
-					{products.map((product) => (
+					{productNavLinks.map((product) => (
 						<li>
 							<a
 								href={product.href}

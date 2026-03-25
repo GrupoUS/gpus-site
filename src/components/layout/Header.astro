@@ -1,23 +1,15 @@
 ---
 interface Props {
 	activeNav?: string;
+	productNavLinks: { label: string; href: string }[];
 }
 
-const { activeNav } = Astro.props;
+const { activeNav, productNavLinks } = Astro.props;
 
 const navLinks = [
 	{ label: "Home", href: "/", id: "home" },
 	{ label: "Sobre", href: "/sobre", id: "sobre" },
 	{ label: "Contato", href: "/contato", id: "contato" },
-];
-
-const products = [
-	{ label: "TRINTAE3", href: "/trintae3" },
-	{ label: "OTB", href: "/otb" },
-	{ label: "Mentoria Black NEON", href: "/mentoria-black-neon" },
-	{ label: "Comunidade US", href: "/comunidade-us" },
-	{ label: "Curso de Auriculo", href: "/curso-auriculo" },
-	{ label: "Na Mesa Certa", href: "/na-mesa-certa" },
 ];
 ---
 
@@ -91,7 +83,7 @@ const products = [
 					id="produtos-desktop-menu"
 				>
 					<div class="py-2">
-						{products.map((product) => (
+						{productNavLinks.map((product) => (
 							<a
 								href={product.href}
 								class="block px-4 py-2.5 text-sm text-text-muted transition-colors duration-150 hover:bg-navy-lighter/50 hover:text-gold"
@@ -237,7 +229,7 @@ const products = [
 				</button>
 
 				<div class="hidden flex-col gap-0.5 pl-4 pt-1" id="mobile-products-list" role="list">
-					{products.map((product) => (
+					{productNavLinks.map((product) => (
 						<a
 							href={product.href}
 							class="rounded-sm px-4 py-2.5 text-base text-text-muted transition-colors duration-150 hover:bg-navy-light/50 hover:text-gold"

@@ -1,0 +1,105 @@
+{
+	"name": "Neon Dash",
+	"slug": "neon-dash",
+	"tagline": "Sprints de execucao para escalar sua clinica com metricas claras",
+	"description": "Programa focado em ritmo de execucao, indicadores e decisoes rapidas para donos de clinicas que ja tem base tecnica e precisam acelerar resultados com acompanhamento proximo do time Grupo US.",
+	"type": "Programa de Execucao",
+	"audience": "Donos de clinicas e gestores de saude estetica em fase de escala",
+	"icon": "Gauge",
+	"order": 7,
+	"hero": {
+		"headline": "Velocidade e clareza: o dash que transforma plano em faturamento",
+		"subheadline": "Encontros ritmados, metas semanais e acompanhamento direto para sair do papel e ir para a operacao"
+	},
+	"painPoints": [
+		{
+			"icon": "Gauge",
+			"title": "Metas que nunca viram rotina",
+			"description": "Voce define objetivos, mas o dia a dia apaga as prioridades. Falta cadencia, revisao e accountability para manter o time alinhado."
+		},
+		{
+			"icon": "LineChart",
+			"title": "Decisoes sem numero na mesa",
+			"description": "Muito feeling, pouco dado. Sem um painel simples de metricas, fica impossivel saber o que cortar, o que dobrar e onde investir."
+		},
+		{
+			"icon": "Timer",
+			"title": "Projetos que se esticam",
+			"description": "Campanhas, precificacao e processos ficam eternamente em andamento. Voce precisa de sprints curtos com entregas reais a cada ciclo."
+		}
+	],
+	"pillars": [
+		{
+			"icon": "Target",
+			"title": "Rituais de execucao",
+			"description": "Cadencia fixa de checkpoints, priorizacao semanal e compromissos publicos com o grupo para manter foco no que gera receita."
+		},
+		{
+			"icon": "BarChart3",
+			"title": "Metricas que importam",
+			"description": "Traduzimos faturamento, ticket medio, ocupacao e CAC em um conjunto enxuto de indicadores para decisoes em minutos, nao em meses."
+		},
+		{
+			"icon": "Users",
+			"title": "Mentoria proxima do time US",
+			"description": "Feedback direto de quem ja escalou clinicas de estetica: ajuste de oferta, precificacao, time comercial e jornada do paciente."
+		}
+	],
+	"benefits": [
+		"Sprints com entregas definidas a cada ciclo",
+		"Modelo enxuto de KPIs para clinica de estetica",
+		"Conta com facilitacao e mentoria do ecossistema Grupo US",
+		"Networking com empresarios na mesma fase de escala",
+		"Menos reuniao improdutiva, mais acao guiada por numero"
+	],
+	"differentials": [
+		{
+			"title": "Feito para quem ja vende, mas quer acelerar",
+			"description": "Nao e curso introdutorio: e trilha de execucao para quem ja tem operacao e quer compressar resultados com metodo e pressao saudavel."
+		},
+		{
+			"title": "Alinhado ao ecossistema NEON e Comunidade US",
+			"description": "Conecta com as mesmas referencias, linguagem e padroes de excelencia que voce encontra nas mentorias e na comunidade oficial."
+		},
+		{
+			"title": "Foco total em implementacao",
+			"description": "Cada modulo termina com tarefas concretas na clinica: precos, script, campanha ou processo — sempre com revisao no ciclo seguinte."
+		}
+	],
+	"faqs": [
+		{
+			"question": "Neon Dash substitui a Mentoria Black NEON?",
+			"answer": "Nao. Sao propostas complementares: a Mentoria aprofunda estrategia e gestao; o Neon Dash enfatiza cadencia, metricas e sprints de execucao. A equipe pode orientar qual encaixa melhor no seu momento."
+		},
+		{
+			"question": "Quanto tempo dura o programa?",
+			"answer": "A estrutura padrao preve ciclos intensivos ao longo de varios meses, com encontros ao vivo e entregas entre as sessoes. Detalhes de calendario e turmas sao enviados na ficha comercial oficial."
+		},
+		{
+			"question": "Preciso ter equipe na clinica para participar?",
+			"answer": "Recomendamos ter ao menos uma pessoa além do dono para delegar tarefas operacionais durante os sprints. Caso voce seja solo, o programa ajuda a priorizar o que realmente precisa ser feito primeiro."
+		},
+		{
+			"question": "Como faco para me inscrever?",
+			"answer": "Acesse o link oficial de inscricao no site da Dra. Sacha ou fale com nosso time pelo WhatsApp. Enviaremos requisitos, valores e disponibilidade da proxima turma."
+		}
+	],
+	"cta": {
+		"label": "Quero entrar no Neon Dash",
+		"url": "https://drasacha.com.br/neon-dash",
+		"whatsappMessage": "Ola! Quero saber mais sobre o Neon Dash — programa de execucao",
+		"type": "primary"
+	},
+	"testimonials": [
+		{
+			"name": "Dra. Fernanda Alves",
+			"role": "Proprietaria de clinica — Belo Horizonte/MG",
+			"quote": "Em seis semanas reorganizei precos e metas da equipe. O ritmo de sprint fez o que anos de planilha parada nao faziam."
+		},
+		{
+			"name": "Dr. Ricardo Menezes",
+			"role": "Cirurgiao dentista — Porto Alegre/RS",
+			"quote": "Finalmente passei a olhar CAC e ticket medio toda segunda. Parece simples, mas foi o Neon Dash que cravou o habito no time."
+		}
+	]
+}

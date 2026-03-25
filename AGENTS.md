@@ -1,4 +1,4 @@
-# Na Mesa Certa — Agent Rules & Project Specification
+# Grupo US — Agent Rules & Project Specification
 
 > **Single source of truth for ALL AI agent behavior AND project-level technical context.**
 
@@ -79,54 +79,65 @@ CORE_STANDARDS:
 
 | Field        | Value                                                              |
 | ------------ | ------------------------------------------------------------------ |
-| **Type**     | Premium Event Landing Page (Static Site)                           |
+| **Type**     | Multi-product Institutional Website (Static Site)                  |
 | **Stack**    | Astro 6 + Tailwind CSS v4 + React 19 (Islands) + Framer Motion      |
 | **Runtime**  | **Bun** (package manager + runtime)                                |
 | **Language** | TypeScript (strict mode)                                           |
 | **Deploy**   | **Railway** (static site via GitHub integration)                   |
-| **Theme**    | GPUS Theme (Navy/Gold) adapted — `gpus-theme` skill                |
+| **Theme**    | GPUS Theme (Navy/Gold) — `gpus-theme` skill                       |
 | **Fonts**    | Playfair Display (headings) + Inter (body) via Google Fonts        |
 | **Icons**    | Lucide React (SVG only — no emojis)                                |
-| **Purpose**  | High-conversion landing page for "Na Mesa Certa" aesthetic event   |
+| **Purpose**  | Institutional site for Grupo US with landing pages per product     |
 
 ---
 
 ## Architecture Map
 
 ```text
-namesa/
+gpus/
 ├── src/
-│   ├── components/         # UI components (Astro + React Islands)
-│   │   ├── Hero.astro
-│   │   ├── CountdownTimer.tsx    # React Island (client:load)
-│   │   ├── PainPoints.astro
-│   │   ├── Methodology.astro
-│   │   ├── Benefits.astro
-│   │   ├── ScheduleSection.astro
-│   │   ├── PricingSection.astro
-│   │   ├── SpeakersGrid.astro
-│   │   ├── HostessSection.astro
-│   │   ├── Testimonials.tsx      # React Island (client:visible)
-│   │   ├── FAQAccordion.tsx      # React Island (client:visible)
-│   │   ├── CTASection.astro
-│   │   └── MobileCTABar.astro
+│   ├── components/
+│   │   ├── layout/         # Header.astro, Footer.astro
+│   │   ├── home/           # Hero, ProductsGrid, StatsSection, AboutPreview, CTASection
+│   │   ├── about/          # Mission, Values, TeamGrid
+│   │   ├── landing/        # Reusable product landing sections (9 components)
+│   │   │   ├── LandingHero.astro
+│   │   │   ├── PainPoints.astro
+│   │   │   ├── Pillars.astro
+│   │   │   ├── Benefits.astro
+│   │   │   ├── Differentials.astro
+│   │   │   ├── Testimonials.astro    # Pure Astro (NOT React)
+│   │   │   ├── FAQ.astro             # Pure Astro — details/summary
+│   │   │   ├── LandingCTA.astro
+│   │   │   └── MobileCTABar.astro
+│   │   ├── shared/         # SectionHeading, Card, Button
+│   │   └── contact/        # ContactForm (if extracted)
 │   ├── content/            # Content Collections (JSON data)
-│   │   ├── speakers/       # Speaker JSON files
-│   │   ├── faqs/           # FAQ JSON files
-│   │   └── testimonials/   # Testimonial JSON files
+│   │   ├── products/       # 6 product JSON files (rich schema)
+│   │   └── team/           # 3 team member JSON files
 │   ├── content.config.ts   # Zod schemas + glob loaders
 │   ├── layouts/
-│   │   └── Layout.astro    # Base layout (meta, fonts, skip link; MPA full reloads)
-│   ├── pages/
-│   │   ├── index.astro     # Landing principal
+│   │   └── Layout.astro    # Base layout (SEO, JSON-LD, fonts, skip link, reveal)
+│   ├── pages/              # 11 pages (home, sobre, 6 products, contato, legal)
+│   │   ├── index.astro
+│   │   ├── sobre.astro
+│   │   ├── trintae3.astro
+│   │   ├── otb.astro
+│   │   ├── mentoria-black-neon.astro
+│   │   ├── comunidade-us.astro
+│   │   ├── curso-auriculo.astro
+│   │   ├── na-mesa-certa.astro
+│   │   ├── contato.astro
 │   │   ├── termos.astro
 │   │   └── politica-de-privacidade.astro
 │   └── styles/
 │       └── global.css      # Tailwind v4 @theme + custom utilities
-├── public/                 # Static assets (images, favicon)
-├── docs/inicial/           # Original planning documents
+├── public/
+│   └── images/             # Static assets (products/, team/)
 ├── astro.config.mjs
 ├── tsconfig.json
+├── biome.json
+├── lefthook.yml
 └── package.json
 ```
 
@@ -239,46 +250,57 @@ namesa/
 ## Islands Architecture (Hard Gate)
 
 ```
-Static HTML (90%): Hero, PainPoints, Methodology, Benefits, Schedule, Pricing, Speakers, Hostess, CTA, footer, legal pages
-React Islands (10% — ONLY these three):
-  CountdownTimer.tsx  → client:load    (urgency in Hero)
-  FAQAccordion.tsx    → client:visible (below fold)
-  Testimonials.tsx    → client:visible (below fold)
+Static HTML (100%): All 22 components are .astro files (zero client JS)
+React Islands (0%): None currently exist. All interactivity uses:
+  - FAQ: native <details>/<summary> with CSS transitions
+  - Header mobile: inline <script> for hamburger toggle
+  - Animations: CSS data-reveal via IntersectionObserver (inline script in Layout)
 ```
 
 > [!CAUTION]
-> Do NOT add more React Islands without explicit justification. Astro's zero-JS default is the performance advantage.
+> Do NOT add React Islands without explicit justification. Astro's zero-JS default is the performance advantage.
 
 ---
 
 ## Content Collections
 
-All dynamic content MUST use Astro Content Collections (`src/content/`):
-- **speakers/** — JSON files with name, title, photo, specialty, bio, learn_text
-- **faqs/** — JSON files with question and answer
-- **testimonials/** — JSON files with name, role, quote, photo
+All dynamic content uses Astro Content Collections (`src/content/`) with Zod schemas in `src/content.config.ts`:
+
+- **products/** — 6 JSON files, one per product. Rich schema: name, slug, tagline, description, type, audience, icon (Lucide name), image, order, hero, painPoints[], pillars[], benefits[], differentials[], faqs[], cta, testimonials[].
+- **team/** — 3 JSON files (Sacha, Mauricio, Raquel). Schema: name, role, bio, photo, order, social.
+
+To add a new product: create JSON in `src/content/products/` + create `.astro` page in `src/pages/` following the landing template pattern (getCollection → find by slug → pass data to landing components).
 
 > [!CAUTION]
 > **NEVER** hardcode content data inside `.astro` or `.tsx` components. Always use `getCollection()`.
 
 ---
 
-## Section Order (Conversion Architecture)
+## Section Order — Product Landing Pages (Conversion Architecture)
 
-| # | Section           | Component               | Purpose                     |
+Each product landing page follows this flow (all components in `src/components/landing/`):
+
+| # | Section           | Component                | Purpose                     |
 |---|-------------------|-------------------------|-----------------------------|
-| 1 | Hero              | `Hero.astro`            | Capture attention + urgency |
-| 2 | Pain / público    | `PainPoints.astro`      | Create empathy + fit        |
-| 3 | Methodology       | `Methodology.astro`     | Present the solution        |
-| 4 | Transformation    | `Benefits.astro`        | Show expected results       |
-| 5 | Cronograma        | `ScheduleSection.astro` | Agenda do evento            |
-| 6 | Ingressos         | `PricingSection.astro`  | Conversão por preço       |
-| 7 | Speakers          | `SpeakersGrid.astro`    | Build authority             |
-| 8 | Hostess           | `HostessSection.astro`    | Anfitriã / confiança        |
-| 9 | Social Proof      | `Testimonials.tsx`      | Reduce objections           |
-| 10 | FAQ              | `FAQAccordion.tsx`      | Eliminate final doubts      |
-| 11 | CTA Final        | `CTASection.astro`      | Convert the visitor         |
-| — | Mobile sticky    | `MobileCTABar.astro`    | CTA persistente (mobile)    |
+| 1 | Hero              | `LandingHero.astro`     | Capture attention + value prop |
+| 2 | Pain / publico    | `PainPoints.astro`      | Create empathy + fit        |
+| 3 | Pilares           | `Pillars.astro`         | Present the solution        |
+| 4 | Beneficios        | `Benefits.astro`        | Show transformation         |
+| 5 | Diferenciais      | `Differentials.astro`   | Why this product is unique  |
+| 6 | Depoimentos       | `Testimonials.astro`    | Social proof (pure Astro)   |
+| 7 | FAQ               | `FAQ.astro`             | Eliminate final doubts      |
+| 8 | CTA Final         | `LandingCTA.astro`      | Convert the visitor         |
+| — | Mobile sticky     | `MobileCTABar.astro`    | CTA persistente (mobile)    |
+
+## Section Order — Home Page
+
+| # | Section           | Component                | Purpose                     |
+|---|-------------------|-------------------------|-----------------------------|
+| 1 | Hero              | `home/Hero.astro`       | Brand + proposito           |
+| 2 | Produtos          | `home/ProductsGrid.astro`| Grid de 6 produtos         |
+| 3 | Numeros           | `home/StatsSection.astro`| Impacto em numeros         |
+| 4 | Sobre preview     | `home/AboutPreview.astro`| Dra. Sacha + CTA sobre     |
+| 5 | CTA Final         | `home/CTASection.astro`  | WhatsApp + contato         |
 
 ---
 
@@ -383,17 +405,19 @@ Use Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
 
 ---
 
-## Checklist Pré-Entrega
+## Checklist Pre-Entrega
 
-- [ ] Lighthouse Performance ≥ 95
-- [ ] Lighthouse Accessibility ≥ 95
-- [ ] Lighthouse SEO ≥ 95
+- [ ] Lighthouse Performance >= 95
+- [ ] Lighthouse Accessibility >= 95
+- [ ] Lighthouse SEO >= 95
 - [ ] CLS = 0 (sem layout shift)
 - [ ] LCP < 2.5s
 - [ ] Responsivo em 375px, 768px, 1024px, 1440px
-- [ ] Sem emojis como ícones (apenas Lucide SVG)
-- [ ] `useReducedMotion()` em todos os componentes animados
-- [ ] Countdown com data correta (18–19/09/2026)
-- [ ] Links de CTA funcionais (WhatsApp, ingresso)
-- [ ] Dados de palestrantes/FAQ/depoimentos em Content Collections
-- [ ] Sticky mobile CTA bar implementada e oculta no desktop
+- [ ] Sem emojis como icones (apenas Lucide SVG)
+- [ ] `prefers-reduced-motion` respeitado em todas as animacoes CSS
+- [ ] Links de CTA funcionais (WhatsApp, checkout externo)
+- [ ] Dados de produtos/equipe em Content Collections (zero hardcoding)
+- [ ] Sticky mobile CTA bar em todas as landing pages (oculta no desktop)
+- [ ] 11 paginas construindo sem erros (`bun run build`)
+- [ ] Lint limpo (`bun run lint`)
+- [ ] Type check limpo (`bunx astro check`)
