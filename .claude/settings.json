@@ -1,0 +1,139 @@
+{
+	"env": {
+		"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+	},
+	"permissions": {
+		"allow": [
+			"Bash(bun:*)",
+			"Bash(bunx:*)",
+			"Bash(git:*)",
+			"Bash(python:*)",
+			"Bash(python3:*)",
+			"Read(**/*.json)",
+			"Read(**/*.js)",
+			"Read(**/*.ts)",
+			"Read(**/*.tsx)",
+			"Read(**/*.astro)",
+			"Read(**/*.css)",
+			"Read(**/*.md)",
+			"Edit(**/*.js)",
+			"Edit(**/*.ts)",
+			"Edit(**/*.tsx)",
+			"Edit(**/*.astro)",
+			"Edit(**/*.css)",
+			"Edit(**/*.json)",
+			"Edit(**/*.md)",
+			"Write(**/*.js)",
+			"Write(**/*.ts)",
+			"Write(**/*.tsx)",
+			"Write(**/*.astro)",
+			"Write(**/*.css)"
+		],
+		"deny": [
+			"Read(./.env*)",
+			"Read(./secrets/**)",
+			"Bash(rm -rf:*)",
+			"Bash(sudo:*)",
+			"Bash(npm:*)",
+			"Bash(yarn:*)",
+			"Bash(pnpm:*)"
+		]
+	},
+	"enableAllProjectMcpServers": true,
+	"hooks": {
+		"SessionStart": [
+			{
+				"matcher": "startup|resume|compact",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-context.sh"
+					}
+				]
+			}
+		],
+		"PreToolUse": [
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/smart-bash-approver.sh",
+						"timeout": 10
+					}
+				]
+			},
+			{
+				"matcher": "Edit|Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh",
+						"timeout": 10
+					}
+				]
+			},
+			{
+				"matcher": "Task",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/task-routing-guard.sh",
+						"timeout": 10
+					}
+				]
+			}
+		],
+		"PermissionRequest": [
+			{
+				"matcher": "Read|Grep|Glob|Bash|Edit|Write|mcp__plugin_serena_serena__.*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PermissionRequest\",\"decision\":{\"behavior\":\"allow\"}}}'"
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Write|Edit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ultracite-fix.sh",
+						"timeout": 60
+					}
+				]
+			}
+		],
+		"Stop": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ultracite-check.sh",
+						"timeout": 120
+					}
+				]
+			}
+		],
+		"Notification": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/notify.sh"
+					}
+				]
+			}
+		]
+	},
+	"enabledPlugins": {},
+	"statusLine": {
+		"type": "command",
+		"command": "python3 /home/mauricio/namesa/.claude/scripts/context-monitor.py"
+	}
+}
