@@ -8,6 +8,8 @@ import { defineConfig, fontProviders } from "astro/config";
 const redirectTargets = {
 	"/na-mesa-certa": "https://namesa.gpus.com.br/",
 	"/otb": "https://otb.gpus.com.br/",
+	"/trintae3": "https://trintae3.drasacha.com.br/",
+	"/comunidade-us": "https://drasacha.com.br/pagina-de-inscricao-comu-us/",
 };
 
 // #region agent log
@@ -35,7 +37,7 @@ void fetch(
 // https://astro.build/config
 export default defineConfig({
 	site: "https://grupous.com.br",
-	// Manter destinos alinhados a `externalSiteUrl` em na-mesa-certa.json e otb.json
+	// Manter destinos alinhados a `externalSiteUrl` nos JSON dos produtos com funil externo
 	redirects: redirectTargets,
 	fonts: [
 		{
@@ -59,7 +61,12 @@ export default defineConfig({
 			filter: (page) => {
 				try {
 					const pathname = new URL(page).pathname.replace(/\/$/, "") || "/";
-					if (pathname === "/na-mesa-certa" || pathname === "/otb") {
+					if (
+						pathname === "/na-mesa-certa" ||
+						pathname === "/otb" ||
+						pathname === "/trintae3" ||
+						pathname === "/comunidade-us"
+					) {
 						return false;
 					}
 				} catch {

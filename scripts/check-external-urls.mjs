@@ -26,6 +26,8 @@ function parseRedirect(configText, pathKey) {
 const ROUTES = [
 	{ slug: "na-mesa-certa", pathKey: "/na-mesa-certa" },
 	{ slug: "otb", pathKey: "/otb" },
+	{ slug: "trintae3", pathKey: "/trintae3" },
+	{ slug: "comunidade-us", pathKey: "/comunidade-us" },
 ];
 
 const configText = readFileSync(join(root, "astro.config.mjs"), "utf8");
@@ -68,7 +70,9 @@ for (const { slug, pathKey } of ROUTES) {
 }
 
 if (!failed) {
-	console.log("[check-external-urls] OK: na-mesa-certa + otb aligned with astro.config.mjs");
+	console.log(
+		"[check-external-urls] OK: external products aligned with astro.config.mjs",
+	);
 }
 
 process.exit(failed ? 1 : 0);

@@ -6,6 +6,12 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<span class:list={["font-serif text-2xl font-bold tracking-tight text-gold sm:text-3xl", className]}>
-	Grupo <span class="text-text-primary">US</span>
-</span>
+<img
+	src="/logo.svg"
+	alt=""
+	width="420"
+	height="96"
+	class:list={["h-10 w-auto sm:h-12", className]}
+	loading="eager"
+	decoding="async"
+/>

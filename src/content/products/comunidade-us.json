@@ -7,6 +7,7 @@
 	"audience": "Profissionais da estética",
 	"icon": "Users",
 	"image": "/images/products/comunidade-us.svg",
+	"externalSiteUrl": "https://drasacha.com.br/pagina-de-inscricao-comu-us/",
 	"order": 4,
 	"hero": {
 		"headline": "Sua evolução não pode parar quando o curso acaba",
@@ -79,7 +80,7 @@
 	],
 	"cta": {
 		"label": "Quero fazer parte",
-		"url": "https://drasacha.com.br/pagina-de-inscricao-comu-us",
+		"url": "https://drasacha.com.br/pagina-de-inscricao-comu-us/",
 		"whatsappMessage": "Olá! Quero saber mais sobre a Comunidade US",
 		"type": "primary"
 	},

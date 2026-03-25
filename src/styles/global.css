@@ -47,12 +47,22 @@ body {
 }
 
 @utility glass-card {
-	background-color: color-mix(
-		in srgb,
-		var(--color-navy-light) 97%,
-		transparent
-	);
+	background:
+		linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--color-navy-light) 92%, white 4%) 0%,
+			color-mix(in srgb, var(--color-navy) 92%, transparent) 100%
+		),
+		radial-gradient(
+			circle at top left,
+			color-mix(in srgb, var(--color-gold) 12%, transparent) 0%,
+			transparent 44%
+		);
 	border: 1px solid color-mix(in srgb, var(--color-gold) 20%, transparent);
+	backdrop-filter: blur(18px) saturate(125%);
+	box-shadow:
+		0 24px 70px color-mix(in srgb, var(--color-navy) 45%, transparent),
+		inset 0 1px 0 color-mix(in srgb, white 8%, transparent);
 }
 
 /* ===== Focus States (Accessibility) ===== */
@@ -243,7 +253,10 @@ body {
 /* ===== Enhanced Hover Utilities ===== */
 
 @utility card-hover-lift {
-	transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+	transition:
+		transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+		border-color 0.3s ease,
+		box-shadow 0.3s ease;
 	will-change: transform;
 }
 
@@ -271,7 +284,7 @@ body {
 
 /* Card hover lift effect */
 .card-hover-lift:hover {
-	transform: translateY(-6px);
+	transform: translateY(-6px) scale(1.01);
 }
 
 /* ===== Aceternity UI Animations ===== */

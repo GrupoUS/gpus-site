@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import AboutPreview from "../components/home/AboutPreview.astro";
 import CTASection from "../components/home/CTASection.astro";
 import Hero from "../components/home/Hero.astro";
+import JourneyTimeline from "../components/home/JourneyTimeline.astro";
 import ProductsGrid from "../components/home/ProductsGrid.astro";
 import StatsSection from "../components/home/StatsSection.astro";
 import Testimonials from "../components/landing/Testimonials.astro";
@@ -27,6 +28,7 @@ const homeTestimonials = products
 >
 	<Hero />
 	<ProductsGrid />
+	<JourneyTimeline />
 	<Testimonials testimonials={homeTestimonials} layout="strip" />
 	<StatsSection />
 	<AboutPreview />

@@ -1,0 +1,162 @@
+---
+import { getCollection } from "astro:content";
+import Button from "../shared/Button.astro";
+import SectionHeading from "../shared/SectionHeading.astro";
+
+const canonicalJourney = [
+	{
+		slug: "curso-auriculo",
+		stage: "01",
+		eyebrow: "Entrada",
+		summary:
+			"Uma entrada de ticket mais acessivel para ganhar repertorio tecnico e colocar a primeira oferta em movimento.",
+	},
+	{
+		slug: "comunidade-us",
+		stage: "02",
+		eyebrow: "Comunidade",
+		summary:
+			"Continuidade, networking e atualizacao recorrente para manter execucao, proximidade e referencia de mercado.",
+	},
+	{
+		slug: "trintae3",
+		stage: "03",
+		eyebrow: "Formacao solida",
+		summary:
+			"A fase de aprofundamento tecnico e de base de negocios para sair do operacional e construir autoridade.",
+	},
+	{
+		slug: "mentoria-black-neon",
+		stage: "04",
+		eyebrow: "Escala de negocio",
+		summary:
+			"Gestao, time, faturamento e previsibilidade para transformar uma boa operacao em empresa escalavel.",
+	},
+	{
+		slug: "otb",
+		stage: "05",
+		eyebrow: "Elite global",
+		summary:
+			"A etapa internacional para quem quer reconhecimento, networking premium e repertorio de business em outro nivel.",
+	},
+] as const;
+
+const complementaryExperienceSlugs = ["neon-dash", "na-mesa-certa"] as const;
+const products = await getCollection("products");
+const productsBySlug = new Map(
+	products.map((entry) => [entry.data.slug, entry.data]),
+);
+
+const stages = canonicalJourney.map((item) => {
+	const product = productsBySlug.get(item.slug);
+
+	if (!product) {
+		throw new Error(
+			`JourneyTimeline: produto ausente para slug "${item.slug}"`,
+		);
+	}
+
+	const pageHref = product.externalSiteUrl ?? `/${product.slug}`;
+	const ctaHref = product.cta.url;
+	const hasSeparateCta = ctaHref !== pageHref;
+
+	return {
+		...item,
+		product,
+		pageHref,
+		ctaHref,
+		hasSeparateCta,
+	};
+});
+
+const complementaryExperiences = complementaryExperienceSlugs
+	.map((slug) => productsBySlug.get(slug))
+	.filter((p): p is NonNullable<typeof p> => p !== undefined)
+	.map((product) => ({
+		name: product.name,
+		href: product.externalSiteUrl ?? `/${product.slug}`,
+	}));
+---
+
+<section class="px-4 py-24 sm:px-6 lg:py-32">
+	<div class="mx-auto max-w-7xl">
+		<SectionHeading
+			title="A jornada do aluno no ecossistema Grupo US"
+			subtitle="Os 5 estagios seguem a ordem canonica do manual e puxam destinos diretamente dos dados dos produtos, sem URLs manuais espalhadas pela home."
+		/>
+
+		<ol class="mt-16 grid gap-6 lg:grid-cols-5">
+			{stages.map((stage, index) => (
+				<li
+					class="glass-card flex h-full flex-col rounded-3xl p-6 card-glow-hover"
+					data-reveal="up"
+					data-reveal-delay={String(index + 1)}
+				>
+					<div class="flex items-center justify-between gap-4">
+						<span class="text-xs font-semibold uppercase tracking-[0.24em] text-gold/75">
+							{stage.eyebrow}
+						</span>
+						<span class="font-serif text-3xl text-gold/80">{stage.stage}</span>
+					</div>
+
+					<h3 class="mt-5 font-serif text-2xl font-bold text-text-primary">
+						{stage.product.name}
+					</h3>
+					<p class="mt-3 text-sm leading-relaxed text-text-muted">
+						{stage.summary}
+					</p>
+					<p class="mt-4 text-sm leading-relaxed text-text-muted">
+						{stage.product.tagline}
+					</p>
+
+					<div class="mt-6 space-y-3 pt-6 border-t border-gold/10">
+						<Button
+							href={stage.ctaHref}
+							target={stage.ctaHref.startsWith("http") ? "_blank" : undefined}
+							size="sm"
+						>
+							{stage.product.cta.label}
+						</Button>
+
+						{stage.hasSeparateCta ? (
+							<a
+								href={stage.pageHref}
+								target={stage.pageHref.startsWith("http") ? "_blank" : undefined}
+								rel={stage.pageHref.startsWith("http") ? "noopener noreferrer" : undefined}
+								class="inline-flex items-center gap-2 text-sm font-medium text-gold transition-colors duration-200 hover:text-gold-light"
+							>
+								Ver pagina do programa
+								<span aria-hidden="true">+</span>
+							</a>
+						) : null}
+					</div>
+				</li>
+			))}
+		</ol>
+
+		{complementaryExperiences.length > 0 ? (
+			<div
+				class="mt-8 rounded-3xl border border-gold/10 bg-navy-light/40 px-6 py-5 text-sm text-text-muted"
+				data-reveal="up"
+			>
+				<p>
+					Experiencias complementares do ecossistema:
+					{" "}
+					{complementaryExperiences.map((experience, index) => (
+						<>
+							<a
+								href={experience.href}
+								class="font-medium text-gold transition-colors duration-200 hover:text-gold-light"
+								target={experience.href.startsWith("http") ? "_blank" : undefined}
+								rel={experience.href.startsWith("http") ? "noopener noreferrer" : undefined}
+							>
+								{experience.name}
+							</a>
+							{index < complementaryExperiences.length - 1 ? ", " : "."}
+						</>
+					))}
+				</p>
+			</div>
+		) : null}
+	</div>
+</section>

@@ -91,6 +91,14 @@ Components receive plain JS objects, not Astro collection entries.
 
 To add a new product: create JSON in `src/content/products/` + create page in `src/pages/` using the landing template pattern.
 
+### Journey and CTA source of truth
+
+- Home journey canonical order: `curso-auriculo` -> `comunidade-us` -> `trintae3` -> `mentoria-black-neon` -> `otb`.
+- `neon-dash` and `na-mesa-certa` are complementary experiences and should not be injected into that 5-stage sequence.
+- Navigation and informational cards should resolve the product destination from `externalSiteUrl ?? /slug`.
+- `cta.url` is intentionally heterogeneous across the Dra. Sacha ecosystem: some products go to `drasacha.com.br`, some to `wa.link`, some to HubSpot, and external products (`na-mesa-certa`, `otb`) must stay aligned across `externalSiteUrl`, `cta.url`, and `astro.config.mjs` redirects.
+- Do not "normalize" CTA domains blindly. If you change a CTA or external product URL, validate whether you are changing a conversion funnel or only the navigational page destination.
+
 ### Styling
 
 - `src/styles/global.css` defines color tokens via `@theme {}` and custom utilities.

@@ -1,0 +1,39 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#111827"/>
+  <rect width="1200" height="630" fill="url(#paint0_radial)"/>
+  <rect x="58" y="58" width="1084" height="514" rx="32" fill="#1A1A2E" stroke="rgba(212,175,55,0.25)" stroke-width="2"/>
+  <rect x="94" y="94" width="150" height="150" rx="36" fill="#131A2B" stroke="#D4AF37" stroke-width="2"/>
+  <path d="M136 137C136 125.402 145.402 116 157 116H186V133H161C154.373 133 149 138.373 149 145V197C149 203.627 154.373 209 161 209H188V182H168V165H206V225H157C145.402 225 136 215.598 136 204V137Z" fill="#D4AF37"/>
+  <path d="M214 116H228V186C228 207.539 210.539 225 189 225H172V209H189C201.703 209 212 198.703 212 186V116H214Z" fill="#FAFAF9"/>
+  <text x="292" y="186" fill="#D4AF37" font-family="Georgia, serif" font-size="44" font-weight="700">Grupo US</text>
+  <text x="292" y="266" fill="#FAFAF9" font-family="Arial, sans-serif" font-size="66" font-weight="700">Ecossistema de Saude</text>
+  <text x="292" y="336" fill="#FAFAF9" font-family="Arial, sans-serif" font-size="66" font-weight="700">Estetica Avancada</text>
+  <text x="292" y="402" fill="#94A3B8" font-family="Arial, sans-serif" font-size="30">Pos-graduacao, mentoria, comunidade, eventos e business para profissionais que querem referencia, escala e posicionamento premium.</text>
+  <rect x="292" y="454" width="308" height="54" rx="27" fill="rgba(212,175,55,0.12)" stroke="rgba(212,175,55,0.35)"/>
+  <text x="322" y="489" fill="#D4AF37" font-family="Arial, sans-serif" font-size="24" font-weight="700">grupous.com.br</text>
+  <circle cx="1020" cy="154" r="86" fill="rgba(212,175,55,0.08)"/>
+  <circle cx="1020" cy="154" r="48" fill="rgba(212,175,55,0.12)"/>
+  <circle cx="964" cy="466" r="118" fill="rgba(212,175,55,0.05)"/>
+  <path d="M876 474C930 418 998 418 1052 474" stroke="#D4AF37" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+  <path d="M902 510C945 468 983 468 1026 510" stroke="#FAFAF9" stroke-width="4" stroke-linecap="round" opacity="0.35"/>
+  <defs>
+    <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(968 124) rotate(130.995) scale(665.363 1248.14)">
+      <stop stop-color="#3D2B00"/>
+      <stop offset="0.35" stop-color="#171B2A"/>
+      <stop offset="1" stop-color="#0B1020"/>
+    </radialGradient>
+  </defs>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Grupo US  Saýde Estýtica Avanýada">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1b2a"/>
+      <stop offset="100%" style="stop-color:#1a2744"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="80" y="80" width="1040" height="470" rx="24" fill="transparent" stroke="#D4AF37" stroke-opacity="0.35" stroke-width="2"/>
+  <text x="600" y="260" text-anchor="middle" fill="#D4AF37" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="700">Grupo US</text>
+  <text x="600" y="340" text-anchor="middle" fill="#c9a66b" font-family="system-ui, sans-serif" font-size="32" font-weight="500">Saýde Estýtica Avanýada</text>
+  <text x="600" y="400" text-anchor="middle" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="22">grupous.com.br</text>
+</svg>

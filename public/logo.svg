@@ -1,0 +1,19 @@
+<svg width="420" height="96" viewBox="0 0 420 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="8" width="84" height="80" rx="24" fill="#1A1A2E" stroke="#D4AF37" stroke-width="2"/>
+  <path d="M28 31C28 24.9249 32.9249 20 39 20H54.5V29H41C37.6863 29 35 31.6863 35 35V61C35 64.3137 37.6863 67 41 67H55.5V52H45V43H65V76H39C32.9249 76 28 71.0751 28 65V31Z" fill="#D4AF37"/>
+  <path d="M71 20H78V56C78 67.0457 69.0457 76 58 76H49V67H58C64.0751 67 69 62.0751 69 56V20H71Z" fill="#FAFAF9"/>
+  <path d="M113 66V29.5H120.9L132.2 53.7L143.5 29.5H151.4V66H143.7V44.7L135 63H129.2L120.5 44.7V66H113Z" fill="#D4AF37"/>
+  <path d="M161 66V29.5H177.4C185.5 29.5 191.2 34.5 191.2 41.9C191.2 49.4 185.5 54.3 177.4 54.3H168.9V66H161ZM168.9 47.5H176.4C180.7 47.5 183.2 45.5 183.2 41.9C183.2 38.4 180.7 36.2 176.4 36.2H168.9V47.5Z" fill="#FAFAF9"/>
+  <path d="M199.3 66V29.5H207.2V59.1H225.6V66H199.3Z" fill="#FAFAF9"/>
+  <path d="M231.9 66V29.5H258.9V36.1H239.8V44.3H256.7V50.8H239.8V59.4H259.4V66H231.9Z" fill="#FAFAF9"/>
+  <path d="M268.9 66L255.5 29.5H264L273.9 58.5L283.8 29.5H292.2L278.8 66H268.9Z" fill="#FAFAF9"/>
+  <path d="M306.2 66C295.9 66 288.7 58.3 288.7 47.8C288.7 37.3 296 29 306.4 29C311.8 29 316.4 30.8 320 34.1L315.4 39.5C312.9 37.2 310.2 36.1 306.8 36.1C300.3 36.1 296.7 41.2 296.7 47.6C296.7 54 300.3 59 306.6 59C309.9 59 312.9 57.8 315.2 55.9L319.9 61.3C316.1 64.6 311.6 66 306.2 66Z" fill="#D4AF37"/>
+  <path d="M327.1 66V29.5H335V59.1H353.4V66H327.1Z" fill="#D4AF37"/>
+  <path d="M357.6 66V29.5H384.6V36.1H365.5V44.3H382.4V50.8H365.5V59.4H385.1V66H357.6Z" fill="#D4AF37"/>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" fill="none" role="img" aria-label="Grupo US">
+  <rect width="200" height="48" rx="6" fill="#0F1A2E"/>
+  <rect x="4" y="4" width="40" height="40" rx="8" stroke="#D4AF37" stroke-width="1.5" fill="transparent"/>
+  <path d="M14 36V12h4.2l5.1 9.2h.1L28.5 12H32v24h-3.2V17.2h-.1l-4.8 8.5h-2l-4.8-8.5h-.1V36H14z" fill="#D4AF37"/>
+  <text x="54" y="33" fill="#D4AF37" font-family="Georgia, serif" font-size="22" font-weight="700">Grupo US</text>
+</svg>
