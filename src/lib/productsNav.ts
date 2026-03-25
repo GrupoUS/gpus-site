@@ -1,5 +1,12 @@
 import type { CollectionEntry } from "astro:content";
 
+export type ProductNavLink = {
+	label: string;
+	href: string;
+	/** Off-site product experience — open in new tab with noopener. */
+	external?: boolean;
+};
+
 /** Short nav label: text before " — " if present, else full name. */
 function navLabelFromName(name: string): string {
 	const sep = " — ";
@@ -9,11 +16,15 @@ function navLabelFromName(name: string): string {
 
 export function productNavLinksFromCollection(
 	entries: CollectionEntry<"products">[],
-): { label: string; href: string }[] {
+): ProductNavLink[] {
 	return [...entries]
 		.sort((a, b) => a.data.order - b.data.order)
-		.map((e) => ({
-			label: navLabelFromName(e.data.name),
-			href: `/${e.data.slug}`,
-		}));
+		.map((e) => {
+			const external = Boolean(e.data.externalSiteUrl);
+			return {
+				label: navLabelFromName(e.data.name),
+				href: e.data.externalSiteUrl ?? `/${e.data.slug}`,
+				...(external ? { external: true as const } : {}),
+			};
+		});
 }

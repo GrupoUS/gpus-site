@@ -28,16 +28,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Type:** Multi-product institutional website for Grupo US (health aesthetics education ecosystem). Static site with 11 pages, deployed to Railway.
 
-### Site structure (11 pages)
+### Site structure (10 Astro pages + 2 redirect routes)
 
 - `/` — Home (hero + product grid + stats + about preview + CTA)
 - `/sobre` — About company (mission/vision + values + team)
 - `/trintae3` — Landing page: Pos-graduacao + Mentoria
-- `/otb` — Landing page: MBA Internacional
+- `/otb` — Redirect estatico para deck OTB Dubai (`externalSiteUrl` + `astro.config` redirects)
 - `/mentoria-black-neon` — Landing page: Mentoria de Negocios
 - `/comunidade-us` — Landing page: Educacao Continuada
 - `/curso-auriculo` — Landing page: Curso Tecnico
-- `/na-mesa-certa` — Landing page: Evento Presencial
+- `/neon-dash` — Landing page (produto neon-dash)
+- `/na-mesa-certa` — Redirect estatico para site Na Mesa Certa
 - `/contato` — Contact form + WhatsApp + channels
 - `/termos` — Terms of use
 - `/politica-de-privacidade` — Privacy policy (LGPD)

@@ -7,6 +7,7 @@
 	"audience": "Empresarios de saude estetica",
 	"icon": "Calendar",
 	"image": "/images/products/na-mesa-certa.jpg",
+	"externalSiteUrl": "https://namesacerta.com.br/",
 	"order": 6,
 	"hero": {
 		"headline": "O evento que coloca voce na mesa certa",
@@ -88,7 +89,7 @@
 	],
 	"cta": {
 		"label": "Quero minha vaga",
-		"url": "https://namesacerta.com.br",
+		"url": "https://namesacerta.com.br/",
 		"whatsappMessage": "Ola! Quero saber mais sobre o Na Mesa Certa",
 		"type": "primary"
 	},

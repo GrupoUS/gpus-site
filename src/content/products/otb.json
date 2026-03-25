@@ -1,106 +1,108 @@
 {
 	"name": "OTB — Out Of The Box",
 	"slug": "otb",
-	"tagline": "MBA Internacional em Saude Estetica",
-	"description": "Experiencia internacional exclusiva para profissionais de elite que buscam formacao de MBA com imersao em mercados globais de saude estetica.",
+	"tagline": "MBA em Business Aesthetic Health com imersao em Dubai",
+	"description": "Primeiro MBA do mundo em Business Aesthetic Health com certificacao MEC, 320 horas de conteudo, 10 modulos online e experiencia presencial em Dubai com ingresso AMWC.",
 	"type": "MBA Internacional",
-	"audience": "Elite em saude estetica",
+	"audience": "Profissionais de saude estetica em busca de elite global",
 	"icon": "Globe",
 	"image": "/images/products/otb.jpg",
+	"externalSiteUrl": "https://ota-dubai.lovable.app/",
 	"order": 2,
 	"hero": {
-		"headline": "Sua carreira sem fronteiras: MBA Internacional em Saude Estetica",
-		"subheadline": "Imersao nos maiores mercados do mundo com certificacao internacional e networking global"
+		"headline": "O primeiro MBA do mundo em Business Aesthetic Health com experiencia em Dubai",
+		"subheadline": "Para quem deseja fazer parte da elite da Saude Estetica Avancada — terceira turma, vagas limitadas"
 	},
 	"painPoints": [
 		{
-			"icon": "MapPinOff",
-			"title": "Mercado local saturado",
-			"description": "Voce domina as tecnicas nacionais, mas sente que seu crescimento estagnou. O mercado local esta cada vez mais competitivo e os diferenciais se esgotaram."
+			"icon": "TrendingDown",
+			"title": "Sucesso tecnico sem gestao de negocio",
+			"description": "Voce domina procedimentos, mas sente que falta visao estrategica para gerir a clinica com solidez, precificacao, time e crescimento sustentavel."
 		},
 		{
-			"icon": "GraduationCap",
-			"title": "Formacao limitada ao cenario brasileiro",
-			"description": "Toda sua base de conhecimento vem do mercado nacional. Faltam referencias internacionais, tendencias globais e protocolos validados em outros paises."
+			"icon": "Plane",
+			"title": "Referencia local sem prova internacional",
+			"description": "O mercado pede posicionamento global. Falta uma experiencia presencial em hub mundial de estetica, com networking e pratica ao lado de referencias."
 		},
 		{
-			"icon": "ShieldOff",
-			"title": "Sem credencial internacional",
-			"description": "Voce quer se posicionar como referencia de nivel mundial, mas nao tem uma certificacao que comprove experiencia e formacao em mercados internacionais."
+			"icon": "ShieldAlert",
+			"title": "Diferenciacao que nao aparece no curriculo",
+			"description": "Concorrentes copiam precos e Instagram; voce precisa de um MBA reconhecido (MEC) e de uma jornada Dubai + AMWC que comprove nivel internacional."
 		}
 	],
 	"pillars": [
 		{
-			"icon": "Plane",
-			"title": "Imersao Internacional Presencial",
-			"description": "Modulos presenciais em polos internacionais de saude estetica — Europa, Estados Unidos e Asia — com visitas a clinicas de referencia e troca direta com especialistas locais."
-		},
-		{
 			"icon": "Award",
-			"title": "Certificacao MBA com Reconhecimento Global",
-			"description": "Titulo de MBA em parceria com instituicoes internacionais, valido globalmente, que posiciona voce no topo do mercado de saude estetica."
+			"title": "Reconhecimento comprovado",
+			"description": "O OTB integra Business e Aesthetic Health, com selo de aprovacao do MEC — voce entra para a linha de frente da inovacao em saude estetica."
 		},
 		{
-			"icon": "Network",
-			"title": "Networking de Elite Global",
-			"description": "Conexao direta com os maiores nomes da estetica mundial, acesso a eventos exclusivos e uma rede de contatos que abre portas em qualquer mercado."
+			"icon": "Eye",
+			"title": "Uma visao alem da tecnica",
+			"description": "O programa e a ponte para gerir o negocio com sabedoria: gestao, marketing, vendas, lideranca e expansao, enraizadas em bases solidas."
+		},
+		{
+			"icon": "FlaskConical",
+			"title": "Praticas demonstrativas",
+			"description": "Aulas praticas demonstrativas em Dubai com profissional renomado, em ambiente de clinica premium e protocolos de Saude Estetica Avancada."
 		}
 	],
 	"benefits": [
-		"Certificacao MBA com reconhecimento internacional",
-		"Imersoes presenciais em tres continentes",
-		"Acesso a protocolos e tecnologias antes de chegarem ao Brasil",
-		"Networking com profissionais de mais de 15 paises",
-		"Mentoria estrategica para posicionamento global"
+		"Certificacao MEC reconhecida nacionalmente",
+		"320 horas de conteudo premium",
+		"Experiencia presencial exclusiva em Dubai (Day Clinic, Taj Dubai, deserto)",
+		"Ingresso AMWC Dubai incluso — maior congresso de estetica do mundo",
+		"10 modulos online de business, gestao, marketing e vendas",
+		"Network com profissionais de elite e palestrantes de referencia"
 	],
 	"differentials": [
 		{
-			"title": "Unico MBA em Saude Estetica com imersoes internacionais",
-			"description": "Nenhum outro programa no Brasil oferece formacao academica de MBA combinada com modulos presenciais em clinicas de referencia na Europa, EUA e Asia."
+			"title": "Calendario Dubai 2026 + AMWC",
+			"description": "Imersao presencial em 18, 19 e 20 de outubro de 2026 e participacao no AMWC de 21 a 23 de outubro de 2026, com experiencias clinicas, business e cultura."
 		},
 		{
-			"title": "Curadoria da Dra. Sacha Gualberto",
-			"description": "Todo o conteudo e rede de parceiros internacionais foram construidos pessoalmente pela Dra. Sacha ao longo de anos de relacionamento com lideres globais da estetica."
+			"title": "Trilha de conteudo de negocios completa",
+			"description": "De mentalidade empresarial a IA aplicada ao negocio, passando por gestao clinica, marketing, vendas, juridico e franquias — 10 modulos estruturados."
 		},
 		{
-			"title": "Turmas ultra-reduzidas",
-			"description": "Maximo de 20 alunos por turma para garantir experiencia personalizada, acesso direto aos mentores internacionais e networking de alto impacto."
+			"title": "Terceira turma, comunidade em construcao",
+			"description": "Programa validado por turmas anteriores; voce entra em uma comunidade seleta de empresarios e clinicos que rompem o convencional."
 		}
 	],
 	"faqs": [
 		{
-			"question": "Quais paises estao incluidos na imersao?",
-			"answer": "O programa inclui modulos presenciais em Portugal, Estados Unidos e Coreia do Sul — tres dos maiores polos de inovacao em saude estetica do mundo. O roteiro pode variar entre turmas."
+			"question": "Quem e o publico ideal do OTB?",
+			"answer": "Profissionais de Saude Estetica que rompem barreiras do convencional: enfermeiros, fisioterapeutas, biomedicos, odontologos, farmaceuticos e medicos em constante crescimento e busca de referencia global."
 		},
 		{
-			"question": "Preciso falar ingles fluente para participar?",
-			"answer": "Ingles intermediario e recomendado para aproveitar ao maximo as imersoes. Contamos com suporte de traducao nos modulos internacionais, mas a fluencia potencializa a experiencia."
+			"question": "Como e a experiencia presencial em Dubai?",
+			"answer": "Inclui Day Clinic com pratica demonstrativa (18/10), imersao no Taj Dubai com palestras de business (19/10), experiencia cultural no deserto com networking (20/10), e AMWC de 21 a 23/10/2026."
 		},
 		{
-			"question": "O MBA e reconhecido no Brasil?",
-			"answer": "Sim. A certificacao e emitida em parceria com instituicao de ensino credenciada, com validade nacional e reconhecimento internacional no setor de saude estetica."
+			"question": "Qual o formato e a carga horaria?",
+			"answer": "Sao 320 horas de conteudo, com modulos online de business avancado, gestao, marketing e vendas, mais a imersao presencial em Dubai e ingresso AMWC."
 		},
 		{
-			"question": "Quanto tempo dura o programa completo?",
-			"answer": "O OTB tem duracao de 24 meses, com modulos online mensais e tres imersoes internacionais presenciais distribuidas ao longo do programa."
+			"question": "Qual o investimento?",
+			"answer": "O valor publico no material oficial e US$ 4.000 à vista, com opcao de parcelamento no cartao ou boleto conforme condicoes da plataforma. Confira valores atualizados na apresentacao interativa."
 		}
 	],
 	"cta": {
-		"label": "Quero participar do OTB",
-		"url": "https://drasacha.com.br/otb",
-		"whatsappMessage": "Ola! Quero saber mais sobre o OTB — MBA Internacional",
+		"label": "Ver apresentacao do OTB Dubai",
+		"url": "https://ota-dubai.lovable.app/",
+		"whatsappMessage": "Ola! Quero saber mais sobre o OTB — MBA com imersao em Dubai",
 		"type": "primary"
 	},
 	"testimonials": [
 		{
 			"name": "Dra. Camila Rodrigues",
 			"role": "Medica Dermatologista — Rio de Janeiro/RJ",
-			"quote": "O OTB abriu minha visao para um nivel de estetica que eu nem sabia que existia. A imersao na Coreia do Sul mudou completamente meus protocolos e meu posicionamento."
+			"quote": "O OTB abriu minha visao para um nivel de estetica que eu nem sabia que existia. A imersao internacional mudou completamente meus protocolos e meu posicionamento."
 		},
 		{
 			"name": "Dr. Lucas Santana",
 			"role": "Cirurgiao Dentista Esteticista — Curitiba/PR",
-			"quote": "O networking internacional que construi no OTB vale mais do que qualquer certificado. Hoje tenho parceiros em tres paises e minha clinica atende pacientes estrangeiros."
+			"quote": "O networking internacional que construi no OTB vale mais do que qualquer certificado. Hoje tenho parceiros em varios paises e minha clinica atende pacientes estrangeiros."
 		}
 	]
 }

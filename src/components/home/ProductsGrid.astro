@@ -28,7 +28,10 @@ const typeColors: Record<string, string> = {
 			{products.map((product, index) => (
 				<div data-reveal="up" data-reveal-delay={String(index + 1)}>
 					<Card
-						href={`/${product.data.slug}`}
+						href={
+							product.data.externalSiteUrl ?? `/${product.data.slug}`
+						}
+						external={Boolean(product.data.externalSiteUrl)}
 						hoverable={true}
 						class="flex h-full flex-col"
 					>
@@ -78,6 +81,9 @@ const typeColors: Record<string, string> = {
 								<path d="m12 5 7 7-7 7" />
 							</svg>
 						</span>
+						{product.data.externalSiteUrl ? (
+							<span class="sr-only">Abre o site do produto em nova aba</span>
+						) : null}
 					</Card>
 				</div>
 			))}

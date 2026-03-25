@@ -12,6 +12,8 @@ const products = defineCollection({
 		audience: z.string(),
 		icon: z.string(),
 		image: z.string().optional(),
+		/** When set, home grid and header/footer product links go here; /slug still 301-redirects via astro.config. */
+		externalSiteUrl: z.string().url().optional(),
 		order: z.number(),
 		hero: z.object({
 			headline: z.string(),

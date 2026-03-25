@@ -113,20 +113,19 @@ gpus/
 │   │   ├── shared/         # SectionHeading, Card, Button
 │   │   └── contact/        # ContactForm (if extracted)
 │   ├── content/            # Content Collections (JSON data)
-│   │   ├── products/       # 6 product JSON files (rich schema)
+│   │   ├── products/       # 7 product JSON files (rich schema); opcional `externalSiteUrl`
 │   │   └── team/           # 3 team member JSON files
 │   ├── content.config.ts   # Zod schemas + glob loaders
 │   ├── layouts/
 │   │   └── Layout.astro    # Base layout (SEO, JSON-LD, fonts, skip link, reveal)
-│   ├── pages/              # 11 pages (home, sobre, 6 products, contato, legal)
+│   ├── pages/              # 10 rotas .astro; /otb e /na-mesa-certa = redirect estatico (astro.config)
 │   │   ├── index.astro
 │   │   ├── sobre.astro
 │   │   ├── trintae3.astro
-│   │   ├── otb.astro
 │   │   ├── mentoria-black-neon.astro
 │   │   ├── comunidade-us.astro
 │   │   ├── curso-auriculo.astro
-│   │   ├── na-mesa-certa.astro
+│   │   ├── neon-dash.astro
 │   │   ├── contato.astro
 │   │   ├── termos.astro
 │   │   └── politica-de-privacidade.astro
@@ -167,6 +166,49 @@ gpus/
 | Build                | `bun run build`      |
 | Preview build        | `bun run preview`    |
 | Check types          | `bunx astro check`   |
+
+---
+
+## Cursor: plugins, MCP e skills
+
+Agentes neste projeto **devem** usar integrações do Cursor de forma explícita e consistente. **Skills** são instruções (quando acionar, boas práticas); **MCP** expõe ferramentas tipadas; **CLI** é fallback ou tarefas só-terminal.
+
+### Regras MCP (obrigatórias)
+
+1. **Antes de `call_mcp_tool`:** ler o schema do tool em  
+   `~/.cursor/projects/home-mauricio-gpus/mcps/<serverIdentifier>/tools/<nome>.json`  
+   (argumentos obrigatórios, tipos, defaults).
+2. **Nome do servidor na chamada:** usar sempre **`serverIdentifier`**, não o `serverName` curto.  
+   Ex.: Tavily → `plugin-tavily-tavily` (chamar `tavily` costuma falhar neste ambiente).
+3. **Ordem de preferência:** MCP habilitado → skill relevante → CLI/script → evitar “adivinhar” conteúdo da web sem fonte.
+
+### Servidores MCP — IDs para chamadas (`serverIdentifier`)
+
+| ID (`call_mcp_tool`)                    | Uso típico |
+| --------------------------------------- | ---------- |
+| `plugin-tavily-tavily`                  | Busca na web, extração de URL, crawl, pesquisa com citações (`tavily_search`, `tavily_extract`, `tavily_crawl`, `tavily_research`, `tavily_map`, `tavily_skill`). |
+| `plugin-compound-engineering-context7`  | Documentação e exemplos atualizados de bibliotecas (consulta oficial). |
+| `user-shadcn`                           | Componentes e padrões shadcn/ui alinhados ao projeto. |
+| `cursor-ide-browser`                    | Navegação, snapshot e interação na UI (fluxo: abas → **lock** → ações → **unlock**). |
+| `user-sequentialthinking`             | Decomposição encadeada de raciocínio para problemas ambíguos ou de alto risco. |
+| `plugin-clerk-clerk`                    | Auth Clerk (só se a tarefa pedir explicitamente). |
+| `plugin-neon-postgres-neon`             | Postgres Neon (só se a tarefa pedir explicitamente). |
+| `plugin-stripe-stripe`                  | Stripe (só se a tarefa pedir explicitamente). |
+
+### Tavily: MCP vs CLI vs skills
+
+| Canal | Quando usar |
+| ----- | ----------- |
+| **MCP** `plugin-tavily-tavily` | Tarefas no Cursor: fatos atuais, conteúdo de URLs, crawl, research. Primeira opção. |
+| **Skills** `tavily-search`, `tavily-extract`, `tavily-crawl`, `tavily-research`, `tavily-cli`, `tavily-best-practices` | Escolha de fluxo (search → extract → map → crawl → research), parâmetros (`--json`), limites. Ler a skill quando a tarefa envolver web **fora** do repositório. |
+| **CLI** `tvly` | Fallback sem MCP, automações em shell, ou quando o usuário pedir comando explícito. Garantir `tvly` no `PATH` (`~/.local/bin` e/ou symlink em `~/.bun/bin`). Checagem: `tvly --status`. |
+
+Não usar Tavily para operações puramente locais (git, `bun run build`, arquivos do repo) salvo para pesquisar erro/documentação externa.
+
+### Escopo deste repositório (site estático Astro)
+
+- **Alto uso:** Context7, shadcn (se UI exigir), browser MCP para verificar páginas, Tavily para pesquisa/copy/docs externos.
+- **Baixo uso / sob demanda:** Clerk, Neon, Stripe — apenas se o pedido for explícito; **não** introduzir backend ou pagamentos no site institucional sem requisito de produto.
 
 ---
 
@@ -269,7 +311,7 @@ All dynamic content uses Astro Content Collections (`src/content/`) with Zod sch
 - **products/** — 6 JSON files, one per product. Rich schema: name, slug, tagline, description, type, audience, icon (Lucide name), image, order, hero, painPoints[], pillars[], benefits[], differentials[], faqs[], cta, testimonials[].
 - **team/** — 3 JSON files (Sacha, Mauricio, Raquel). Schema: name, role, bio, photo, order, social.
 
-To add a new product: create JSON in `src/content/products/` + create `.astro` page in `src/pages/` following the landing template pattern (getCollection → find by slug → pass data to landing components).
+To add a new product: create JSON in `src/content/products/` + create `.astro` page in `src/pages/` following the landing template pattern (getCollection → find by slug → pass data to landing components). Se a experiencia canônica for um site externo, defina `externalSiteUrl` no JSON e adicione o mesmo destino em `redirects` em `astro.config.mjs` (e exclua a rota no `filter` do sitemap, se aplicável).
 
 > [!CAUTION]
 > **NEVER** hardcode content data inside `.astro` or `.tsx` components. Always use `getCollection()`.
@@ -382,6 +424,25 @@ Each product landing page follows this flow (all components in `src/components/l
 
 **Validação:** `bunx astro check && bun run build`.
 
+### [2026-03-25] Produtos com site externo (Na Mesa Certa + OTB Dubai)
+
+**Contexto:** Conteúdo canônico em apps separados; site institucional só encaminha.
+
+**Padrões:**
+
+- **`externalSiteUrl`** no JSON do produto: grid da home, header e footer apontam para o site externo (`target="_blank"`, `rel="noopener noreferrer"`); texto `sr-only` no card quando externo.
+- **`redirects` em `astro.config.mjs`:** mesma URL que `externalSiteUrl` para `/na-mesa-certa` e `/otb` — HTML estático com `noindex`, `canonical` para o destino e meta refresh (bookmarks e links antigos).
+- **Sitemap:** `filter` em `@astrojs/sitemap` exclui essas duas rotas (evita indexar páginas só de redirect).
+- **Sincronizar destinos:** ao trocar URL de produção (ex.: sair do Lovable), atualizar `externalSiteUrl`, `cta.url`, `redirects` e o `filter` se o path mudar.
+
+**Validação:** `bunx astro check && bun run build`.
+
+### [2026-03-25] Plugins Cursor: MCP, skills e Tavily
+
+**Contexto:** Alinhar agentes ao uso correto de MCP (`serverIdentifier`), skills do ecossistema e CLI onde fizer sentido.
+
+**Padrões:** Ler descriptor JSON antes de `call_mcp_tool`; Tavily via servidor `plugin-tavily-tavily`; skills `tavily-*` para procedimento; `tvly` no terminal como fallback. Demais servidores conforme tabela em **Cursor: plugins, MCP e skills** — sem expandir escopo do site estático para auth/DB/pagamentos sem pedido explícito.
+
 ---
 
 ## Commit Format
@@ -418,6 +479,6 @@ Use Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
 - [ ] Links de CTA funcionais (WhatsApp, checkout externo)
 - [ ] Dados de produtos/equipe em Content Collections (zero hardcoding)
 - [ ] Sticky mobile CTA bar em todas as landing pages (oculta no desktop)
-- [ ] 11 paginas construindo sem erros (`bun run build`)
+- [ ] Todas as rotas (incl. redirects) gerando sem erros (`bun run build`)
 - [ ] Lint limpo (`bun run lint`)
 - [ ] Type check limpo (`bunx astro check`)

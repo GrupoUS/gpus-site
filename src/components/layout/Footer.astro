@@ -1,6 +1,8 @@
 ---
+import type { ProductNavLink } from "../../lib/productsNav";
+
 interface Props {
-	productNavLinks: { label: string; href: string }[];
+	productNavLinks: ProductNavLink[];
 }
 
 const { productNavLinks } = Astro.props;
@@ -132,6 +134,8 @@ const legalLinks = [
 							<a
 								href={product.href}
 								class="text-sm text-text-muted transition-colors duration-200 hover:text-text-primary"
+								target={product.external ? "_blank" : undefined}
+								rel={product.external ? "noopener noreferrer" : undefined}
 							>
 								{product.label}
 							</a>
