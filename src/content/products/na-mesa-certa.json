@@ -1,108 +1,127 @@
 {
 	"name": "Na Mesa Certa",
 	"slug": "na-mesa-certa",
-	"tagline": "Imersao Presencial para Empresarios da Saude Estetica",
-	"description": "Evento presencial exclusivo onde empresarios da saude estetica aprendem gestao, networking e estrategias para escalar seus negocios.",
+	"tagline": "Imersão presencial exclusiva para empresários da saúde. Dois dias de networking, estratégia e conexões que aceleram resultados reais.",
+	"description": "Evento presencial em São Paulo onde profissionais da Saúde Estética aprendem o que sustenta clínicas lucrativas: vendas, pessoas e processos — com networking de alto valor.",
 	"type": "Evento Presencial",
-	"audience": "Empresarios de saude estetica",
+	"audience": "Profissionais e empresárias da Saúde Estética que buscam escala com liberdade",
 	"icon": "Calendar",
-	"image": "/images/products/na-mesa-certa.jpg",
-	"externalSiteUrl": "https://namesacerta.com.br/",
+	"image": "/images/products/na-mesa-certa.svg",
+	"externalSiteUrl": "https://namesa.gpus.com.br/",
 	"order": 6,
 	"hero": {
-		"headline": "O evento que coloca voce na mesa certa",
-		"subheadline": "Imersao presencial exclusiva com os maiores empresarios da saude estetica do Brasil"
+		"headline": "As decisões que transformam negócios acontecem na mesa certa",
+		"subheadline": "São Paulo, 18 e 19 de setembro de 2026 — dois dias de imersão presencial em vendas, pessoas e processos para quem quer escalar com liberdade"
 	},
 	"painPoints": [
 		{
 			"icon": "AlertTriangle",
-			"title": "Decisoes solitarias e sem referencia",
-			"description": "Voce toma todas as decisoes do negocio sozinho, sem pares do mesmo nivel para trocar ideias. Falta uma rede de empresarios que entendam sua realidade."
+			"title": "Excelência técnica sem o negócio acompanhando",
+			"description": "Você é referência no que faz, mas ninguém te ensinou a transformar isso em lucro, liberdade e reconhecimento. O técnico já está; falta a estrutura que sustenta o crescimento."
 		},
 		{
-			"icon": "BarChart3",
-			"title": "Crescimento desorganizado",
-			"description": "A clinica cresceu, mas de forma desestruturada. Faltam processos, indicadores e uma visao estrategica clara para o proximo nivel de faturamento."
+			"icon": "BatteryWarning",
+			"title": "Agenda cheia e pouca leveza no negócio",
+			"description": "Você atende o dia todo, chega exausta em casa e ainda não tem clareza de como construir um modelo que funcione com mais previsibilidade e folga."
 		},
 		{
 			"icon": "Wifi",
-			"title": "Networking superficial",
-			"description": "Voce participa de eventos, mas as conexoes sao rasas. Falta um ambiente onde empresarios serios compartilhem numeros reais, erros e estrategias que funcionam."
+			"title": "Networking que não vira resultado",
+			"description": "Falta acesso direto a quem já está no próximo nível — com trocas reais sobre vendas, equipe e processos, sem conversa superficial."
 		}
 	],
 	"pillars": [
 		{
-			"icon": "Presentation",
-			"title": "Conteudo Estrategico de Alto Nivel",
-			"description": "Palestras e workshops ministrados por empresarios que faturam acima de R$ 500 mil/mes, compartilhando estrategias reais — nao teoria de livro."
+			"icon": "TrendingUp",
+			"title": "Vendas",
+			"description": "Carteira que cresce com previsibilidade: captação certa, venda natural e construção de oferta de alto valor — sem promoção, sem desconto desnecessário."
 		},
 		{
-			"icon": "Handshake",
-			"title": "Networking Estruturado",
-			"description": "Dinamicas de networking desenhadas para criar conexoes profundas entre os participantes — mesas redondas, paineis e momentos de troca real."
+			"icon": "Users",
+			"title": "Pessoas",
+			"description": "Time que te representa na sua ausência: comunicação, recrutamento, gestão e liderança para sustentar o crescimento do consultório ou da clínica."
 		},
 		{
-			"icon": "Lightbulb",
-			"title": "Plano de Acao Pratico",
-			"description": "Voce sai do evento com um plano de acao concreto para os proximos 90 dias, validado pelos mentores e pelos pares que participaram com voce."
+			"icon": "GitBranch",
+			"title": "Processos",
+			"description": "Estrutura simples, eficiente e pronta para escalar: organizar o caos, devolver controle da operação e liberar sua agenda."
 		}
 	],
 	"benefits": [
-		"Dois dias de imersao com empresarios de alto nivel",
-		"Palestras exclusivas com cases reais de faturamento",
-		"Networking estruturado com mesas tematicas de gestao",
-		"Plano de acao personalizado para sua clinica",
-		"Acesso ao grupo exclusivo de participantes pos-evento",
-		"Jantar de networking com os palestrantes e mentores"
+		"Clareza absoluta sobre as finanças do seu negócio",
+		"Fechamento previsível de serviços de alto valor (+R$ 5 mil)",
+		"Equipe alinhada, treinada e que vende para você",
+		"Padronização e automação dos fluxos de atendimento",
+		"Melhoria imediata na percepção de valor pelo seu público",
+		"Posicionamento premium nas redes sociais e no mercado",
+		"Capacidade de tirar férias sem o negócio parar de faturar"
 	],
 	"differentials": [
 		{
-			"title": "Curadoria rigorosa de participantes",
-			"description": "Nao e um evento aberto. Cada participante passa por uma selecao para garantir que todos estejam no mesmo nivel de maturidade empresarial e possam contribuir com o grupo."
+			"title": "Dois dias de imersão com cronograma completo",
+			"description": "Dia 1: diagnóstico, clareza, vendas, equipe e processos com histórias reais e Q&A. Dia 2: posicionamento, tráfego, gestão, atendimento, cases e happy hour de networking."
 		},
 		{
-			"title": "Formato intimista e exclusivo",
-			"description": "Limitado a 50 participantes por edicao. Isso garante profundidade nas discussoes, acesso real aos palestrantes e conexoes genuinas entre os empresarios."
+			"title": "Ingressos Gold e Premium (lotes limitados)",
+			"description": "Condições do primeiro lote na página oficial: parcelamento em até 12x e benefícios por categoria (áreas reservadas, coffee break, happy hour, hotseat com palestrantes e mais)."
 		},
 		{
-			"title": "Continuidade apos o evento",
-			"description": "O Na Mesa Certa nao termina no segundo dia. Os participantes ganham acesso a um grupo exclusivo de acompanhamento por 90 dias para implementar o plano de acao com suporte dos mentores."
+			"title": "Curadoria e experiência presencial única",
+			"description": "Ambiente desenhado para conexões reais entre empresários do setor — não é transmissão online; a troca acontece ao vivo, na mesa certa."
 		}
 	],
 	"faqs": [
 		{
-			"question": "Quem pode participar do Na Mesa Certa?",
-			"answer": "O evento e voltado para donos de clinicas de saude estetica que faturam acima de R$ 50 mil/mes e buscam crescer de forma estrategica. Ha um processo de selecao para garantir a qualidade do grupo."
+			"question": "O evento é online ou presencial?",
+			"answer": "O Na Mesa Certa é 100% presencial. A experiência foi pensada para conexões reais e imersão completa; é necessário estar no local."
 		},
 		{
-			"question": "Onde e quando acontece o proximo evento?",
-			"answer": "O Na Mesa Certa acontece semestralmente em locais premium. A proxima edicao esta programada para setembro de 2026. Inscreva-se na lista de interesse para receber os detalhes em primeira mao."
+			"question": "Haverá gravação ou transmissão ao vivo?",
+			"answer": "Não. O conteúdo e o networking são exclusivos para quem está presente. Consulte a página oficial para qualquer atualização de política."
 		},
 		{
-			"question": "O que esta incluso no ingresso?",
-			"answer": "O ingresso inclui acesso aos dois dias de imersao, material de apoio, coffee breaks, almoco executivo, jantar de networking, e acesso ao grupo exclusivo de acompanhamento por 90 dias."
+			"question": "Estou começando agora. Este evento é para mim?",
+			"answer": "O evento é voltado a profissionais que já atuam na Saúde Estética e querem estruturar vendas, pessoas e processos. Se você está na fase inicial, avalie com nossa equipe se é o melhor momento."
 		},
 		{
-			"question": "Posso levar um socio ou gestor da minha clinica?",
-			"answer": "Sim, oferecemos condicoes especiais para duplas da mesma clinica. Recomendamos que o dono participe junto com seu principal gestor para alinhar a implementacao das estrategias."
+			"question": "O evento é apenas para profissionais da saúde e estética?",
+			"answer": "Sim. O conteúdo é específico para a realidade de consultórios e clínicas de Saúde Estética e negócios do mesmo ecossistema."
+		},
+		{
+			"question": "Haverá emissão de certificado?",
+			"answer": "Sim. Todos os participantes recebem certificado digital de participação do Grupo US ao final do evento, com carga horária comprovada de 20 horas de imersão presencial."
+		},
+		{
+			"question": "Posso transferir meu ingresso para outra pessoa?",
+			"answer": "Sim, a transferência de titularidade é permitida até 15 dias antes do evento, sem custo adicional. Basta entrar em contato com nossa equipe pelo WhatsApp informando os dados da nova participante."
 		}
 	],
 	"cta": {
-		"label": "Quero minha vaga",
-		"url": "https://namesacerta.com.br/",
-		"whatsappMessage": "Ola! Quero saber mais sobre o Na Mesa Certa",
+		"label": "Garantir meu lugar",
+		"url": "https://namesa.gpus.com.br/",
+		"whatsappMessage": "Olá! Quero saber mais sobre o Na Mesa Certa",
 		"type": "primary"
 	},
 	"testimonials": [
 		{
-			"name": "Dra. Carolina Duarte",
-			"role": "Dona de clinica — Florianopolis/SC",
-			"quote": "O Na Mesa Certa foi o divisor de aguas do meu negocio. As conexoes que fiz e as estrategias que aprendi me levaram de R$ 80 mil para R$ 200 mil de faturamento em 6 meses."
+			"name": "Dra. Ana Beatriz Lopes",
+			"role": "Profissional da Saúde",
+			"quote": "Eu achava que precisava atender mais clientes para faturar mais. A Dra. Sacha mostrou que o caminho é o oposto: atender menos, com mais valor. Meu ticket médio triplicou."
 		},
 		{
-			"name": "Dr. Marcos Vieira",
-			"role": "Empresario — Manaus/AM",
-			"quote": "Pela primeira vez participei de um evento onde todo mundo fala a mesma lingua. Numeros reais, problemas reais, solucoes reais. Voltei com clareza total do que precisava fazer."
+			"name": "Dra. Carolina Mendes",
+			"role": "Dermatologista",
+			"quote": "Depois que apliquei a metodologia da Dra. Sacha de processos e vendas, o faturamento do meu negócio saltou 40% em três meses, mesmo atendendo o mesmo número de clientes."
+		},
+		{
+			"name": "Dra. Andreia Paula",
+			"role": "Participante Na Mesa Certa 2025",
+			"quote": "Superou as expectativas — foi renovação. Reencontrar pessoas, conectar com profissionais grandiosos e aprender. Quero estar sempre nas mesas certas."
+		},
+		{
+			"name": "Dra. Claudia Bomfim",
+			"role": "Participante Na Mesa Certa 2025",
+			"quote": "O evento Na Mesa foi excelente: dia enriquecedor, aprendizado e troca de experiências. Gratidão por tanto conhecimento e inspiração."
 		}
 	]
 }

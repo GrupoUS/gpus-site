@@ -7,19 +7,34 @@ interface Props {
 		role: string;
 		quote: string;
 	}>;
+	/** `strip`: carrossel horizontal com scroll-snap no mobile; grid a partir de md */
+	layout?: "grid" | "strip";
 }
 
-const { testimonials } = Astro.props;
+const { testimonials, layout = "grid" } = Astro.props;
+const isStrip = layout === "strip";
 ---
 
 <section class="px-4 py-20 sm:px-6 lg:px-8">
 	<div class="mx-auto max-w-7xl">
 		<SectionHeading title="O que dizem nossos alunos" />
 
-		<div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+		<div
+			class:list={[
+				"mt-14 gap-6",
+				isStrip
+					? "flex snap-x snap-mandatory overflow-x-auto pb-4 -mx-4 px-4 md:mx-0 md:grid md:snap-none md:overflow-visible md:pb-0 md:grid-cols-2 lg:grid-cols-3"
+					: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+			]}
+			class:home-testimonials-strip={isStrip}
+		>
 			{testimonials.map((testimonial, index) => (
 				<blockquote
-					class="glass-card rounded-2xl p-6 md:p-8 hover:border-gold/30 hover:shadow-lg hover:shadow-gold/5 transition-all duration-300"
+					class:list={[
+						"glass-card rounded-2xl p-6 transition-all duration-300 md:p-8 hover:border-gold/30 hover:shadow-lg hover:shadow-gold/5",
+						isStrip &&
+							"w-[min(100vw-2rem,22rem)] shrink-0 snap-center sm:w-[24rem] md:w-auto md:shrink",
+					]}
 					data-reveal="up"
 					data-reveal-delay={String(index + 1)}
 				>
@@ -57,3 +72,13 @@ const { testimonials } = Astro.props;
 		</div>
 	</div>
 </section>
+
+{isStrip && (
+	<style>
+		@media (prefers-reduced-motion: reduce) {
+			.home-testimonials-strip {
+				scroll-snap-type: none;
+			}
+		}
+	</style>
+)}

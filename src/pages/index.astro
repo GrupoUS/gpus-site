@@ -1,19 +1,33 @@
 ---
+import { getCollection } from "astro:content";
 import AboutPreview from "../components/home/AboutPreview.astro";
 import CTASection from "../components/home/CTASection.astro";
 import Hero from "../components/home/Hero.astro";
 import ProductsGrid from "../components/home/ProductsGrid.astro";
 import StatsSection from "../components/home/StatsSection.astro";
+import Testimonials from "../components/landing/Testimonials.astro";
 import Layout from "../layouts/Layout.astro";
+
+const products = await getCollection("products");
+const homeTestimonials = products
+	.flatMap((p) =>
+		p.data.testimonials.map((t) => ({
+			name: t.name,
+			role: `${t.role} (${p.data.name})`,
+			quote: t.quote,
+		})),
+	)
+	.slice(0, 9);
 ---
 
 <Layout
-	title="Grupo US — Ecossistema de Saude Estetica Avancada"
-	description="Transformamos profissionais da saude em referencias. Cursos, mentorias e eventos com Dra. Sacha Gualberto. Ecossistema completo de educacao em saude estetica."
+	title="Grupo US — Ecossistema de Saúde Estética Avançada"
+	description="Grupo US — ecossistema de saúde estética avançada. Pós-graduação, mentoria, cursos e eventos com Dra. Sacha Gualberto. Transforme sua carreira em referência."
 	activeNav="home"
 >
 	<Hero />
 	<ProductsGrid />
+	<Testimonials testimonials={homeTestimonials} layout="strip" />
 	<StatsSection />
 	<AboutPreview />
 	<CTASection />

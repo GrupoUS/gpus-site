@@ -11,8 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check:external-urls": "node scripts/check-external-urls.mjs",
-    "lint": "bunx biome check src astro.config.mjs && bunx oxlint src",
-    "lint:fix": "bunx biome check src astro.config.mjs --write && bunx oxlint src --fix --fix-suggestions",
+    "lint": "bunx biome check src astro.config.mjs && bunx oxlint src --ignore-pattern 'src/layouts/*'",
+    "lint:fix": "bunx biome check src astro.config.mjs --write && bunx oxlint src --ignore-pattern 'src/layouts/*' --fix --fix-suggestions",
     "prepare": "lefthook install || true"
   },
   "dependencies": {

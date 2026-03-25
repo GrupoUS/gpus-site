@@ -1,6 +1,5 @@
 "use client";
 import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from "react";
-import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface AuroraBackgroundProps extends ComponentPropsWithoutRef<"div"> {
@@ -14,27 +13,6 @@ export const AuroraBackground = ({
 	showRadialGradient = true,
 	...props
 }: AuroraBackgroundProps) => {
-	// #region agent log
-	useEffect(() => {
-		fetch("http://127.0.0.1:7777/ingest/0a9ce74c-a29a-4996-bf5d-a24a8b2822f7", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"X-Debug-Session-Id": "651d29",
-			},
-			body: JSON.stringify({
-				sessionId: "651d29",
-				location: "aurora-background.tsx:useEffect",
-				message: "main landmark count (expect 1)",
-				data: { mainCount: document.querySelectorAll("main").length },
-				timestamp: Date.now(),
-				hypothesisId: "A",
-				runId: "verify",
-			}),
-		}).catch(() => {});
-	}, []);
-	// #endregion
-
 	return (
 		<div
 			className={cn(

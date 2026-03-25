@@ -7,34 +7,29 @@ const teamEntries = await getCollection("team");
 const team = teamEntries
 	.map((entry) => entry.data)
 	.sort((a, b) => a.order - b.order);
-
-function getInitials(name: string): string {
-	return name
-		.split(" ")
-		.filter((word) => word.length > 2 || word === word.toUpperCase())
-		.slice(0, 2)
-		.map((word) => word[0].toUpperCase())
-		.join("");
-}
 ---
 
 <section class="py-20 px-4" aria-labelledby="equipe-heading">
 	<div class="max-w-6xl mx-auto">
 		<SectionHeading
 			title="Nossa Equipe"
-			subtitle="Lideranca que inspira transformacao"
+			subtitle="Liderança que inspira transformação"
 		/>
 
 		<div class="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
 			{team.map((member, index) => (
 				<div data-reveal="scale" data-reveal-delay={String(index + 1)}>
 					<Card hoverable class="h-full text-center">
-						<div class="flex justify-center mb-5">
-							<div class="w-32 h-32 rounded-full bg-navy-lighter flex items-center justify-center border-2 border-gold/20">
-								<span class="font-serif text-3xl font-bold text-gold/60" aria-hidden="true">
-									{getInitials(member.name)}
-								</span>
-							</div>
+						<div class="mb-5 flex justify-center">
+							<img
+								src={member.photo}
+								alt={`Retrato de ${member.name}`}
+								width={128}
+								height={128}
+								class="h-32 w-32 rounded-full border-2 border-gold/20 bg-navy-lighter object-cover"
+								loading="lazy"
+								decoding="async"
+							/>
 						</div>
 
 						<h3 class="font-serif text-xl font-semibold text-gold">

@@ -1,12 +1,21 @@
 ---
 import Button from "../components/shared/Button.astro";
 import Layout from "../layouts/Layout.astro";
+
+/** Defina no deploy: URL completa `https://formspree.io/f/xxxx` */
+const formAction = import.meta.env.PUBLIC_FORMSPREE_ACTION as
+	| string
+	| undefined;
 ---
 
 <Layout
 	title="Contato — Grupo US"
-	description="Entre em contato com o Grupo US. Fale conosco pelo WhatsApp, email ou formulario."
+	description="Entre em contato com o Grupo US pelo WhatsApp, e-mail ou formulário. Assessoria personalizada para profissionais de saúde estética."
 	activeNav="contato"
+	breadcrumbs={[
+		{ name: "Início", url: "https://grupous.com.br/" },
+		{ name: "Contato", url: "https://grupous.com.br/contato" }
+	]}
 >
 	<section class="pt-32 pb-16 px-4">
 		<div class="max-w-4xl mx-auto text-center" data-reveal="up">
@@ -16,7 +25,7 @@ import Layout from "../layouts/Layout.astro";
 				Fale <span class="text-gold">conosco</span>
 			</h1>
 			<p class="text-text-muted text-lg md:text-xl max-w-2xl mx-auto">
-				Estamos prontos para ajudar voce a encontrar o programa ideal para
+				Estamos prontos para ajudar você a encontrar o programa ideal para
 				sua jornada profissional.
 			</p>
 		</div>
@@ -29,11 +38,24 @@ import Layout from "../layouts/Layout.astro";
 				<h2 class="font-serif text-2xl font-bold text-gold mb-6">
 					Envie sua mensagem
 				</h2>
-				<form
-					action="https://formspree.io/f/placeholder"
-					method="POST"
-					class="space-y-6"
-				>
+				{
+					!formAction ? (
+						<p class="rounded-xl border border-gold/20 bg-navy-light/50 p-4 text-sm text-text-muted">
+							Para enviar pelo site, configure{" "}
+							<code class="text-gold/90">PUBLIC_FORMSPREE_ACTION</code> no ambiente (URL completa do
+							Formspree, ex.: <code class="text-gold/90">https://formspree.io/f/xxxx</code>). Use
+							WhatsApp ou o e-mail ao lado até lá.
+						</p>
+					) : (
+						<form action={formAction} method="POST" class="space-y-6">
+							<input
+								type="text"
+								name="_gotcha"
+								tabindex="-1"
+								autocomplete="off"
+								class="sr-only"
+								aria-hidden="true"
+							/>
 					<div>
 						<label
 							for="name"
@@ -75,14 +97,14 @@ import Layout from "../layouts/Layout.astro";
 							name="subject"
 							class="w-full px-4 py-3 bg-navy-light border border-gold/20 rounded-xl text-text-primary focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all"
 						>
-							<option value="geral">Informacoes gerais</option>
+							<option value="geral">Informações gerais</option>
 							<option value="trintae3">TRINTAE3</option>
 							<option value="otb">OTB — MBA Internacional</option>
 							<option value="mentoria-neon"
 								>Mentoria Black NEON</option
 							>
 							<option value="comunidade">Comunidade US</option>
-							<option value="auriculo">Curso de Auriculo</option>
+							<option value="auriculo">Curso de Auriculoterapia</option>
 							<option value="na-mesa-certa">Na Mesa Certa</option>
 							<option value="parceria">Parceria</option>
 						</select>
@@ -102,7 +124,9 @@ import Layout from "../layouts/Layout.astro";
 							placeholder="Como podemos ajudar?"></textarea>
 					</div>
 					<Button variant="primary" size="lg">Enviar mensagem</Button>
-				</form>
+						</form>
+					)
+				}
 			</div>
 
 			<!-- Contact Info -->
@@ -136,7 +160,7 @@ import Layout from "../layouts/Layout.astro";
 								WhatsApp
 							</h3>
 							<p class="text-text-muted text-sm mb-3">
-								Atendimento rapido e personalizado
+								Atendimento rápido e personalizado
 							</p>
 							<Button
 								variant="whatsapp"
@@ -181,7 +205,7 @@ import Layout from "../layouts/Layout.astro";
 								E-mail
 							</h3>
 							<p class="text-text-muted text-sm mb-1">
-								Para duvidas ou parcerias
+								Para dúvidas ou parcerias
 							</p>
 							<a
 								href="mailto:suporte@drasacha.com.br"
@@ -267,10 +291,10 @@ import Layout from "../layouts/Layout.astro";
 						</div>
 						<div>
 							<h3 class="font-semibold text-text-primary mb-1">
-								Localizacao
+								Localização
 							</h3>
 							<p class="text-text-muted text-sm">
-								Goiania, GO — Atuacao global
+								Goiânia, GO — Atuação global
 							</p>
 						</div>
 					</div>

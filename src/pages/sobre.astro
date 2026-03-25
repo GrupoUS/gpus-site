@@ -8,8 +8,12 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout
 	title="Sobre o Grupo US"
-	description="Conheca o Grupo US — ecossistema educacional de Saude Estetica Avancada. Proposito, missao, valores e equipe."
+	description="Conheça quem somos: missão, valores e equipe do Grupo US. Ecossistema de saúde estética avançada liderado por Dra. Sacha Gualberto."
 	activeNav="sobre"
+	breadcrumbs={[
+		{ name: "Início", url: "https://grupous.com.br/" },
+		{ name: "Sobre", url: "https://grupous.com.br/sobre" }
+	]}
 >
 	<!-- Page Hero -->
 	<section class="pt-32 pb-16 px-4">
@@ -18,7 +22,7 @@ import Layout from "../layouts/Layout.astro";
 				Sobre o <span class="text-gold">Grupo US</span>
 			</h1>
 			<p class="text-text-muted text-lg md:text-xl max-w-2xl mx-auto">
-				Ecossistema educacional que transforma profissionais da saude em referencias globais.
+				Ecossistema educacional que transforma profissionais da saúde em referências globais.
 			</p>
 		</div>
 	</section>
@@ -31,10 +35,10 @@ import Layout from "../layouts/Layout.astro";
 	<section class="py-20 px-4">
 		<div class="max-w-3xl mx-auto text-center" data-reveal="up">
 			<h2 class="font-serif text-3xl md:text-4xl font-bold text-gold mb-4">
-				Faca parte dessa transformacao
+				Faça parte dessa transformação
 			</h2>
 			<p class="text-text-muted text-lg mb-8">
-				Conheca nossos programas e encontre o ideal para sua jornada.
+				Conheça nossos programas e encontre o ideal para sua jornada.
 			</p>
 			<div class="flex flex-col sm:flex-row gap-4 justify-center">
 				<Button href="/#produtos" variant="primary">Ver produtos</Button>

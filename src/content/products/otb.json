@@ -1,108 +1,113 @@
 {
 	"name": "OTB — Out Of The Box",
 	"slug": "otb",
-	"tagline": "MBA em Business Aesthetic Health com imersao em Dubai",
-	"description": "Primeiro MBA do mundo em Business Aesthetic Health com certificacao MEC, 320 horas de conteudo, 10 modulos online e experiencia presencial em Dubai com ingresso AMWC.",
+	"tagline": "MBA Internacional em Business & Aesthetic Health com selo MEC. Módulo presencial em Dubai com prática clínica e ingresso AMWC para a elite da saúde estética.",
+	"description": "Primeiro MBA do mundo em Business Aesthetic Health com certificação MEC, 320 horas de conteúdo, 10 módulos online e experiência presencial em Dubai com ingresso AMWC.",
 	"type": "MBA Internacional",
-	"audience": "Profissionais de saude estetica em busca de elite global",
+	"audience": "Profissionais de saúde estética em busca de elite global",
 	"icon": "Globe",
-	"image": "/images/products/otb.jpg",
-	"externalSiteUrl": "https://ota-dubai.lovable.app/",
+	"image": "/images/products/otb.svg",
+	"externalSiteUrl": "https://otb.gpus.com.br/",
 	"order": 2,
 	"hero": {
-		"headline": "O primeiro MBA do mundo em Business Aesthetic Health com experiencia em Dubai",
-		"subheadline": "Para quem deseja fazer parte da elite da Saude Estetica Avancada — terceira turma, vagas limitadas"
+		"headline": "O MBA que une negócios e saúde estética com imersão presencial em Dubai",
+		"subheadline": "320 horas de conteúdo, certificação MEC, prática clínica internacional e ingresso AMWC — terceira turma, vagas limitadas"
 	},
 	"painPoints": [
 		{
 			"icon": "TrendingDown",
-			"title": "Sucesso tecnico sem gestao de negocio",
-			"description": "Voce domina procedimentos, mas sente que falta visao estrategica para gerir a clinica com solidez, precificacao, time e crescimento sustentavel."
+			"title": "Sucesso técnico sem gestão de negócio",
+			"description": "Você domina procedimentos, mas sente que falta visão estratégica para gerir a clínica com solidez, precificação, time e crescimento sustentável."
 		},
 		{
 			"icon": "Plane",
-			"title": "Referencia local sem prova internacional",
-			"description": "O mercado pede posicionamento global. Falta uma experiencia presencial em hub mundial de estetica, com networking e pratica ao lado de referencias."
+			"title": "Referência local sem prova internacional",
+			"description": "O mercado pede posicionamento global. Falta uma experiência presencial em hub mundial de estética, com networking e prática ao lado de referências."
 		},
 		{
 			"icon": "ShieldAlert",
-			"title": "Diferenciacao que nao aparece no curriculo",
-			"description": "Concorrentes copiam precos e Instagram; voce precisa de um MBA reconhecido (MEC) e de uma jornada Dubai + AMWC que comprove nivel internacional."
+			"title": "Diferenciação que não aparece no currículo",
+			"description": "Concorrentes copiam preços e Instagram; você precisa de um MBA reconhecido (MEC) e de uma jornada Dubai + AMWC que comprove nível internacional."
 		}
 	],
 	"pillars": [
 		{
 			"icon": "Award",
 			"title": "Reconhecimento comprovado",
-			"description": "O OTB integra Business e Aesthetic Health, com selo de aprovacao do MEC — voce entra para a linha de frente da inovacao em saude estetica."
+			"description": "O OTB integra Business e Aesthetic Health, com selo de aprovação do MEC — você entra para a linha de frente da inovação em saúde estética."
 		},
 		{
 			"icon": "Eye",
-			"title": "Uma visao alem da tecnica",
-			"description": "O programa e a ponte para gerir o negocio com sabedoria: gestao, marketing, vendas, lideranca e expansao, enraizadas em bases solidas."
+			"title": "Uma visão além da técnica",
+			"description": "O programa é a ponte para gerir o negócio com sabedoria: gestão, marketing, vendas, liderança e expansão, enraizadas em bases sólidas."
 		},
 		{
 			"icon": "FlaskConical",
-			"title": "Praticas demonstrativas",
-			"description": "Aulas praticas demonstrativas em Dubai com profissional renomado, em ambiente de clinica premium e protocolos de Saude Estetica Avancada."
+			"title": "Práticas demonstrativas",
+			"description": "Aulas práticas demonstrativas em Dubai com profissional renomado, em ambiente de clínica premium e protocolos de Saúde Estética Avançada."
 		}
 	],
 	"benefits": [
-		"Certificacao MEC reconhecida nacionalmente",
-		"320 horas de conteudo premium",
-		"Experiencia presencial exclusiva em Dubai (Day Clinic, Taj Dubai, deserto)",
-		"Ingresso AMWC Dubai incluso — maior congresso de estetica do mundo",
-		"10 modulos online de business, gestao, marketing e vendas",
-		"Network com profissionais de elite e palestrantes de referencia"
+		"Certificação MEC reconhecida nacionalmente",
+		"320 horas de conteúdo premium",
+		"Investimento público: US$ 4.000 à vista (parcelamento conforme plataforma)",
+		"Experiência presencial exclusiva em Dubai — Day Clinic, Taj Dubai e deserto com networking",
+		"Ingresso AMWC Dubai incluso — maior congresso de estética do mundo",
+		"10 módulos online de business, gestão, marketing e vendas até práticas demonstrativas",
+		"Network com profissionais de elite e palestrantes de referência"
 	],
 	"differentials": [
 		{
-			"title": "Calendario Dubai 2026 + AMWC",
-			"description": "Imersao presencial em 18, 19 e 20 de outubro de 2026 e participacao no AMWC de 21 a 23 de outubro de 2026, com experiencias clinicas, business e cultura."
+			"title": "Calendário Dubai 2026 + AMWC",
+			"description": "Imersão presencial em 18, 19 e 20 de outubro de 2026 e participação no AMWC de 21 a 23 de outubro de 2026, com experiências clínicas, business e cultura."
 		},
 		{
-			"title": "Trilha de conteudo de negocios completa",
-			"description": "De mentalidade empresarial a IA aplicada ao negocio, passando por gestao clinica, marketing, vendas, juridico e franquias — 10 modulos estruturados."
+			"title": "Trilha de conteúdo de negócios completa",
+			"description": "De mentalidade empresarial a IA aplicada ao negócio, passando por gestão clínica, marketing, vendas, jurídico e franquias — 10 módulos estruturados."
 		},
 		{
-			"title": "Terceira turma, comunidade em construcao",
-			"description": "Programa validado por turmas anteriores; voce entra em uma comunidade seleta de empresarios e clinicos que rompem o convencional."
+			"title": "Terceira turma, comunidade em construção",
+			"description": "Programa validado por turmas anteriores; você entra em uma comunidade seleta de empresários e clínicos que rompem o convencional."
 		}
 	],
 	"faqs": [
 		{
-			"question": "Quem e o publico ideal do OTB?",
-			"answer": "Profissionais de Saude Estetica que rompem barreiras do convencional: enfermeiros, fisioterapeutas, biomedicos, odontologos, farmaceuticos e medicos em constante crescimento e busca de referencia global."
+			"question": "Quem é o público ideal do OTB?",
+			"answer": "Profissionais de Saúde Estética que rompem barreiras do convencional: enfermeiros, fisioterapeutas, biomédicos, odontólogos, farmacêuticos e médicos em constante crescimento e busca de referência global."
 		},
 		{
-			"question": "Como e a experiencia presencial em Dubai?",
-			"answer": "Inclui Day Clinic com pratica demonstrativa (18/10), imersao no Taj Dubai com palestras de business (19/10), experiencia cultural no deserto com networking (20/10), e AMWC de 21 a 23/10/2026."
+			"question": "Como é a experiência presencial em Dubai?",
+			"answer": "Inclui Day Clinic com prática demonstrativa (18/10), imersão no Taj Dubai com palestras de business (19/10), experiência cultural no deserto com networking (20/10), e AMWC de 21 a 23/10/2026."
 		},
 		{
-			"question": "Qual o formato e a carga horaria?",
-			"answer": "Sao 320 horas de conteudo, com modulos online de business avancado, gestao, marketing e vendas, mais a imersao presencial em Dubai e ingresso AMWC."
+			"question": "Qual o formato e a carga horária?",
+			"answer": "São 320 horas de conteúdo, com módulos online de business avançado, gestão, marketing e vendas, mais a imersão presencial em Dubai e ingresso AMWC."
 		},
 		{
 			"question": "Qual o investimento?",
-			"answer": "O valor publico no material oficial e US$ 4.000 à vista, com opcao de parcelamento no cartao ou boleto conforme condicoes da plataforma. Confira valores atualizados na apresentacao interativa."
+			"answer": "O valor público no material oficial é US$ 4.000 à vista, com opção de parcelamento no cartão ou boleto conforme condições da plataforma. Confira valores atualizados em otb.gpus.com.br."
+		},
+		{
+			"question": "Quais são os módulos do conteúdo online?",
+			"answer": "São 10 módulos: mentalidade e visão empresarial; gestão clínica; contratação, cultura e liderança; marketing de relacionamento; expansão de franquias; educação financeira empresarial; sistemas e IA; vendas (captação, follow-up e fidelização); jurídico e contabilidade; associações de práticas demonstrativas."
 		}
 	],
 	"cta": {
-		"label": "Ver apresentacao do OTB Dubai",
-		"url": "https://ota-dubai.lovable.app/",
-		"whatsappMessage": "Ola! Quero saber mais sobre o OTB — MBA com imersao em Dubai",
+		"label": "Conhecer o OTB Dubai",
+		"url": "https://otb.gpus.com.br/",
+		"whatsappMessage": "Olá! Quero saber mais sobre o OTB — MBA com imersão em Dubai",
 		"type": "primary"
 	},
 	"testimonials": [
 		{
 			"name": "Dra. Camila Rodrigues",
-			"role": "Medica Dermatologista — Rio de Janeiro/RJ",
-			"quote": "O OTB abriu minha visao para um nivel de estetica que eu nem sabia que existia. A imersao internacional mudou completamente meus protocolos e meu posicionamento."
+			"role": "Médica Dermatologista — Rio de Janeiro/RJ",
+			"quote": "O OTB abriu minha visão para um nível de estética que eu nem sabia que existia. A imersão internacional mudou completamente meus protocolos e meu posicionamento."
 		},
 		{
 			"name": "Dr. Lucas Santana",
-			"role": "Cirurgiao Dentista Esteticista — Curitiba/PR",
-			"quote": "O networking internacional que construi no OTB vale mais do que qualquer certificado. Hoje tenho parceiros em varios paises e minha clinica atende pacientes estrangeiros."
+			"role": "Cirurgião Dentista Esteticista — Curitiba/PR",
+			"quote": "O networking internacional que construí no OTB vale mais do que qualquer certificado. Hoje tenho parceiros em vários países e minha clínica atende pacientes estrangeiros."
 		}
 	]
 }

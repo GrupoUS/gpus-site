@@ -1,8 +1,10 @@
 {
 	"name": "Dra. Raquel Quintanilha",
-	"role": "Coordenadora Pedagogica",
-	"bio": "Responsavel pela coordenacao pedagogica do programa TRINTAE3, garantindo excelencia academica e pratica.",
-	"photo": "/images/team/raquel.jpg",
+	"role": "Coordenadora Pedagógica",
+	"bio": "Coordenadora pedagógica do programa TRINTAE3, Dra. Raquel é a ponte entre o rigor científico e a aplicação prática que o mercado exige. Garante que cada módulo entregue excelência acadêmica com relevância clínica real, formando profissionais que dominam a técnica e sabem aplicá-la com segurança desde o primeiro dia.",
+	"photo": "/images/team/raquel.svg",
 	"order": 3,
-	"social": {}
+	"social": {
+		"instagram": "https://instagram.com/raquelquintanilha"
+	}
 }

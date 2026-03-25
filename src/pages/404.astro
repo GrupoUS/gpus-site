@@ -1,0 +1,28 @@
+---
+import Button from "../components/shared/Button.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+	title="Página não encontrada — Grupo US"
+	description="A página que você procura não foi encontrada. Volte para o início ou entre em contato com o Grupo US."
+>
+	<section class="min-h-[70vh] flex items-center justify-center px-4 py-32">
+		<div class="max-w-lg mx-auto text-center" data-reveal="up">
+			<p class="font-serif text-[8rem] md:text-[10rem] leading-none font-bold text-gold mb-4 select-none">
+				404
+			</p>
+			<h1 class="font-serif text-2xl md:text-3xl font-bold text-text-primary mb-4">
+				Página não encontrada
+			</h1>
+			<p class="text-text-muted text-lg mb-10 max-w-md mx-auto">
+				A página que você procura não existe ou foi movida. Confira o endereço
+				ou volte para a página inicial.
+			</p>
+			<div class="flex flex-col sm:flex-row gap-4 justify-center">
+				<Button href="/" variant="primary">Voltar para o início</Button>
+				<Button href="/contato" variant="outline">Fale conosco</Button>
+			</div>
+		</div>
+	</section>
+</Layout>

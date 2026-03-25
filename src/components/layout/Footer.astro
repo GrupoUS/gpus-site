@@ -1,5 +1,6 @@
 ---
 import type { ProductNavLink } from "../../lib/productsNav";
+import Logo from "../shared/Logo.astro";
 
 interface Props {
 	productNavLinks: ProductNavLink[];
@@ -17,7 +18,7 @@ const quickLinks = [
 
 const legalLinks = [
 	{ label: "Termos de Uso", href: "/termos" },
-	{ label: "Politica de Privacidade", href: "/politica-de-privacidade" },
+	{ label: "Política de Privacidade", href: "/politica-de-privacidade" },
 ];
 ---
 
@@ -27,14 +28,12 @@ const legalLinks = [
 		<div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
 			<!-- Column 1: Brand -->
 			<div class="sm:col-span-2 lg:col-span-1">
-				<a href="/" class="inline-block" aria-label="Grupo US - Pagina inicial">
-					<span class="font-serif text-2xl font-bold tracking-tight text-gold">
-						Grupo <span class="text-text-primary">US</span>
-					</span>
+				<a href="/" class="inline-flex" aria-label="Grupo US - Página inicial">
+					<Logo />
 				</a>
 				<p class="mt-4 max-w-xs text-sm leading-relaxed text-text-muted">
-					Ecossistema educacional de Saude Estetica Avancada.
-					Transformando profissionais em referencias no mercado.
+					Ecossistema educacional de Saúde Estética Avançada.
+					Transformando profissionais em referências no mercado.
 				</p>
 
 				<!-- Social Icons -->
@@ -107,7 +106,7 @@ const legalLinks = [
 			<!-- Column 2: Links Rapidos -->
 			<div>
 				<h3 class="font-serif text-sm font-semibold tracking-widest text-gold uppercase">
-					Links Rapidos
+					Links Rápidos
 				</h3>
 				<ul class="mt-4 flex flex-col gap-2.5" role="list">
 					{quickLinks.map((link) => (

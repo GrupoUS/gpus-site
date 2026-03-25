@@ -1,0 +1,11 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<span class:list={["font-serif text-2xl font-bold tracking-tight text-gold sm:text-3xl", className]}>
+	Grupo <span class="text-text-primary">US</span>
+</span>

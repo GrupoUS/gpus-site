@@ -1,5 +1,6 @@
 ---
 import type { ProductNavLink } from "../../lib/productsNav";
+import Logo from "../shared/Logo.astro";
 
 interface Props {
 	activeNav?: string;
@@ -24,15 +25,13 @@ const navLinks = [
 		<a
 			href="/"
 			class="group flex items-center gap-2 transition-opacity duration-200 hover:opacity-90"
-			aria-label="Grupo US - Pagina inicial"
+			aria-label="Grupo US - Página inicial"
 		>
-			<span class="font-serif text-2xl font-bold tracking-tight text-gold sm:text-3xl">
-				Grupo <span class="text-text-primary">US</span>
-			</span>
+			<Logo />
 		</a>
 
 		<!-- Desktop Navigation -->
-		<nav class="hidden items-center gap-1 lg:flex" aria-label="Navegacao principal">
+		<nav class="hidden items-center gap-1 lg:flex" aria-label="Navegação principal">
 			{navLinks.map((link) => (
 				<a
 					href={link.href}
@@ -113,7 +112,7 @@ const navLinks = [
 		<button
 			type="button"
 			class="flex h-10 w-10 items-center justify-center rounded-sm text-text-muted transition-colors duration-200 hover:text-gold lg:hidden"
-			aria-label="Abrir menu de navegacao"
+			aria-label="Abrir menu de navegação"
 			aria-expanded="false"
 			aria-controls="mobile-menu"
 			id="hamburger-btn"
@@ -154,19 +153,19 @@ const navLinks = [
 	<div
 		class="fixed inset-0 top-0 z-40 hidden flex-col bg-navy/98 backdrop-blur-lg lg:hidden"
 		id="mobile-menu"
-		aria-label="Menu de navegacao mobile"
+		aria-label="Menu de navegação mobile"
 		role="dialog"
 		aria-modal="true"
 	>
 		<!-- Mobile menu header (mirrors main header for continuity) -->
 		<div class="flex items-center justify-between border-b border-gold/10 px-4 py-3 sm:px-6">
-			<a href="/" class="font-serif text-2xl font-bold tracking-tight text-gold">
-				Grupo <span class="text-text-primary">US</span>
+			<a href="/" class="inline-flex" aria-label="Grupo US - Página inicial">
+				<Logo />
 			</a>
 			<button
 				type="button"
 				class="flex h-10 w-10 items-center justify-center rounded-sm text-text-muted transition-colors duration-200 hover:text-gold"
-				aria-label="Fechar menu de navegacao"
+				aria-label="Fechar menu de navegação"
 				id="mobile-close-btn"
 			>
 				<svg
@@ -186,7 +185,7 @@ const navLinks = [
 		</div>
 
 		<!-- Mobile nav links -->
-		<nav class="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-6 sm:px-6" aria-label="Navegacao mobile">
+		<nav class="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-6 sm:px-6" aria-label="Navegação mobile">
 			{navLinks.map((link) => (
 				<a
 					href={link.href}

@@ -12,50 +12,46 @@ import Button from "../shared/Button.astro";
 
 			<h2 class="mt-6 font-serif text-3xl font-bold leading-tight text-text-primary md:text-4xl lg:text-5xl">
 				Liderado por quem vive a{" "}
-				<span class="text-gold">transformacao</span>
+				<span class="text-gold">transformação</span>
 			</h2>
 
 			<p class="mt-6 text-base leading-relaxed text-text-muted md:text-lg">
-				Sob a lideranca da Dra. Sacha Gualberto, o Grupo US nasceu com um
-				proposito claro: transformar profissionais da saude em referencias,
-				unindo tecnica, gestao e comunidade. Com mais de 5.000 profissionais
-				impactados em 26 estados e 10 paises, construimos o ecossistema mais
-				completo de educacao em saude estetica do Brasil.
+				Sob a liderança da Dra. Sacha Gualberto, o Grupo US nasceu com um
+				propósito claro: transformar profissionais da saúde em referências,
+				unindo técnica, gestão e comunidade. Com mais de 5.000 profissionais
+				impactados em 26 estados e 10 países, construímos o ecossistema mais
+				completo de educação em saúde estética do Brasil.
 			</p>
 
 			<p class="mt-4 text-base leading-relaxed text-text-muted md:text-lg">
-				Nossa visao e ser o ecossistema mais completo em Saude e Negocios
-				globalmente, formando profissionais que nao apenas dominam a tecnica,
-				mas que tambem lideram com estrategia e impacto.
+				Nossa visão é ser o ecossistema mais completo em Saúde e Negócios
+				globalmente, formando profissionais que não apenas dominam a técnica,
+				mas que também lideram com estratégia e impacto.
 			</p>
 
 			<div class="mt-8">
 				<Button variant="outline" href="/sobre">
-					Conheca nossa historia
+					Conheça nossa história
 				</Button>
 			</div>
 		</div>
 
-		<!-- Image Placeholder Column -->
 		<div data-reveal="right">
 			<div class="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-2xl border border-gold/10 bg-navy-light lg:max-w-none">
-				<!-- Decorative gradient overlay -->
+				<img
+					src="/images/team/sacha.svg"
+					alt="Dra. Sacha Gualberto, CEO do Grupo US"
+					width={600}
+					height={800}
+					class="h-full w-full object-cover object-center"
+					loading="lazy"
+					decoding="async"
+				/>
 				<div
-					class="absolute inset-0"
-					style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-gold) 5%, transparent) 0%, transparent 50%, color-mix(in srgb, var(--color-navy-lighter) 20%, transparent) 100%);"
+					class="pointer-events-none absolute inset-0"
+					style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-gold) 8%, transparent) 0%, transparent 45%, color-mix(in srgb, var(--color-navy) 35%, transparent) 100%);"
 					aria-hidden="true"
-				></div>
-
-				<!-- Placeholder text -->
-				<div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-8 text-center">
-					<div class="h-16 w-16 rounded-full border-2 border-gold/30 bg-navy-lighter/50" aria-hidden="true"></div>
-					<span class="text-sm font-medium text-text-muted">
-						Foto Dra. Sacha Gualberto
-					</span>
-					<span class="text-xs text-text-muted/60">
-						CEO &mdash; Grupo US
-					</span>
-				</div>
+				/>
 			</div>
 		</div>
 	</div>

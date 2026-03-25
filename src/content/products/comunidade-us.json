@@ -1,98 +1,103 @@
 {
 	"name": "Comunidade US",
 	"slug": "comunidade-us",
-	"tagline": "Educacao Continuada em Saude Estetica",
-	"description": "Comunidade de aprendizado continuo com conteudo exclusivo, lives semanais e networking entre profissionais da saude estetica.",
-	"type": "Educacao Continuada",
-	"audience": "Profissionais da estetica",
+	"tagline": "Nunca pare de evoluir. Aulas ao vivo, networking exclusivo e suporte contínuo para quem quer se manter na vanguarda da Saúde Estética.",
+	"description": "Comunidade de aprendizado contínuo com conteúdo exclusivo, lives semanais e networking entre profissionais da saúde estética.",
+	"type": "Educação Continuada",
+	"audience": "Profissionais da estética",
 	"icon": "Users",
-	"image": "/images/products/comunidade-us.jpg",
+	"image": "/images/products/comunidade-us.svg",
 	"order": 4,
 	"hero": {
-		"headline": "Nunca pare de evoluir na Saude Estetica",
-		"subheadline": "Conteudo exclusivo, lives semanais e uma comunidade que te mantem atualizado e conectado"
+		"headline": "Sua evolução não pode parar quando o curso acaba",
+		"subheadline": "Lives semanais com especialistas, biblioteca de protocolos e uma rede ativa de profissionais que compartilham o que funciona na prática"
 	},
 	"painPoints": [
 		{
 			"icon": "AlertTriangle",
 			"title": "Conhecimento desatualizado",
-			"description": "A estetica avancada evolui a cada mes. Novas tecnicas, protocolos e produtos surgem constantemente — e quem nao se atualiza fica para tras rapidamente."
+			"description": "A estética avançada evolui a cada mês. Novas técnicas, protocolos e produtos surgem constantemente — e quem não se atualiza fica para trás rapidamente."
 		},
 		{
 			"icon": "UserX",
 			"title": "Isolamento profissional",
-			"description": "Voce trabalha sozinho na clinica, sem colegas para trocar experiencias, discutir casos dificeis ou compartilhar aprendizados. Falta uma rede de apoio profissional."
+			"description": "Você trabalha sozinho na clínica, sem colegas para trocar experiências, discutir casos difíceis ou compartilhar aprendizados. Falta uma rede de apoio profissional."
 		},
 		{
 			"icon": "DollarSign",
 			"title": "Cursos caros e pontuais",
-			"description": "Cada atualizacao exige um investimento alto em cursos isolados. Voce gasta muito e mesmo assim sente que esta sempre correndo atras do que ja deveria saber."
+			"description": "Cada atualização exige um investimento alto em cursos isolados. Você gasta muito e mesmo assim sente que está sempre correndo atrás do que já deveria saber."
 		}
 	],
 	"pillars": [
 		{
 			"icon": "Video",
 			"title": "Lives Semanais com Especialistas",
-			"description": "Toda semana, uma live com profissionais de referencia abordando tecnicas, casos clinicos, tendencias de mercado e estrategias de negocios."
+			"description": "Toda semana, uma live com profissionais de referência abordando técnicas, casos clínicos, tendências de mercado e estratégias de negócios."
 		},
 		{
 			"icon": "BookOpen",
-			"title": "Biblioteca de Conteudo Exclusivo",
-			"description": "Acervo crescente de aulas, protocolos, materiais de apoio e estudos de caso — tudo organizado por tema e nivel de complexidade."
+			"title": "Biblioteca de Conteúdo Exclusivo",
+			"description": "Acervo crescente de aulas, protocolos, materiais de apoio e estudos de caso — tudo organizado por tema e nível de complexidade."
 		},
 		{
 			"icon": "MessageCircle",
 			"title": "Networking Ativo entre Membros",
-			"description": "Forum privado, grupos tematicos e encontros virtuais que conectam voce a centenas de profissionais que enfrentam os mesmos desafios."
+			"description": "Fórum privado, grupos temáticos e encontros virtuais que conectam você a centenas de profissionais que enfrentam os mesmos desafios."
 		}
 	],
 	"benefits": [
-		"Acesso imediato a todo o acervo de conteudo",
+		"Acesso imediato a todo o acervo de conteúdo",
 		"Lives semanais ao vivo com especialistas convidados",
 		"Comunidade privada para networking e troca de casos",
 		"Descontos exclusivos em produtos e eventos do Grupo US",
-		"Atualizacao continua sem investimento pontual alto"
+		"Atualização contínua sem investimento pontual alto"
 	],
 	"differentials": [
 		{
 			"title": "Curadoria direta da Dra. Sacha Gualberto",
-			"description": "Todo conteudo passa pela curadoria da Dra. Sacha, garantindo relevancia, qualidade e aplicabilidade pratica para quem atua no dia a dia da clinica."
+			"description": "Todo conteúdo passa pela curadoria da Dra. Sacha, garantindo relevância, qualidade e aplicabilidade prática para quem atua no dia a dia da clínica."
 		},
 		{
-			"title": "Modelo de assinatura acessivel",
-			"description": "Por um investimento mensal acessivel, voce tem acesso a conteudo que custaria milhares de reais em cursos avulsos. Cancele quando quiser, sem fidelidade."
+			"title": "Modelo de assinatura acessível",
+			"description": "Por um investimento mensal acessível, você tem acesso a conteúdo que custaria milhares de reais em cursos avulsos. Cancele quando quiser, sem fidelidade."
 		}
 	],
 	"faqs": [
 		{
-			"question": "Qual o valor da assinatura mensal?",
-			"answer": "Entre em contato com nossa equipe para conhecer os planos disponiveis. Oferecemos opcoes mensais e anuais com descontos especiais para pagamento antecipado."
+			"question": "Qual o valor da assinatura?",
+			"answer": "O plano anual da Comunidade US custa aproximadamente R$ 1.600 por ano, com opção de parcelamento em até 12x de R$ 165. É o melhor custo-benefício para quem quer se manter atualizado o ano inteiro com conteúdo de alto nível, lives semanais e networking ativo."
 		},
 		{
-			"question": "Posso acessar o conteudo gravado das lives?",
-			"answer": "Sim. Todas as lives ficam gravadas e disponiveis na biblioteca da comunidade. Voce pode assistir quando e quantas vezes quiser, no seu ritmo."
+			"question": "Posso acessar o conteúdo gravado das lives?",
+			"answer": "Sim. Todas as lives ficam gravadas e disponíveis na biblioteca da comunidade. Você pode assistir quando e quantas vezes quiser, no seu ritmo."
 		},
 		{
-			"question": "A comunidade e exclusiva para alunos do Grupo US?",
-			"answer": "Nao. A Comunidade US e aberta a qualquer profissional da saude que atue ou deseje atuar na area de estetica. Nao e necessario ser aluno de outros programas."
+			"question": "A comunidade é exclusiva para alunos do Grupo US?",
+			"answer": "Não. A Comunidade US é aberta a qualquer profissional da saúde que atue ou deseje atuar na área de estética. Não é necessário ser aluno de outros programas."
 		}
 	],
 	"cta": {
 		"label": "Quero fazer parte",
-		"url": "https://drasacha.com.br/comunidade-us",
-		"whatsappMessage": "Ola! Quero saber mais sobre a Comunidade US",
+		"url": "https://drasacha.com.br/pagina-de-inscricao-comu-us",
+		"whatsappMessage": "Olá! Quero saber mais sobre a Comunidade US",
 		"type": "primary"
 	},
 	"testimonials": [
 		{
 			"name": "Dra. Juliana Costa",
-			"role": "Farmaceutica Esteticista — Fortaleza/CE",
-			"quote": "A Comunidade US e minha fonte principal de atualizacao. As lives semanais sao incriveis e o networking com outros profissionais ja me rendeu parcerias de trabalho."
+			"role": "Farmacêutica Esteticista — Fortaleza/CE",
+			"quote": "A Comunidade US é minha fonte principal de atualização. As lives semanais são incríveis e o networking com outros profissionais já me rendeu parcerias de trabalho."
 		},
 		{
 			"name": "Dra. Amanda Ferreira",
-			"role": "Enfermeira Esteta — Goiania/GO",
-			"quote": "Pelo valor que pago na assinatura, recebo mais conteudo de qualidade do que em cursos que custam 10 vezes mais. E a comunidade e acolhedora e colaborativa."
+			"role": "Enfermeira Esteta — Goiânia/GO",
+			"quote": "Pelo valor que pago na assinatura, recebo mais conteúdo de qualidade do que em cursos que custam 10 vezes mais. E a comunidade é acolhedora e colaborativa."
+		},
+		{
+			"name": "Dra. Priscila Ramos",
+			"role": "Biomédica Esteticista — Curitiba/PR",
+			"quote": "Entrei na Comunidade US achando que era só mais um grupo online. Em três meses, aprendi um protocolo novo de bioestimuladores que aumentou meu ticket médio em 35%. A curadoria da Dra. Sacha faz toda a diferença."
 		}
 	]
 }

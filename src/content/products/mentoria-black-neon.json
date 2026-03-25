@@ -1,102 +1,102 @@
 {
 	"name": "Mentoria Black NEON",
 	"slug": "mentoria-black-neon",
-	"tagline": "Mentoria de Negocios para Donos de Clinicas",
-	"description": "Mentoria intensiva focada em gestao, faturamento e escala para donos de clinicas de estetica que querem sair do operacional e liderar com estrategia.",
-	"type": "Mentoria de Negocios",
-	"audience": "Donos de clinicas de estetica",
+	"tagline": "Mentoria high-end para quem já domina a técnica e precisa escalar. Reestruture, posicione e multiplique o faturamento da sua clínica.",
+	"description": "Mentoria intensiva focada em gestão, faturamento e escala para donos de clínicas de estética que querem sair do operacional e liderar com estratégia.",
+	"type": "Mentoria de Negócios",
+	"audience": "Donos de clínicas de estética",
 	"icon": "Rocket",
-	"image": "/images/products/mentoria-black-neon.jpg",
+	"image": "/images/products/mentoria-black-neon.svg",
 	"order": 3,
 	"hero": {
-		"headline": "Saia do operacional e lidere sua clinica com estrategia",
-		"subheadline": "Mentoria intensiva de gestao e escala para donos de clinicas que querem faturar mais e trabalhar menos"
+		"headline": "Sua clínica precisa de um dono estrategista, não de mais um profissional sobrecarregado",
+		"subheadline": "Mentoria intensiva para reestruturar gestão, escalar faturamento e construir uma operação que funciona sem depender só de você"
 	},
 	"painPoints": [
 		{
 			"icon": "Clock",
-			"title": "Preso no operacional da clinica",
-			"description": "Voce e o dono, mas tambem e o profissional que atende, o gestor que resolve problemas e quem paga as contas. Nao sobra tempo para pensar no crescimento."
+			"title": "Preso no operacional da clínica",
+			"description": "Você é o dono, mas também é o profissional que atende, o gestor que resolve problemas e quem paga as contas. Não sobra tempo para pensar no crescimento."
 		},
 		{
 			"icon": "TrendingDown",
 			"title": "Faturamento estagnado",
-			"description": "A clinica fatura, mas os custos crescem, a margem diminui e voce nao consegue escalar. Parece que esta trabalhando cada vez mais para ganhar a mesma coisa."
+			"description": "A clínica fatura, mas os custos crescem, a margem diminui e você não consegue escalar. Parece que está trabalhando cada vez mais para ganhar a mesma coisa."
 		},
 		{
 			"icon": "UserMinus",
 			"title": "Dificuldade em formar e reter equipe",
-			"description": "Contratar bons profissionais e dificil, treinar custa caro e a rotatividade desestrutura a operacao. Voce nao consegue delegar com confianca."
+			"description": "Contratar bons profissionais é difícil, treinar custa caro e a rotatividade desestrutura a operação. Você não consegue delegar com confiança."
 		}
 	],
 	"pillars": [
 		{
 			"icon": "Target",
-			"title": "Gestao Estrategica",
-			"description": "Implantacao de processos, indicadores financeiros e ferramentas de gestao que permitem tomar decisoes baseadas em dados — nao em intuicao."
+			"title": "Gestão Estratégica",
+			"description": "Implantação de processos, indicadores financeiros e ferramentas de gestão que permitem tomar decisões baseadas em dados — não em intuição."
 		},
 		{
 			"icon": "TrendingUp",
 			"title": "Escala de Faturamento",
-			"description": "Estrategias de precificacao, upsell, cross-sell e recorrencia que multiplicam o faturamento sem necessariamente aumentar o numero de atendimentos."
+			"description": "Estratégias de precificação, upsell, cross-sell e recorrência que multiplicam o faturamento sem necessariamente aumentar o número de atendimentos."
 		},
 		{
 			"icon": "Shield",
-			"title": "Lideranca e Equipe",
-			"description": "Metodologias para recrutar, treinar e reter talentos. Aprenda a construir uma equipe que opera sem depender exclusivamente de voce."
+			"title": "Liderança e Equipe",
+			"description": "Metodologias para recrutar, treinar e reter talentos. Aprenda a construir uma equipe que opera sem depender exclusivamente de você."
 		}
 	],
 	"benefits": [
-		"Diagnostico completo da saude financeira da sua clinica",
-		"Plano de acao personalizado para os proximos 12 meses",
-		"Reunioes quinzenais de acompanhamento com mentores",
-		"Acesso a ferramentas e templates de gestao exclusivos",
-		"Comunidade privada com outros donos de clinicas"
+		"Diagnóstico completo da saúde financeira da sua clínica",
+		"Plano de ação personalizado para os próximos 12 meses",
+		"Reuniões quinzenais de acompanhamento com mentores",
+		"Acesso a ferramentas e templates de gestão exclusivos",
+		"Comunidade privada com outros donos de clínicas"
 	],
 	"differentials": [
 		{
-			"title": "Focada exclusivamente em clinicas de estetica",
-			"description": "Nao e uma mentoria generica de negocios. Cada estrategia, indicador e processo foi criado especificamente para a realidade de clinicas de saude estetica."
+			"title": "Focada exclusivamente em clínicas de estética",
+			"description": "Não é uma mentoria genérica de negócios. Cada estratégia, indicador e processo foi criado especificamente para a realidade de clínicas de saúde estética."
 		},
 		{
-			"title": "Resultado mensuravel em 90 dias",
-			"description": "O programa e estruturado para entregar resultados tangiveis nos primeiros tres meses — aumento de faturamento, reducao de custos e melhoria de processos."
+			"title": "Resultado mensurável em 90 dias",
+			"description": "O programa é estruturado para entregar resultados tangíveis nos primeiros três meses — aumento de faturamento, redução de custos e melhoria de processos."
 		},
 		{
-			"title": "Mentores que sao donos de clinicas de sucesso",
-			"description": "Voce aprende com quem vive a mesma realidade. Nossos mentores operam clinicas proprias com faturamento acima de R$ 200 mil/mes."
+			"title": "Mentores que são donos de clínicas de sucesso",
+			"description": "Você aprende com quem vive a mesma realidade. Nossos mentores operam clínicas próprias com faturamento acima de R$ 200 mil/mês."
 		}
 	],
 	"faqs": [
 		{
-			"question": "A mentoria e individual ou em grupo?",
-			"answer": "A Mentoria Black NEON combina encontros em grupo com sessoes individuais. Os encontros em grupo promovem networking e troca de experiencias, enquanto as sessoes individuais focam nos desafios especificos da sua clinica."
+			"question": "A mentoria é individual ou em grupo?",
+			"answer": "A Mentoria Black NEON combina encontros em grupo com sessões individuais. Os encontros em grupo promovem networking e troca de experiências, enquanto as sessões individuais focam nos desafios específicos da sua clínica."
 		},
 		{
-			"question": "Preciso ter clinica propria para participar?",
-			"answer": "Sim, a mentoria e direcionada para profissionais que ja possuem clinica em operacao e querem escalar o negocio. Se voce ainda esta planejando abrir, recomendamos o TRINTAE3 primeiro."
+			"question": "Preciso ter clínica própria para participar?",
+			"answer": "Sim, a mentoria é direcionada para profissionais que já possuem clínica em operação e querem escalar o negócio. Se você ainda está planejando abrir, recomendamos o TRINTAE3 primeiro."
 		},
 		{
-			"question": "Qual o tempo de dedicacao semanal necessario?",
-			"answer": "Recomendamos de 4 a 6 horas semanais entre encontros, implementacao de tarefas e consumo de conteudo complementar. O programa foi desenhado para quem tem agenda cheia."
+			"question": "Qual o tempo de dedicação semanal necessário?",
+			"answer": "Recomendamos de 4 a 6 horas semanais entre encontros, implementação de tarefas e consumo de conteúdo complementar. O programa foi desenhado para quem tem agenda cheia."
 		}
 	],
 	"cta": {
-		"label": "Quero escalar minha clinica",
-		"url": "https://drasacha.com.br/mentoria-black-neon",
-		"whatsappMessage": "Ola! Quero saber mais sobre a Mentoria Black NEON",
+		"label": "Quero escalar minha clínica",
+		"url": "https://wa.link/9syrbu",
+		"whatsappMessage": "Olá! Quero saber mais sobre a Mentoria Black NEON",
 		"type": "primary"
 	},
 	"testimonials": [
 		{
-			"name": "Dra. Patricia Lima",
-			"role": "Dona de clinica — Brasilia/DF",
-			"quote": "Antes da Black NEON eu faturava R$ 60 mil e trabalhava 12 horas por dia. Hoje faturo R$ 180 mil com uma equipe de 5 profissionais e tiro ferias sem medo."
+			"name": "Dra. Patrícia Lima",
+			"role": "Dona de clínica — Brasília/DF",
+			"quote": "Antes da Black NEON eu faturava R$ 60 mil e trabalhava 12 horas por dia. Hoje faturo R$ 180 mil com uma equipe de 5 profissionais e tiro férias sem medo."
 		},
 		{
 			"name": "Dr. Thiago Almeida",
-			"role": "Dono de rede de clinicas — Salvador/BA",
-			"quote": "A mentoria me deu clareza para abrir a segunda unidade. Em 8 meses, as duas clinicas juntas faturam mais de R$ 300 mil. O investimento se pagou no primeiro mes."
+			"role": "Dono de rede de clínicas — Salvador/BA",
+			"quote": "A mentoria me deu clareza para abrir a segunda unidade. Em 8 meses, as duas clínicas juntas faturam mais de R$ 300 mil. O investimento se pagou no primeiro mês."
 		}
 	]
 }

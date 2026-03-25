@@ -1,98 +1,98 @@
 {
-	"name": "Curso de Auriculo",
+	"name": "Curso de Aurículo",
 	"slug": "curso-auriculo",
-	"tagline": "Formacao Tecnica em Auriculoterapia",
-	"description": "Curso tecnico especializado em auriculoterapia aplicada a estetica e saude integrativa.",
-	"type": "Curso Tecnico",
-	"audience": "Profissionais da saude e estetica",
+	"tagline": "Porta de entrada para a Saúde Integrativa. Domine a Auriculoterapia e amplie seu portfólio com baixo investimento e alta percepção de valor.",
+	"description": "Curso técnico especializado em auriculoterapia aplicada à estética e saúde integrativa.",
+	"type": "Curso Técnico",
+	"audience": "Profissionais da saúde e estética",
 	"icon": "Ear",
-	"image": "/images/products/curso-auriculo.jpg",
+	"image": "/images/products/curso-auriculo.svg",
 	"order": 5,
 	"hero": {
-		"headline": "Domine a Auriculoterapia aplicada a Estetica",
-		"subheadline": "Formacao tecnica completa para integrar auriculoterapia aos seus protocolos esteticos e de saude integrativa"
+		"headline": "Amplie seu portfólio com a técnica integrativa que mais cresce no Brasil",
+		"subheadline": "Formação presencial intensiva em Auriculoterapia: 3 dias, prática real e protocolos prontos para aplicar na sua clínica no dia seguinte"
 	},
 	"painPoints": [
 		{
 			"icon": "Pill",
-			"title": "Dependencia de procedimentos invasivos",
-			"description": "Sua clinica depende exclusivamente de injetaveis e procedimentos invasivos. Voce nao oferece alternativas integrativas que fidelizam e ampliam seu publico."
+			"title": "Dependência de procedimentos invasivos",
+			"description": "Sua clínica depende exclusivamente de injetáveis e procedimentos invasivos. Você não oferece alternativas integrativas que fidelizam e ampliam seu público."
 		},
 		{
 			"icon": "Search",
 			"title": "Pacientes buscam abordagens complementares",
-			"description": "Cada vez mais pacientes procuram tratamentos complementares e menos invasivos. Se voce nao oferece, eles procuram em outro lugar."
+			"description": "Cada vez mais pacientes procuram tratamentos complementares e menos invasivos. Se você não oferece, eles procuram em outro lugar."
 		},
 		{
 			"icon": "CircleDollarSign",
-			"title": "Ticket medio limitado",
-			"description": "Voce atende bem, mas seu menu de servicos e restrito. Faltam opcoes complementares que aumentem o valor por paciente e a recorrencia na clinica."
+			"title": "Ticket médio limitado",
+			"description": "Você atende bem, mas seu menu de serviços é restrito. Faltam opções complementares que aumentem o valor por paciente e a recorrência na clínica."
 		}
 	],
 	"pillars": [
 		{
 			"icon": "Stethoscope",
-			"title": "Fundamentos Cientificos",
-			"description": "Base teorica solida em neurofisiologia auricular, mapeamento de pontos e protocolos baseados em evidencias para aplicacao segura e eficaz."
+			"title": "Fundamentos Científicos",
+			"description": "Base teórica sólida em neurofisiologia auricular, mapeamento de pontos e protocolos baseados em evidências para aplicação segura e eficaz."
 		},
 		{
 			"icon": "Hand",
-			"title": "Pratica Supervisionada",
-			"description": "Aulas praticas com pacientes reais sob supervisao direta. Voce sai do curso pronto para aplicar com seguranca e confianca na sua clinica."
+			"title": "Prática Supervisionada",
+			"description": "Aulas práticas com pacientes reais sob supervisão direta. Você sai do curso pronto para aplicar com segurança e confiança na sua clínica."
 		},
 		{
 			"icon": "Sparkles",
-			"title": "Protocolos Esteticos Integrativos",
-			"description": "Aprenda a combinar auriculoterapia com seus protocolos esteticos atuais — potencializando resultados em emagrecimento, ansiedade, dor e rejuvenescimento."
+			"title": "Protocolos Estéticos Integrativos",
+			"description": "Aprenda a combinar auriculoterapia com seus protocolos estéticos atuais — potencializando resultados em emagrecimento, ansiedade, dor e rejuvenescimento."
 		}
 	],
 	"benefits": [
-		"Certificado de formacao em auriculoterapia reconhecido",
-		"Protocolos prontos para aplicar na clinica no dia seguinte",
-		"Aumento do menu de servicos sem investimento em equipamentos",
-		"Fidelizacao de pacientes com sessoes de recorrencia mensal",
-		"Material didatico completo com mapas auriculares e guias"
+		"Certificado de formação em auriculoterapia reconhecido",
+		"Protocolos prontos para aplicar na clínica no dia seguinte",
+		"Aumento do menu de serviços sem investimento em equipamentos",
+		"Fidelização de pacientes com sessões de recorrência mensal",
+		"Material didático completo com mapas auriculares e guias"
 	],
 	"differentials": [
 		{
-			"title": "Foco exclusivo na aplicacao estetica",
-			"description": "Diferente dos cursos tradicionais de auriculoterapia, nosso programa foca especificamente na integracao com protocolos esteticos — emagrecimento, rejuvenescimento e bem-estar."
+			"title": "Foco exclusivo na aplicação estética",
+			"description": "Diferente dos cursos tradicionais de auriculoterapia, nosso programa foca especificamente na integração com protocolos estéticos — emagrecimento, rejuvenescimento e bem-estar."
 		},
 		{
-			"title": "Formato intensivo e pratico",
-			"description": "Curso presencial de imersao com carga pratica superior a 70%. Voce aprende fazendo, nao assistindo slides."
+			"title": "Formato intensivo e prático",
+			"description": "Curso presencial de imersão com carga prática superior a 70%. Você aprende fazendo, não assistindo slides."
 		}
 	],
 	"faqs": [
 		{
-			"question": "Preciso ter experiencia previa em auriculoterapia?",
-			"answer": "Nao. O curso foi desenhado para profissionais da saude que estao iniciando na auriculoterapia. Partimos do basico e avancamos ate protocolos complexos de integracao estetica."
+			"question": "Preciso ter experiência prévia em auriculoterapia?",
+			"answer": "Não. O curso foi desenhado para profissionais da saúde que estão iniciando na auriculoterapia. Partimos do básico e avançamos até protocolos complexos de integração estética."
 		},
 		{
-			"question": "Qual a duracao do curso?",
-			"answer": "O curso tem formato de imersao presencial de 3 dias intensivos, com carga horaria total de 24 horas entre teoria e pratica supervisionada."
+			"question": "Qual a duração do curso?",
+			"answer": "O curso tem formato de imersão presencial de 3 dias intensivos, com carga horária total de 24 horas entre teoria e prática supervisionada."
 		},
 		{
-			"question": "Quais materiais estao inclusos?",
-			"answer": "O investimento inclui todo o material didatico: apostila completa, mapas auriculares impressos, kit inicial de sementes e agulhas, e acesso a plataforma online com conteudo complementar."
+			"question": "Quais materiais estão inclusos?",
+			"answer": "O investimento inclui todo o material didático: apostila completa, mapas auriculares impressos, kit inicial de sementes e agulhas, e acesso à plataforma online com conteúdo complementar."
 		}
 	],
 	"cta": {
 		"label": "Quero aprender Auriculoterapia",
-		"url": "https://drasacha.com.br/curso-auriculo",
-		"whatsappMessage": "Ola! Quero saber mais sobre o Curso de Auriculoterapia",
+		"url": "https://hub.la/g/IfV7kpxqUkTzlufg4Tx9",
+		"whatsappMessage": "Olá! Quero saber mais sobre o Curso de Auriculoterapia",
 		"type": "primary"
 	},
 	"testimonials": [
 		{
 			"name": "Dra. Marina Santos",
-			"role": "Fisioterapeuta Estetica — Recife/PE",
-			"quote": "Integrei a auriculoterapia aos meus protocolos de emagrecimento e os resultados melhoraram muito. Meus pacientes adoram e a recorrencia aumentou 40%."
+			"role": "Fisioterapeuta Estética — Recife/PE",
+			"quote": "Integrei a auriculoterapia aos meus protocolos de emagrecimento e os resultados melhoraram muito. Meus pacientes adoram e a recorrência aumentou 40%."
 		},
 		{
 			"name": "Dra. Beatriz Cardoso",
 			"role": "Enfermeira — Campinas/SP",
-			"quote": "O curso e muito pratico e objetivo. Em tres dias eu ja sai aplicando com seguranca. Hoje a auriculoterapia e um dos servicos mais procurados na minha clinica."
+			"quote": "O curso é muito prático e objetivo. Em três dias eu já saí aplicando com segurança. Hoje a auriculoterapia é um dos serviços mais procurados na minha clínica."
 		}
 	]
 }

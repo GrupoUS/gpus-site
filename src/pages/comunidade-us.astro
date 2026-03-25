@@ -19,8 +19,12 @@ const d = product.data;
 
 <Layout
 	title={`${d.name} — Grupo US`}
-	description={d.tagline}
+	description={d.description}
 	activeNav="produtos"
+	breadcrumbs={[
+		{ name: "Início", url: "https://grupous.com.br/" },
+		{ name: d.name, url: `https://grupous.com.br/${d.slug}` }
+	]}
 >
 	<div class="pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
 		<LandingHero name={d.name} tagline={d.tagline} hero={d.hero} type={d.type} cta={d.cta} />

@@ -1,4 +1,5 @@
 ---
+import { Font } from "astro:assets";
 import { getCollection } from "astro:content";
 import Footer from "../components/layout/Footer.astro";
 import Header from "../components/layout/Header.astro";
@@ -10,13 +11,15 @@ interface Props {
 	description?: string;
 	ogImage?: string;
 	activeNav?: string;
+	breadcrumbs?: Array<{ name: string; url: string }>;
 }
 
 const {
 	title,
-	description = "Ecossistema educacional de Saude Estetica Avancada. Transforme sua carreira com o Grupo US.",
+	description = "Ecossistema educacional de Saúde Estética Avançada. Transforme sua carreira com o Grupo US.",
 	ogImage = "/og-image.jpg",
 	activeNav,
+	breadcrumbs,
 } = Astro.props;
 
 const productNavLinks = productNavLinksFromCollection(
@@ -32,7 +35,7 @@ const organizationSchema = {
 	url: "https://grupous.com.br",
 	logo: "https://grupous.com.br/logo.png",
 	description:
-		"Ecossistema educacional de Saude Estetica Avancada. Cursos, mentorias e eventos para profissionais da saude estetica.",
+		"Ecossistema educacional de Saúde Estética Avançada. Cursos, mentorias e eventos para profissionais da saúde estética.",
 	founder: {
 		"@type": "Person",
 		name: "Dra. Sacha Gualberto",
@@ -82,13 +85,9 @@ const organizationSchema = {
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
 
-		<!-- Google Fonts: Playfair Display + Inter -->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
-			rel="stylesheet"
-		/>
+		<!-- Fonts (Astro 6 Fonts API) -->
+		<Font cssVariable="--font-playfair" />
+		<Font cssVariable="--font-inter" />
 
 		<!-- JSON-LD Organization Schema -->
 		<script
@@ -96,6 +95,23 @@ const organizationSchema = {
 			type="application/ld+json"
 			set:html={JSON.stringify(organizationSchema)}
 		/>
+
+		{breadcrumbs && (
+			<script
+				is:inline
+				type="application/ld+json"
+				set:html={JSON.stringify({
+					"@context": "https://schema.org",
+					"@type": "BreadcrumbList",
+					"itemListElement": breadcrumbs.map((item, index) => ({
+						"@type": "ListItem",
+						"position": index + 1,
+						"name": item.name,
+						"item": item.url
+					}))
+				})}
+			/>
+		)}
 
 		<!-- Noscript: make data-reveal elements visible when JS is disabled -->
 		<noscript>
@@ -112,7 +128,7 @@ const organizationSchema = {
 	<body class="bg-navy font-sans text-text-primary antialiased">
 		<!-- Skip Link -->
 		<a href="#conteudo-principal" class="skip-link">
-			Pular para o conteudo principal
+			Pular para o conteúdo principal
 		</a>
 
 		<Header activeNav={activeNav} productNavLinks={productNavLinks} />

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /termos
+Disallow: /politica-de-privacidade
+
+Sitemap: https://grupous.com.br/sitemap-index.xml
