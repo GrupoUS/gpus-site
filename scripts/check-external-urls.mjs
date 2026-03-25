@@ -28,6 +28,7 @@ const ROUTES = [
 	{ slug: "otb", pathKey: "/otb" },
 	{ slug: "trintae3", pathKey: "/trintae3" },
 	{ slug: "comunidade-us", pathKey: "/comunidade-us" },
+	{ slug: "neon-dash", pathKey: "/neon-dash" },
 ];
 
 const configText = readFileSync(join(root, "astro.config.mjs"), "utf8");

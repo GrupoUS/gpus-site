@@ -38,6 +38,37 @@ const products = defineCollection({
 			)
 			.length(3),
 		benefits: z.array(z.string()).min(4),
+		deliverables: z
+			.array(
+				z.object({
+					title: z.string(),
+					description: z.string(),
+				}),
+			)
+			.optional(),
+		bonus: z
+			.array(
+				z.object({
+					title: z.string(),
+					description: z.string(),
+				}),
+			)
+			.optional(),
+		story: z
+			.object({
+				headline: z.string(),
+				paragraphs: z.array(z.string()),
+				highlight: z.string(),
+			})
+			.optional(),
+		bio: z
+			.object({
+				name: z.string(),
+				title: z.string(),
+				photo: z.string(),
+				paragraphs: z.array(z.string()),
+			})
+			.optional(),
 		differentials: z
 			.array(
 				z.object({

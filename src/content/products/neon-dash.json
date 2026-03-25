@@ -1,6 +1,7 @@
 {
 	"name": "Neon Dash",
 	"slug": "neon-dash",
+	"externalSiteUrl": "https://neondash.com.br/",
 	"tagline": "Pare de planejar e comece a executar. Sprints de 90 dias com métricas claras para transformar sua clínica em um negócio previsível.",
 	"description": "Programa focado em ritmo de execução, indicadores e decisões rápidas para donos de clínicas que já têm base técnica e precisam acelerar resultados com acompanhamento próximo do time Grupo US.",
 	"type": "Programa de Execução",
@@ -82,12 +83,12 @@
 		},
 		{
 			"question": "Como faço para me inscrever?",
-			"answer": "Clique no botão de inscrição nesta página ou fale diretamente com nosso time pelo WhatsApp. Você receberá o cronograma do próximo ciclo, os valores atualizados e poderá tirar dúvidas antes de confirmar sua vaga."
+			"answer": "Acesse o site oficial do Neondash ou fale diretamente com nosso time pelo WhatsApp. Você receberá o cronograma do próximo ciclo, os valores atualizados e poderá tirar dúvidas antes de confirmar sua vaga."
 		}
 	],
 	"cta": {
 		"label": "Quero entrar no Neon Dash",
-		"url": "https://drasacha.com.br/neon-dash",
+		"url": "https://neondash.com.br/",
 		"whatsappMessage": "Olá! Quero saber mais sobre o Neon Dash — programa de execução",
 		"type": "primary"
 	},

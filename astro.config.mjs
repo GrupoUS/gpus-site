@@ -10,6 +10,7 @@ const redirectTargets = {
 	"/otb": "https://otb.gpus.com.br/",
 	"/trintae3": "https://trintae3.drasacha.com.br/",
 	"/comunidade-us": "https://drasacha.com.br/pagina-de-inscricao-comu-us/",
+	"/neon-dash": "https://neondash.com.br/",
 };
 
 // #region agent log
@@ -65,7 +66,8 @@ export default defineConfig({
 						pathname === "/na-mesa-certa" ||
 						pathname === "/otb" ||
 						pathname === "/trintae3" ||
-						pathname === "/comunidade-us"
+						pathname === "/comunidade-us" ||
+						pathname === "/neon-dash"
 					) {
 						return false;
 					}
