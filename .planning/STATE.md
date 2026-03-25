@@ -46,4 +46,4 @@ See: `.planning/PROJECT.md` (updated 2026-03-25)
 - `.planning/ROADMAP.md` — 6 phases with plans and acceptance criteria
 - `.planning/codebase/` — Codebase map (STACK, ARCH, STRUCTURE, CONVENTIONS, TESTING, INTEGRATIONS, CONCERNS)
 - `.planning/config.json` — GSD workflow config (balanced profile, all agents on)
-- `.planning/research/drasacha-content.md` — drasacha.com.br content research (in progress)
+- `.planning/research/drasacha-content.md` — drasacha.com.br content research (277 lines, via WebSearch snippets — site bloqueou fetch direto)
