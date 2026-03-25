@@ -12,28 +12,12 @@
 
 **Why first:** Debug instrumentation no código e dependência de CDN externo são riscos ativos. View Transitions e Fonts API são pré-requisitos para o visual das fases seguintes.
 
-### Plans
+**Plans:** 3 plans
 
-**1.1 — Remove Debug Instrumentation**
-Remove os 5 blocos `// #region agent log` com fetch para `127.0.0.1:7777` de:
-- `astro.config.mjs` (linhas 16–36)
-- `src/lib/productsNav.ts` (linhas 39–59)
-- `src/components/home/ProductsGrid.astro` (linhas 18–38)
-- `src/components/ui/text-generate-effect.tsx` (linhas 25–45)
-- `src/components/ui/lamp.tsx` (linhas 8–32)
-
-Verificar: `grep -r "127.0.0.1" src/` retorna vazio.
-
-**1.2 — Astro 6 Fonts API Migration**
-- Adicionar `fonts` config em `astro.config.mjs` com `fontProviders.google()` para Playfair Display e Inter
-- Remover `<link>` Google Fonts do `Layout.astro`
-- Adicionar `<Font cssVariable="..." />` no `<head>`
-- Atualizar `@theme` no `global.css` com variáveis das fontes self-hosted
-
-**1.3 — View Transitions + 404 + Favicon**
-- `<ClientRouter />` no `Layout.astro` (import de `astro:transitions`)
-- `src/pages/404.astro` com design Navy/Gold, mensagem amigável, link para home
-- Favicon real: criar `public/favicon.svg` com símbolo do Grupo US (stylized "US" dourado)
+Plans:
+- [ ] 01-PLAN-1.1-remove-debug.md — Remove 5 debug instrumentation blocks (TECH-01)
+- [ ] 01-PLAN-1.2-favicon-and-verify.md — Fix favicon color + verify Fonts API + verify 404 page (TECH-02, TECH-04, TECH-05)
+- [ ] 01-PLAN-1.3-view-transitions.md — Add ClientRouter + fix IntersectionObserver lifecycle (TECH-03)
 
 **Requirements:** TECH-01, TECH-02, TECH-03, TECH-04, TECH-05
 
