@@ -1,0 +1,71 @@
+---
+import Button from "../shared/Button.astro";
+---
+
+<section class="relative flex min-h-screen items-center justify-center overflow-hidden px-4 sm:px-6">
+	<!-- Background: radial gradient mesh overlay (CSS only) -->
+	<div class="pointer-events-none absolute inset-0" aria-hidden="true">
+		<div
+			class="absolute inset-0"
+			style="background: radial-gradient(ellipse 60% 50% at 20% 30%, color-mix(in srgb, var(--color-gold) 6%, transparent), transparent),
+				radial-gradient(ellipse 50% 40% at 80% 70%, color-mix(in srgb, var(--color-gold) 4%, transparent), transparent),
+				radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in srgb, var(--color-navy-lighter) 15%, transparent), transparent);"
+		></div>
+	</div>
+
+	<!-- Decorative gold gradient blurs -->
+	<div
+		class="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full opacity-20 blur-3xl"
+		style="background: radial-gradient(circle, var(--color-gold), transparent 70%);"
+		aria-hidden="true"
+	></div>
+	<div
+		class="pointer-events-none absolute -right-24 -bottom-24 h-80 w-80 rounded-full opacity-15 blur-3xl"
+		style="background: radial-gradient(circle, var(--color-gold-dark), transparent 70%);"
+		aria-hidden="true"
+	></div>
+
+	<!-- Content -->
+	<div class="relative z-10 mx-auto max-w-4xl text-center">
+		<!-- Gold badge -->
+		<div data-reveal="up">
+			<span class="inline-block rounded-sm border border-gold/30 bg-navy-light/80 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+				Ecossistema de Saude Estetica
+			</span>
+		</div>
+
+		<!-- Headline -->
+		<h1
+			class="mt-8 font-serif text-4xl font-bold leading-tight text-text-primary md:text-5xl lg:text-6xl"
+			data-reveal="up"
+			data-reveal-delay="1"
+		>
+			Transformamos profissionais da saude em{" "}
+			<span class="text-gold">referencias</span>
+		</h1>
+
+		<!-- Subtitle -->
+		<p
+			class="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-text-muted md:text-xl"
+			data-reveal="up"
+			data-reveal-delay="2"
+		>
+			Unimos tecnica, gestao e comunidade para impactar profissionais de saude
+			estetica e construir o ecossistema mais completo do Brasil.
+		</p>
+
+		<!-- CTA Buttons -->
+		<div
+			class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+			data-reveal="up"
+			data-reveal-delay="3"
+		>
+			<Button variant="primary" href="#produtos" size="lg">
+				Conheca nossos produtos
+			</Button>
+			<Button variant="outline" href="/contato" size="lg">
+				Fale conosco
+			</Button>
+		</div>
+	</div>
+</section>

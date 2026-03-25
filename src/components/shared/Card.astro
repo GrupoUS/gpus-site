@@ -1,0 +1,24 @@
+---
+interface Props {
+	href?: string;
+	hoverable?: boolean;
+	class?: string;
+}
+
+const { href, hoverable = false, class: className } = Astro.props;
+
+const baseClasses = "glass-card rounded-2xl p-6 md:p-8";
+const hoverClasses = hoverable ? "card-hover-lift cursor-pointer" : "";
+const classes = [baseClasses, hoverClasses, className]
+	.filter(Boolean)
+	.join(" ");
+
+const Tag = href ? "a" : "div";
+---
+
+<Tag
+	class={classes}
+	{...(href ? { href } : {})}
+>
+	<slot />
+</Tag>

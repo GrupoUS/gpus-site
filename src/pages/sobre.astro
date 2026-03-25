@@ -1,0 +1,45 @@
+---
+import Mission from "../components/about/Mission.astro";
+import TeamGrid from "../components/about/TeamGrid.astro";
+import Values from "../components/about/Values.astro";
+import Button from "../components/shared/Button.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+	title="Sobre o Grupo US"
+	description="Conheca o Grupo US — ecossistema educacional de Saude Estetica Avancada. Proposito, missao, valores e equipe."
+	activeNav="sobre"
+>
+	<!-- Page Hero -->
+	<section class="pt-32 pb-16 px-4">
+		<div class="max-w-4xl mx-auto text-center" data-reveal="up">
+			<h1 class="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-6">
+				Sobre o <span class="text-gold">Grupo US</span>
+			</h1>
+			<p class="text-text-muted text-lg md:text-xl max-w-2xl mx-auto">
+				Ecossistema educacional que transforma profissionais da saude em referencias globais.
+			</p>
+		</div>
+	</section>
+
+	<Mission />
+	<Values />
+	<TeamGrid />
+
+	<!-- CTA Section -->
+	<section class="py-20 px-4">
+		<div class="max-w-3xl mx-auto text-center" data-reveal="up">
+			<h2 class="font-serif text-3xl md:text-4xl font-bold text-gold mb-4">
+				Faca parte dessa transformacao
+			</h2>
+			<p class="text-text-muted text-lg mb-8">
+				Conheca nossos programas e encontre o ideal para sua jornada.
+			</p>
+			<div class="flex flex-col sm:flex-row gap-4 justify-center">
+				<Button href="/#produtos" variant="primary">Ver produtos</Button>
+				<Button href="/contato" variant="outline">Fale conosco</Button>
+			</div>
+		</div>
+	</section>
+</Layout>

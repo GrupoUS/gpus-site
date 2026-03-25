@@ -1,0 +1,86 @@
+---
+import { getCollection } from "astro:content";
+import Card from "../shared/Card.astro";
+import SectionHeading from "../shared/SectionHeading.astro";
+
+const products = (await getCollection("products")).sort(
+	(a, b) => a.data.order - b.data.order,
+);
+
+const typeColors: Record<string, string> = {
+	"Pos-graduacao + Mentoria": "bg-gold/15 text-gold",
+	"MBA Internacional": "bg-gold/15 text-gold",
+	"Mentoria de Negocios": "bg-gold/15 text-gold",
+	"Educacao Continuada": "bg-gold/15 text-gold",
+	"Curso Tecnico": "bg-gold/15 text-gold",
+	"Evento Presencial": "bg-gold/15 text-gold",
+};
+---
+
+<section id="produtos" class="px-4 py-24 sm:px-6 lg:py-32">
+	<div class="mx-auto max-w-7xl">
+		<SectionHeading
+			title="Nosso Ecossistema"
+			subtitle="Solucoes completas para cada fase da sua jornada profissional"
+		/>
+
+		<div class="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+			{products.map((product, index) => (
+				<div data-reveal="up" data-reveal-delay={String(index + 1)}>
+					<Card
+						href={`/${product.data.slug}`}
+						hoverable={true}
+						class="flex h-full flex-col"
+					>
+						{/* Decorative icon placeholder */}
+						<div class="mb-5 flex h-12 w-12 items-center justify-center rounded-sm border border-gold/20 bg-navy-lighter/40">
+							<span class="text-sm font-semibold text-gold" aria-hidden="true">
+								{product.data.icon.slice(0, 2).toUpperCase()}
+							</span>
+						</div>
+
+						{/* Product name */}
+						<h3 class="font-serif text-xl font-bold text-gold">
+							{product.data.name}
+						</h3>
+
+						{/* Tagline */}
+						<p class="mt-2 flex-1 text-sm leading-relaxed text-text-muted">
+							{product.data.tagline}
+						</p>
+
+						{/* Type badge */}
+						<div class="mt-4">
+							<span
+								class:list={[
+									"inline-block rounded-sm px-3 py-1 text-xs font-medium",
+									typeColors[product.data.type] || "bg-gold/15 text-gold",
+								]}
+							>
+								{product.data.type}
+							</span>
+						</div>
+
+						{/* Link */}
+						<span class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-gold transition-colors duration-200 hover:text-gold-light">
+							Saiba mais
+							<svg
+								class="h-4 w-4"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path d="M5 12h14" />
+								<path d="m12 5 7 7-7 7" />
+							</svg>
+						</span>
+					</Card>
+				</div>
+			))}
+		</div>
+	</div>
+</section>

@@ -1,0 +1,54 @@
+---
+import SectionHeading from "../shared/SectionHeading.astro";
+
+interface Props {
+	testimonials: Array<{
+		name: string;
+		role: string;
+		quote: string;
+	}>;
+}
+
+const { testimonials } = Astro.props;
+---
+
+<section class="px-4 py-20 sm:px-6 lg:px-8">
+	<div class="mx-auto max-w-7xl">
+		<SectionHeading title="O que dizem nossos alunos" />
+
+		<div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+			{testimonials.map((testimonial, index) => (
+				<blockquote
+					class="glass-card rounded-2xl p-6 md:p-8"
+					data-reveal="up"
+					data-reveal-delay={String(index + 1)}
+				>
+					<!-- Quote icon -->
+					<svg
+						class="mb-4 h-8 w-8 text-gold/20"
+						viewBox="0 0 24 24"
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						<path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z" />
+					</svg>
+
+					<p class="italic leading-relaxed text-text-primary">
+						"{testimonial.quote}"
+					</p>
+
+					<footer class="mt-5 border-t border-gold/10 pt-4">
+						<cite class="not-italic">
+							<span class="block font-semibold text-text-primary">
+								{testimonial.name}
+							</span>
+							<span class="mt-0.5 block text-sm text-text-muted">
+								{testimonial.role}
+							</span>
+						</cite>
+					</footer>
+				</blockquote>
+			))}
+		</div>
+	</div>
+</section>

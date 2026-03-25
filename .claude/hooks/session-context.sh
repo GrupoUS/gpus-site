@@ -9,8 +9,8 @@ SOURCE=$(grep -oP '"source"\s*:\s*"\K[^"]+' <<< "$INPUT" 2>/dev/null || echo "")
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
 
 if [ "$SOURCE" = "startup" ]; then
-    echo "[NAMESA] Bun | branch:$BRANCH | gates: astro check + build"
+    echo "[GPUS] Bun | branch:$BRANCH | gates: bun run lint + build"
 elif [ "$SOURCE" = "compact" ]; then
-    echo "[NAMESA] Bun, bunx astro check, bun run build"
+    echo "[GPUS] Bun, bun run lint, bun run build"
 fi
 # resume: no output needed - context already present

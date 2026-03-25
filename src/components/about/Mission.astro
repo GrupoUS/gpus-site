@@ -1,0 +1,99 @@
+---
+import Card from "../shared/Card.astro";
+import SectionHeading from "../shared/SectionHeading.astro";
+
+const missions = [
+	{
+		title: "Proposito",
+		description:
+			"Transformar profissionais da saude em referencias, unindo tecnica, gestao e comunidade.",
+		icon: "target",
+	},
+	{
+		title: "Missao",
+		description:
+			"Impactar profissionais de saude, despertando potenciais para liderar vidas e negocios.",
+		icon: "compass",
+	},
+	{
+		title: "Visao",
+		description:
+			"Ser o ecossistema mais completo em Saude e Negocios globalmente.",
+		icon: "eye",
+	},
+];
+---
+
+<section class="py-20 px-4" aria-labelledby="quem-somos-heading">
+	<div class="max-w-6xl mx-auto">
+		<SectionHeading
+			title="Quem Somos"
+			subtitle="Conheca o proposito por tras do Grupo US"
+		/>
+
+		<div class="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+			{missions.map((item, index) => (
+				<div data-reveal="up" data-reveal-delay={String(index + 1)}>
+					<Card class="h-full text-center">
+						<div class="flex justify-center mb-5">
+							<div class="w-14 h-14 rounded-xl bg-gold/10 flex items-center justify-center">
+								{item.icon === "target" && (
+									<svg
+										class="w-7 h-7 text-gold"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"
+									>
+										<circle cx="12" cy="12" r="10" />
+										<circle cx="12" cy="12" r="6" />
+										<circle cx="12" cy="12" r="2" />
+									</svg>
+								)}
+								{item.icon === "compass" && (
+									<svg
+										class="w-7 h-7 text-gold"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"
+									>
+										<circle cx="12" cy="12" r="10" />
+										<polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+									</svg>
+								)}
+								{item.icon === "eye" && (
+									<svg
+										class="w-7 h-7 text-gold"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"
+									>
+										<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+										<circle cx="12" cy="12" r="3" />
+									</svg>
+								)}
+							</div>
+						</div>
+						<h3 class="font-serif text-xl font-semibold text-gold mb-3">
+							{item.title}
+						</h3>
+						<p class="text-text-muted text-sm leading-relaxed">
+							{item.description}
+						</p>
+					</Card>
+				</div>
+			))}
+		</div>
+	</div>
+</section>

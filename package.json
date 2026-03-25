@@ -1,5 +1,5 @@
 {
-  "name": "afraid-antimatter",
+  "name": "gpus",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -9,9 +9,29 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "bunx biome check src astro.config.mjs && bunx oxlint src",
+    "lint:fix": "bunx biome check src astro.config.mjs --write && bunx oxlint src --fix --fix-suggestions",
+    "prepare": "lefthook install"
   },
   "dependencies": {
-    "astro": "^6.0.8"
+    "@astrojs/check": "^0.9.8",
+    "@astrojs/react": "^5.0.1",
+    "@astrojs/sitemap": "^3.7.1",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "astro": "^6.0.8",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^1.6.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.9",
+    "lefthook": "^2.1.4",
+    "oxlint": "^1.57.0"
   }
 }

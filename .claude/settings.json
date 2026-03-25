@@ -134,6 +134,6 @@
 	"enabledPlugins": {},
 	"statusLine": {
 		"type": "command",
-		"command": "python3 /home/mauricio/namesa/.claude/scripts/context-monitor.py"
+		"command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/scripts/context-monitor.py"
 	}
 }

@@ -1,0 +1,98 @@
+{
+	"name": "Comunidade US",
+	"slug": "comunidade-us",
+	"tagline": "Educacao Continuada em Saude Estetica",
+	"description": "Comunidade de aprendizado continuo com conteudo exclusivo, lives semanais e networking entre profissionais da saude estetica.",
+	"type": "Educacao Continuada",
+	"audience": "Profissionais da estetica",
+	"icon": "Users",
+	"image": "/images/products/comunidade-us.jpg",
+	"order": 4,
+	"hero": {
+		"headline": "Nunca pare de evoluir na Saude Estetica",
+		"subheadline": "Conteudo exclusivo, lives semanais e uma comunidade que te mantem atualizado e conectado"
+	},
+	"painPoints": [
+		{
+			"icon": "AlertTriangle",
+			"title": "Conhecimento desatualizado",
+			"description": "A estetica avancada evolui a cada mes. Novas tecnicas, protocolos e produtos surgem constantemente — e quem nao se atualiza fica para tras rapidamente."
+		},
+		{
+			"icon": "UserX",
+			"title": "Isolamento profissional",
+			"description": "Voce trabalha sozinho na clinica, sem colegas para trocar experiencias, discutir casos dificeis ou compartilhar aprendizados. Falta uma rede de apoio profissional."
+		},
+		{
+			"icon": "DollarSign",
+			"title": "Cursos caros e pontuais",
+			"description": "Cada atualizacao exige um investimento alto em cursos isolados. Voce gasta muito e mesmo assim sente que esta sempre correndo atras do que ja deveria saber."
+		}
+	],
+	"pillars": [
+		{
+			"icon": "Video",
+			"title": "Lives Semanais com Especialistas",
+			"description": "Toda semana, uma live com profissionais de referencia abordando tecnicas, casos clinicos, tendencias de mercado e estrategias de negocios."
+		},
+		{
+			"icon": "BookOpen",
+			"title": "Biblioteca de Conteudo Exclusivo",
+			"description": "Acervo crescente de aulas, protocolos, materiais de apoio e estudos de caso — tudo organizado por tema e nivel de complexidade."
+		},
+		{
+			"icon": "MessageCircle",
+			"title": "Networking Ativo entre Membros",
+			"description": "Forum privado, grupos tematicos e encontros virtuais que conectam voce a centenas de profissionais que enfrentam os mesmos desafios."
+		}
+	],
+	"benefits": [
+		"Acesso imediato a todo o acervo de conteudo",
+		"Lives semanais ao vivo com especialistas convidados",
+		"Comunidade privada para networking e troca de casos",
+		"Descontos exclusivos em produtos e eventos do Grupo US",
+		"Atualizacao continua sem investimento pontual alto"
+	],
+	"differentials": [
+		{
+			"title": "Curadoria direta da Dra. Sacha Gualberto",
+			"description": "Todo conteudo passa pela curadoria da Dra. Sacha, garantindo relevancia, qualidade e aplicabilidade pratica para quem atua no dia a dia da clinica."
+		},
+		{
+			"title": "Modelo de assinatura acessivel",
+			"description": "Por um investimento mensal acessivel, voce tem acesso a conteudo que custaria milhares de reais em cursos avulsos. Cancele quando quiser, sem fidelidade."
+		}
+	],
+	"faqs": [
+		{
+			"question": "Qual o valor da assinatura mensal?",
+			"answer": "Entre em contato com nossa equipe para conhecer os planos disponiveis. Oferecemos opcoes mensais e anuais com descontos especiais para pagamento antecipado."
+		},
+		{
+			"question": "Posso acessar o conteudo gravado das lives?",
+			"answer": "Sim. Todas as lives ficam gravadas e disponiveis na biblioteca da comunidade. Voce pode assistir quando e quantas vezes quiser, no seu ritmo."
+		},
+		{
+			"question": "A comunidade e exclusiva para alunos do Grupo US?",
+			"answer": "Nao. A Comunidade US e aberta a qualquer profissional da saude que atue ou deseje atuar na area de estetica. Nao e necessario ser aluno de outros programas."
+		}
+	],
+	"cta": {
+		"label": "Quero fazer parte",
+		"url": "https://drasacha.com.br/comunidade-us",
+		"whatsappMessage": "Ola! Quero saber mais sobre a Comunidade US",
+		"type": "primary"
+	},
+	"testimonials": [
+		{
+			"name": "Dra. Juliana Costa",
+			"role": "Farmaceutica Esteticista — Fortaleza/CE",
+			"quote": "A Comunidade US e minha fonte principal de atualizacao. As lives semanais sao incriveis e o networking com outros profissionais ja me rendeu parcerias de trabalho."
+		},
+		{
+			"name": "Dra. Amanda Ferreira",
+			"role": "Enfermeira Esteta — Goiania/GO",
+			"quote": "Pelo valor que pago na assinatura, recebo mais conteudo de qualidade do que em cursos que custam 10 vezes mais. E a comunidade e acolhedora e colaborativa."
+		}
+	]
+}

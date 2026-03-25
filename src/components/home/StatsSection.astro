@@ -1,0 +1,31 @@
+---
+const stats = [
+	{ number: "+5.000", label: "Profissionais impactados" },
+	{ number: "26", label: "Estados atendidos" },
+	{ number: "10+", label: "Paises alcancados" },
+	{ number: "6", label: "Programas educacionais" },
+];
+---
+
+<section class="px-4 py-24 sm:px-6 lg:py-32">
+	<div class="mx-auto max-w-5xl">
+		<div class="glass-card rounded-2xl px-6 py-12 md:px-12 md:py-16" data-reveal="scale">
+			<div class="grid grid-cols-2 gap-8 md:gap-12 lg:grid-cols-4">
+				{stats.map((stat, index) => (
+					<div
+						class="text-center"
+						data-reveal="up"
+						data-reveal-delay={String(index + 1)}
+					>
+						<span class="block font-serif text-4xl font-bold text-gold md:text-5xl">
+							{stat.number}
+						</span>
+						<span class="mt-2 block text-sm text-text-muted md:text-base">
+							{stat.label}
+						</span>
+					</div>
+				))}
+			</div>
+		</div>
+	</div>
+</section>

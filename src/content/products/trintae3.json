@@ -1,0 +1,106 @@
+{
+	"name": "TRINTAE3",
+	"slug": "trintae3",
+	"tagline": "Pos-graduacao + Mentoria em Saude Estetica Avancada",
+	"description": "Programa completo que une pos-graduacao academica com mentoria pratica para profissionais da saude que desejam se tornar referencia em estetica avancada.",
+	"type": "Pos-graduacao + Mentoria",
+	"audience": "Enfermeiros, biomedicos, farmaceuticos e fisioterapeutas",
+	"icon": "GraduationCap",
+	"image": "/images/products/trintae3.jpg",
+	"order": 1,
+	"hero": {
+		"headline": "Torne-se referencia em Saude Estetica Avancada",
+		"subheadline": "Pos-graduacao + Mentoria com cases reais e acompanhamento personalizado"
+	},
+	"painPoints": [
+		{
+			"icon": "TrendingDown",
+			"title": "Renda limitada na clinica tradicional",
+			"description": "Voce se formou, trabalha duro, mas o faturamento nao cresce. A clinica convencional sozinha nao paga o investimento que voce fez na sua carreira."
+		},
+		{
+			"icon": "BookX",
+			"title": "Falta de habilidades em gestao e negocios",
+			"description": "A faculdade ensinou tecnica, mas nao ensinou a precificar, captar pacientes ou construir autoridade. Voce e otimo profissional, mas nao sabe vender seu trabalho."
+		},
+		{
+			"icon": "UserX",
+			"title": "Sem mentoria e sem direcionamento",
+			"description": "Voce tenta aprender sozinho, consome conteudo online, mas nao tem quem te guie pelo caminho certo. Falta alguem que ja chegou onde voce quer chegar."
+		}
+	],
+	"pillars": [
+		{
+			"icon": "BookOpen",
+			"title": "Formacao Tecnica Avancada",
+			"description": "Grade curricular robusta com as tecnicas mais atuais em harmonizacao facial, bioestimuladores, fios e protocolos combinados — tudo com embasamento cientifico."
+		},
+		{
+			"icon": "Briefcase",
+			"title": "Mentoria de Negocios",
+			"description": "Acompanhamento individualizado para estruturar sua clinica, definir posicionamento, precificar corretamente e criar estrategias de captacao de pacientes premium."
+		},
+		{
+			"icon": "Users",
+			"title": "Networking Premium",
+			"description": "Acesso a uma comunidade exclusiva de profissionais de alto nivel, com eventos presenciais, imersoes e troca de experiencias que aceleram seu crescimento."
+		}
+	],
+	"benefits": [
+		"Titulo de pos-graduacao reconhecido pelo MEC",
+		"Mentoria individual com Dra. Sacha Gualberto e equipe",
+		"Acesso a protocolos validados em mais de 5.000 procedimentos",
+		"Rede de networking com os melhores profissionais do Brasil",
+		"Suporte continuo apos a formacao para consolidar resultados"
+	],
+	"differentials": [
+		{
+			"title": "Pos-graduacao + Mentoria integradas",
+			"description": "Unico programa do mercado que combina a credibilidade de uma pos-graduacao academica com o acompanhamento pratico de uma mentoria de negocios."
+		},
+		{
+			"title": "Cases reais desde o primeiro modulo",
+			"description": "Voce nao espera se formar para aplicar. Desde o inicio, trabalha com pacientes reais sob supervisao direta, construindo portfolio e confianca."
+		},
+		{
+			"title": "Metodologia validada pela Dra. Sacha",
+			"description": "Desenvolvida por quem ja formou mais de 5.000 profissionais e construiu uma das maiores referencias em saude estetica do Brasil."
+		}
+	],
+	"faqs": [
+		{
+			"question": "Quem pode participar do TRINTAE3?",
+			"answer": "O programa e voltado para profissionais da saude graduados: enfermeiros, biomedicos, farmaceuticos e fisioterapeutas que desejam atuar ou ja atuam na area de estetica avancada."
+		},
+		{
+			"question": "Qual a duracao do programa?",
+			"answer": "O TRINTAE3 tem duracao de 18 meses, com encontros mensais presenciais e acompanhamento online continuo entre os modulos."
+		},
+		{
+			"question": "O titulo e reconhecido pelo MEC?",
+			"answer": "Sim. O TRINTAE3 confere titulo de pos-graduacao lato sensu reconhecido pelo MEC, alem do certificado de mentoria pratica em negocios de saude estetica."
+		},
+		{
+			"question": "Posso parcelar o investimento?",
+			"answer": "Sim, oferecemos condicoes especiais de parcelamento. Entre em contato com nossa equipe para conhecer os planos disponiveis e as condicoes de pagamento."
+		}
+	],
+	"cta": {
+		"label": "Quero me inscrever",
+		"url": "https://drasacha.com.br/trintae3",
+		"whatsappMessage": "Ola! Quero saber mais sobre o TRINTAE3",
+		"type": "primary"
+	},
+	"testimonials": [
+		{
+			"name": "Dra. Fernanda Oliveira",
+			"role": "Enfermeira Esteta — Sao Paulo/SP",
+			"quote": "O TRINTAE3 transformou minha carreira. Sai de um faturamento de R$ 8 mil para mais de R$ 40 mil por mes em menos de um ano. A mentoria fez toda a diferenca."
+		},
+		{
+			"name": "Dr. Rafael Mendes",
+			"role": "Biomedico Esteticista — Belo Horizonte/MG",
+			"quote": "Ja fiz outros cursos, mas nenhum me deu o direcionamento pratico que o TRINTAE3 oferece. Hoje tenho lista de espera na clinica e uma equipe estruturada."
+		}
+	]
+}

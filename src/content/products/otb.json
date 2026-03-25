@@ -1,0 +1,106 @@
+{
+	"name": "OTB — Out Of The Box",
+	"slug": "otb",
+	"tagline": "MBA Internacional em Saude Estetica",
+	"description": "Experiencia internacional exclusiva para profissionais de elite que buscam formacao de MBA com imersao em mercados globais de saude estetica.",
+	"type": "MBA Internacional",
+	"audience": "Elite em saude estetica",
+	"icon": "Globe",
+	"image": "/images/products/otb.jpg",
+	"order": 2,
+	"hero": {
+		"headline": "Sua carreira sem fronteiras: MBA Internacional em Saude Estetica",
+		"subheadline": "Imersao nos maiores mercados do mundo com certificacao internacional e networking global"
+	},
+	"painPoints": [
+		{
+			"icon": "MapPinOff",
+			"title": "Mercado local saturado",
+			"description": "Voce domina as tecnicas nacionais, mas sente que seu crescimento estagnou. O mercado local esta cada vez mais competitivo e os diferenciais se esgotaram."
+		},
+		{
+			"icon": "GraduationCap",
+			"title": "Formacao limitada ao cenario brasileiro",
+			"description": "Toda sua base de conhecimento vem do mercado nacional. Faltam referencias internacionais, tendencias globais e protocolos validados em outros paises."
+		},
+		{
+			"icon": "ShieldOff",
+			"title": "Sem credencial internacional",
+			"description": "Voce quer se posicionar como referencia de nivel mundial, mas nao tem uma certificacao que comprove experiencia e formacao em mercados internacionais."
+		}
+	],
+	"pillars": [
+		{
+			"icon": "Plane",
+			"title": "Imersao Internacional Presencial",
+			"description": "Modulos presenciais em polos internacionais de saude estetica — Europa, Estados Unidos e Asia — com visitas a clinicas de referencia e troca direta com especialistas locais."
+		},
+		{
+			"icon": "Award",
+			"title": "Certificacao MBA com Reconhecimento Global",
+			"description": "Titulo de MBA em parceria com instituicoes internacionais, valido globalmente, que posiciona voce no topo do mercado de saude estetica."
+		},
+		{
+			"icon": "Network",
+			"title": "Networking de Elite Global",
+			"description": "Conexao direta com os maiores nomes da estetica mundial, acesso a eventos exclusivos e uma rede de contatos que abre portas em qualquer mercado."
+		}
+	],
+	"benefits": [
+		"Certificacao MBA com reconhecimento internacional",
+		"Imersoes presenciais em tres continentes",
+		"Acesso a protocolos e tecnologias antes de chegarem ao Brasil",
+		"Networking com profissionais de mais de 15 paises",
+		"Mentoria estrategica para posicionamento global"
+	],
+	"differentials": [
+		{
+			"title": "Unico MBA em Saude Estetica com imersoes internacionais",
+			"description": "Nenhum outro programa no Brasil oferece formacao academica de MBA combinada com modulos presenciais em clinicas de referencia na Europa, EUA e Asia."
+		},
+		{
+			"title": "Curadoria da Dra. Sacha Gualberto",
+			"description": "Todo o conteudo e rede de parceiros internacionais foram construidos pessoalmente pela Dra. Sacha ao longo de anos de relacionamento com lideres globais da estetica."
+		},
+		{
+			"title": "Turmas ultra-reduzidas",
+			"description": "Maximo de 20 alunos por turma para garantir experiencia personalizada, acesso direto aos mentores internacionais e networking de alto impacto."
+		}
+	],
+	"faqs": [
+		{
+			"question": "Quais paises estao incluidos na imersao?",
+			"answer": "O programa inclui modulos presenciais em Portugal, Estados Unidos e Coreia do Sul — tres dos maiores polos de inovacao em saude estetica do mundo. O roteiro pode variar entre turmas."
+		},
+		{
+			"question": "Preciso falar ingles fluente para participar?",
+			"answer": "Ingles intermediario e recomendado para aproveitar ao maximo as imersoes. Contamos com suporte de traducao nos modulos internacionais, mas a fluencia potencializa a experiencia."
+		},
+		{
+			"question": "O MBA e reconhecido no Brasil?",
+			"answer": "Sim. A certificacao e emitida em parceria com instituicao de ensino credenciada, com validade nacional e reconhecimento internacional no setor de saude estetica."
+		},
+		{
+			"question": "Quanto tempo dura o programa completo?",
+			"answer": "O OTB tem duracao de 24 meses, com modulos online mensais e tres imersoes internacionais presenciais distribuidas ao longo do programa."
+		}
+	],
+	"cta": {
+		"label": "Quero participar do OTB",
+		"url": "https://drasacha.com.br/otb",
+		"whatsappMessage": "Ola! Quero saber mais sobre o OTB — MBA Internacional",
+		"type": "primary"
+	},
+	"testimonials": [
+		{
+			"name": "Dra. Camila Rodrigues",
+			"role": "Medica Dermatologista — Rio de Janeiro/RJ",
+			"quote": "O OTB abriu minha visao para um nivel de estetica que eu nem sabia que existia. A imersao na Coreia do Sul mudou completamente meus protocolos e meu posicionamento."
+		},
+		{
+			"name": "Dr. Lucas Santana",
+			"role": "Cirurgiao Dentista Esteticista — Curitiba/PR",
+			"quote": "O networking internacional que construi no OTB vale mais do que qualquer certificado. Hoje tenho parceiros em tres paises e minha clinica atende pacientes estrangeiros."
+		}
+	]
+}
