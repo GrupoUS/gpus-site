@@ -12,7 +12,8 @@ import Testimonials from "../components/landing/Testimonials.astro";
 import Layout from "../layouts/Layout.astro";
 
 const products = await getCollection("products");
-const product = products.find((p) => p.data.slug === "trintae3")!;
+const product = products.find((p) => p.data.slug === "trintae3");
+if (!product) throw new Error("Product trintae3 not found");
 const d = product.data;
 ---
 

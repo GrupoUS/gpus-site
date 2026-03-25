@@ -16,7 +16,7 @@ interface Props {
 	};
 }
 
-const { name, tagline, hero, type, cta } = Astro.props;
+const { name, hero, type, cta } = Astro.props;
 
 const whatsappUrl = `https://wa.me/5511920474028?text=${encodeURIComponent(cta.whatsappMessage)}`;
 
