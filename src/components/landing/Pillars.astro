@@ -22,12 +22,12 @@ const { pillars } = Astro.props;
 		<div class="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-3">
 			{pillars.map((pillar, index) => (
 				<div
-					class="glass-card rounded-2xl p-6 md:p-8"
+					class="glass-card rounded-2xl border-t-2 border-t-gold p-6 md:p-8 hover:border-gold/40 hover:shadow-lg hover:shadow-gold/5 transition-all duration-300 hover:bg-navy-light/30"
 					data-reveal="scale"
 					data-reveal-delay={String(index + 1)}
 				>
 					<!-- Numbered badge -->
-					<span class="inline-block font-serif text-4xl font-bold text-gold/30">
+					<span class="inline-block font-serif text-5xl font-bold text-gold">
 						{String(index + 1).padStart(2, "0")}
 					</span>
 

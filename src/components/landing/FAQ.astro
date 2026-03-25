@@ -17,8 +17,8 @@ const { faqs } = Astro.props;
 
 		<div class="mt-14 space-y-3" data-reveal="up">
 			{faqs.map((faq) => (
-				<details class="group glass-card rounded-2xl">
-					<summary class="flex cursor-pointer list-none items-center justify-between p-6 font-semibold text-text-primary [&::-webkit-details-marker]:hidden">
+				<details class="group glass-card rounded-2xl transition-all duration-300 open:bg-navy-light/80 open:border-gold/30 open:shadow-lg open:shadow-gold/5 open:border-l-2 open:border-l-gold">
+					<summary class="flex cursor-pointer list-none items-center justify-between p-6 font-semibold text-text-primary [&::-webkit-details-marker]:hidden hover:text-gold transition-colors duration-200">
 						<span>{faq.question}</span>
 						<svg
 							class="ml-4 h-5 w-5 shrink-0 text-gold transition-transform duration-300 group-open:rotate-180"

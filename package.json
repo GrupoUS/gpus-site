@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "check:external-urls": "node scripts/check-external-urls.mjs",
     "lint": "bunx biome check src astro.config.mjs && bunx oxlint src",
     "lint:fix": "bunx biome check src astro.config.mjs --write && bunx oxlint src --fix --fix-suggestions",
     "prepare": "lefthook install || true"
@@ -22,10 +23,14 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "astro": "^6.0.8",
+    "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.6.0",
+    "motion": "^12.38.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "simplex-noise": "^4.0.3",
+    "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.2"
   },

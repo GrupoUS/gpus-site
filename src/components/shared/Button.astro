@@ -27,10 +27,13 @@ const sizeClasses: Record<string, string> = {
 };
 
 const variantClasses: Record<string, string> = {
-	primary: "bg-gold text-navy hover:bg-gold-light gold-glow",
-	whatsapp: "bg-whatsapp text-white hover:bg-whatsapp-hover",
-	outline: "border-2 border-gold text-gold hover:bg-gold hover:text-navy",
-	ghost: "text-gold hover:bg-navy-light",
+	primary:
+		"bg-gold text-navy hover:bg-gold-light gold-glow hover:scale-[1.02] active:scale-95",
+	whatsapp:
+		"bg-whatsapp text-white hover:bg-whatsapp-hover hover:shadow-lg hover:shadow-whatsapp/20 active:scale-95",
+	outline:
+		"border-2 border-gold text-gold hover:bg-gold hover:text-navy hover:shadow-lg hover:shadow-gold/20 active:scale-95",
+	ghost: "text-gold hover:bg-navy-lighter/50 active:scale-95",
 };
 
 const classes = [

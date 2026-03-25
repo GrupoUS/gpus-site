@@ -166,6 +166,7 @@ gpus/
 | Build                | `bun run build`      |
 | Preview build        | `bun run preview`    |
 | Check types          | `bunx astro check`   |
+| URLs produtos externos | `bun run check:external-urls` |
 
 ---
 
@@ -435,7 +436,7 @@ Each product landing page follows this flow (all components in `src/components/l
 - **Sitemap:** `filter` em `@astrojs/sitemap` exclui essas duas rotas (evita indexar páginas só de redirect).
 - **Sincronizar destinos:** ao trocar URL de produção (ex.: sair do Lovable), atualizar `externalSiteUrl`, `cta.url`, `redirects` e o `filter` se o path mudar.
 
-**Validação:** `bunx astro check && bun run build`.
+**Validação:** `bun run check:external-urls && bunx astro check && bun run build` (ver [`docs/solutions/integration-issues/astro-static-external-product-routing.md`](docs/solutions/integration-issues/astro-static-external-product-routing.md)).
 
 ### [2026-03-25] Plugins Cursor: MCP, skills e Tavily
 

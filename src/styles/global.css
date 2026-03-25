@@ -273,3 +273,98 @@ body {
 .card-hover-lift:hover {
 	transform: translateY(-6px);
 }
+
+/* ===== Aceternity UI Animations ===== */
+
+@keyframes spotlight {
+	0% {
+		opacity: 0;
+		transform: translate(-72%, -62%) scale(0.5);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(-50%, -40%) scale(1);
+	}
+}
+
+@utility animate-spotlight {
+	animation: spotlight 2s ease 0.75s 1 forwards;
+}
+
+@keyframes aurora {
+	from {
+		background-position:
+			50% 50%,
+			50% 50%;
+	}
+	to {
+		background-position:
+			350% 50%,
+			350% 50%;
+	}
+}
+
+@utility animate-aurora {
+	animation: aurora 60s linear infinite;
+}
+
+/* ===== Enhanced Card Hover ===== */
+
+@utility card-glow-hover {
+	transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-glow-hover:hover {
+	border-color: color-mix(in srgb, var(--color-gold) 30%, transparent);
+	box-shadow:
+		0 10px 40px color-mix(in srgb, var(--color-gold) 8%, transparent),
+		0 0 20px color-mix(in srgb, var(--color-gold) 5%, transparent);
+	transform: translateY(-4px);
+}
+
+/* ===== Text Shimmer ===== */
+
+@keyframes shimmer {
+	0% {
+		background-position: -200% center;
+	}
+	100% {
+		background-position: 200% center;
+	}
+}
+
+@utility text-shimmer {
+	background: linear-gradient(
+		90deg,
+		var(--color-gold) 0%,
+		var(--color-gold-light) 50%,
+		var(--color-gold) 100%
+	);
+	background-size: 200% auto;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	animation: shimmer 3s linear infinite;
+}
+
+/* ===== Gradient Text ===== */
+
+@utility text-gradient-gold {
+	background: linear-gradient(
+		135deg,
+		var(--color-gold),
+		var(--color-gold-light)
+	);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+/* ===== Reduced Motion: Shimmer ===== */
+
+@media (prefers-reduced-motion: reduce) {
+	.text-shimmer {
+		animation: none;
+		-webkit-text-fill-color: var(--color-gold);
+	}
+}

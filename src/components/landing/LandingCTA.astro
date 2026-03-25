@@ -1,5 +1,6 @@
 ---
 import Button from "../shared/Button.astro";
+import { BackgroundBeams } from "../ui/background-beams";
 
 interface Props {
 	name: string;
@@ -15,8 +16,10 @@ const { name, cta } = Astro.props;
 const whatsappUrl = `https://wa.me/5511920474028?text=${encodeURIComponent(cta.whatsappMessage)}`;
 ---
 
-<section class="bg-navy-light px-4 py-20 sm:px-6 lg:px-8">
-	<div class="mx-auto max-w-3xl text-center" data-reveal="scale">
+<section class="relative bg-navy-light px-4 py-20 sm:px-6 lg:px-8 overflow-hidden">
+	<BackgroundBeams client:visible className="opacity-40" />
+
+	<div class="relative z-10 mx-auto max-w-3xl text-center" data-reveal="scale">
 		<h2 class="font-serif text-3xl font-bold text-gold md:text-4xl">
 			Pronto para comecar sua jornada no {name}?
 		</h2>
