@@ -4,38 +4,45 @@ import SectionHeading from "../shared/SectionHeading.astro";
 const values = [
 	{
 		number: "01",
-		title: "Excelência com entrega real",
+		title: "Transparência Radical",
 		description:
-			"Não basta saber, é preciso entregar resultados tangíveis. Cada ação do Grupo US é medida pelo impacto real na vida dos profissionais.",
-		icon: "award",
+			"Falamos o que precisa ser dito, no tempo certo e com respeito. Comunicação direta, transparente e sem rodeios.",
 	},
 	{
 		number: "02",
-		title: "Autorresponsabilidade",
+		title: "Honestidade Inegociável",
 		description:
-			"Cada membro assume protagonismo sobre sua jornada. Não esperamos que o cenário mude — nós mudamos o cenário.",
-		icon: "user-check",
+			"Ética não é circunstancial, é padrão. Em cada decisão, em cada entrega, a integridade vem primeiro.",
 	},
 	{
 		number: "03",
-		title: "Olhar de Dono",
+		title: "Empatia com Responsabilidade",
 		description:
-			"Tratamos cada projeto, aluno e resultado como se fossem nossos. O comprometimento vai além do contrato.",
-		icon: "eye",
+			"Entendemos o contexto sem abrir mão do resultado. Cuidar é também exigir o melhor de cada um.",
 	},
 	{
 		number: "04",
-		title: "Clareza é a nova gentileza",
+		title: "Excelência com Entrega Real",
 		description:
-			"Comunicação direta, transparente e respeitosa. Feedbacks claros constroem confiança e aceleram o crescimento.",
-		icon: "message-circle",
+			"Não vendemos promessa vazia, entregamos transformação concreta. Cada ação é medida pelo impacto real na vida dos profissionais.",
 	},
 	{
 		number: "05",
-		title: "Simplicidade eficaz",
+		title: "Autorresponsabilidade",
 		description:
-			"Eliminamos o desnecessário para focar no que realmente transforma. Menos complexidade, mais resultado.",
-		icon: "minimize",
+			"Errou? Assume. Aprende. Ajusta. Cada membro assume protagonismo sobre sua jornada — nós mudamos o cenário.",
+	},
+	{
+		number: "06",
+		title: "Simplicidade Eficaz",
+		description:
+			"Processos claros e decisões objetivas. Eliminamos o desnecessário para focar no que realmente transforma.",
+	},
+	{
+		number: "07",
+		title: "Evolução Contínua",
+		description:
+			"Crescimento técnico, pessoal e estratégico. Quem para de evoluir, para de liderar.",
 	},
 ];
 ---
@@ -52,10 +59,10 @@ const values = [
 				<div
 					class:list={[
 						"glass-card rounded-2xl p-6 md:p-8",
-						index >= 3 ? "lg:col-span-1 lg:mx-auto lg:w-full lg:max-w-sm" : "",
+						index === 6 ? "md:col-start-1 lg:col-start-2" : "",
 					]}
 					data-reveal="up"
-					data-reveal-delay={String(index + 1)}
+					data-reveal-delay={String((index % 3) + 1)}
 				>
 					<div class="flex items-start gap-4">
 						<div class="flex-shrink-0">
@@ -64,90 +71,9 @@ const values = [
 							</span>
 						</div>
 						<div class="flex-1">
-							<div class="flex items-center gap-3 mb-3">
-								<div class="w-8 h-8 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
-									{value.icon === "award" && (
-										<svg
-											class="w-4 h-4 text-gold"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											aria-hidden="true"
-										>
-											<path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526" />
-											<circle cx="12" cy="8" r="6" />
-										</svg>
-									)}
-									{value.icon === "user-check" && (
-										<svg
-											class="w-4 h-4 text-gold"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											aria-hidden="true"
-										>
-											<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-											<circle cx="9" cy="7" r="4" />
-											<polyline points="16 11 18 13 22 9" />
-										</svg>
-									)}
-									{value.icon === "eye" && (
-										<svg
-											class="w-4 h-4 text-gold"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											aria-hidden="true"
-										>
-											<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-									)}
-									{value.icon === "message-circle" && (
-										<svg
-											class="w-4 h-4 text-gold"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											aria-hidden="true"
-										>
-											<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
-										</svg>
-									)}
-									{value.icon === "minimize" && (
-										<svg
-											class="w-4 h-4 text-gold"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											aria-hidden="true"
-										>
-											<polyline points="4 14 10 14 10 20" />
-											<polyline points="20 10 14 10 14 4" />
-											<line x1="14" x2="21" y1="10" y2="3" />
-											<line x1="3" x2="10" y1="21" y2="14" />
-										</svg>
-									)}
-								</div>
-								<h3 class="font-semibold text-text-primary text-base">
-									{value.title}
-								</h3>
-							</div>
+							<h3 class="font-semibold text-text-primary text-base mb-2">
+								{value.title}
+							</h3>
 							<p class="text-text-muted text-sm leading-relaxed">
 								{value.description}
 							</p>

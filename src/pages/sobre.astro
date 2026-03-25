@@ -1,4 +1,6 @@
 ---
+import Culture from "../components/about/Culture.astro";
+import Founders from "../components/about/Founders.astro";
 import Mission from "../components/about/Mission.astro";
 import TeamGrid from "../components/about/TeamGrid.astro";
 import Values from "../components/about/Values.astro";
@@ -8,7 +10,7 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout
 	title="Sobre o Grupo US"
-	description="Conheça quem somos: missão, valores e equipe do Grupo US. Ecossistema de saúde estética avançada liderado por Dra. Sacha Gualberto."
+	description="Conheça quem somos: missão, valores e equipe do Grupo US. Ecossistema de saúde estética avançada fundado por Dra. Sacha Gualberto e Prof. Maurício Magalhães."
 	activeNav="sobre"
 	breadcrumbs={[
 		{ name: "Início", url: "https://grupous.com.br/" },
@@ -21,14 +23,16 @@ import Layout from "../layouts/Layout.astro";
 			<h1 class="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-6">
 				Sobre o <span class="text-gold">Grupo US</span>
 			</h1>
-			<p class="text-text-muted text-lg md:text-xl max-w-2xl mx-auto">
-				Ecossistema educacional que transforma profissionais da saúde em referências globais.
+			<p class="text-text-muted text-lg md:text-xl max-w-3xl mx-auto">
+				Ecossistema educacional que capacita profissionais da saúde a se especializarem em Saúde Estética Avançada e Harmonização Facial, formando Empresários da Saúde. Unimos ciência, gestão e propósito.
 			</p>
 		</div>
 	</section>
 
+	<Founders />
 	<Mission />
 	<Values />
+	<Culture />
 	<TeamGrid />
 
 	<!-- CTA Section -->

@@ -6,20 +6,39 @@ const missions = [
 	{
 		title: "Propósito",
 		description:
-			"Transformar profissionais da saúde em referências, unindo técnica, gestão e comunidade.",
+			"Transformar profissionais da saúde em referências, unindo técnica, gestão e comunidade. Transformamos conhecimento em performance, liderança e protagonismo.",
 		icon: "target",
 	},
 	{
 		title: "Missão",
 		description:
-			"Impactar profissionais de saúde, despertando potenciais para liderar vidas e negócios.",
+			"Impactar o maior número de profissionais da saúde no mundo através da Saúde Estética. Despertamos brilho e potenciais adormecidos para formar líderes em suas vidas e negócios.",
 		icon: "compass",
 	},
 	{
 		title: "Visão",
 		description:
-			"Ser o ecossistema mais completo em Saúde e Negócios globalmente.",
+			"Ser o ecossistema mais completo em Saúde e Negócios globalmente, com expansão internacional e protagonismo global.",
 		icon: "eye",
+	},
+];
+
+const vision = [
+	{
+		period: "Curto Prazo",
+		timeframe: "0 a 12 meses",
+		description:
+			"Estruturar base sólida, cultura forte e crescimento previsível.",
+	},
+	{
+		period: "Médio Prazo",
+		timeframe: "1 a 3 anos",
+		description: "Ser a principal referência nacional em formação estratégica.",
+	},
+	{
+		period: "Longo Prazo",
+		timeframe: "3 a 7 anos",
+		description: "Expansão internacional e protagonismo global.",
 	},
 ];
 ---
@@ -94,6 +113,35 @@ const missions = [
 					</Card>
 				</div>
 			))}
+		</div>
+
+		<!-- Roadmap de Visão -->
+		<div class="mt-16" data-reveal="up">
+			<h3 class="font-serif text-2xl font-bold text-text-primary text-center mb-8">
+				Roadmap de <span class="text-gold">Crescimento</span>
+			</h3>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+				{vision.map((step, index) => (
+					<div
+						class="glass-card rounded-2xl p-6 text-center relative overflow-hidden"
+						data-reveal="up"
+						data-reveal-delay={String(index + 1)}
+					>
+						<span class="text-gold/20 font-serif text-5xl font-bold absolute top-3 right-4">
+							{String(index + 1)}
+						</span>
+						<p class="text-gold font-semibold text-sm uppercase tracking-wider mb-1">
+							{step.period}
+						</p>
+						<p class="text-text-muted text-xs mb-3">
+							{step.timeframe}
+						</p>
+						<p class="text-text-primary text-sm leading-relaxed">
+							{step.description}
+						</p>
+					</div>
+				))}
+			</div>
 		</div>
 	</div>
 </section>
