@@ -58,7 +58,7 @@ Phase 2:  frontend-specialist (continues)
 ### Step 1: Generate Design System
 
 ```bash
-python3 .claude/skills/ui-ux-pro-max/scripts/search.py "premium event landing page aesthetic medicine luxury" --design-system -p "Na Mesa Certa"
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "premium institutional landing page aesthetic medicine luxury" --design-system -p "Grupo US"
 ```
 
 This returns: style recommendation, color palette, typography pairing, layout pattern, effects, and anti-patterns — all with reasoning from the `ui-reasoning.csv` database.
@@ -255,7 +255,7 @@ Simple tweak → Fix directly (skip Phase 0, no background agent)
 
 ```typescript
 // Phase 0A: Design system (run in main agent — fast CLI call)
-Bash("python3 .claude/skills/ui-ux-pro-max/scripts/search.py 'premium event luxury' --design-system -p 'Na Mesa Certa'");
+Bash("python3 .claude/skills/ui-ux-pro-max/scripts/search.py 'premium institutional luxury' --design-system -p 'Grupo US'");
 
 // Phase 1: Implement (background)
 Task({
@@ -280,7 +280,7 @@ Task({
 
 ```typescript
 // Phase 0A: Design system (foreground — fast)
-Bash("python3 .claude/skills/ui-ux-pro-max/scripts/search.py '[keywords]' --design-system -p 'Na Mesa Certa'");
+Bash("python3 .claude/skills/ui-ux-pro-max/scripts/search.py '[keywords]' --design-system -p 'Grupo US'");
 
 // Phase 0B: Stitch prototype (foreground — wait for result)
 mcp__stitch__generate_screen_from_text({
@@ -389,7 +389,7 @@ Skill("gpus-theme")  # GPUS Navy+Gold tokens
 5. `class:list` for conditional styling, `define:vars` for server→CSS bridge
 
 **React Islands (strict rules from `astro` skill → islands-architecture.md):**
-6. Only 3 React Islands allowed: CountdownTimer (`client:load`), FAQAccordion (`client:visible`), Testimonials (`client:visible`)
+6. React Islands only for Aceternity UI visual effects (`src/components/ui/*.tsx`) — AuroraBackground, Spotlight, BackgroundBeams, TextGenerateEffect, LampBackdrop. Use `client:load` for hero effects, `client:visible` for below-fold effects.
 7. `client:*` directives ONLY on `.tsx` components — NEVER on `.astro`
 8. Props must be serializable plain objects (no functions, Dates, class instances)
 
@@ -482,7 +482,7 @@ START: /design [task]
 | Retry Stitch if slow                               | Wait — generation takes minutes. Use get_screen later         |
 | Hardcode colors                                    | Use GPUS tokens                                               |
 | Hardcode content in components                     | Use Content Collections (getCollection)                       |
-| Add React Islands beyond the 3 allowed             | CountdownTimer, FAQAccordion, Testimonials only               |
+| Add interactive React Islands                       | Only Aceternity UI visual effects in src/components/ui/       |
 | Use emojis as UI icons                             | Lucide React SVG icons only                                   |
 | Animate width/height/top/left                      | transform + opacity only                                      |
 | Skip a11y validation                               | Run ui-ux-pro-max Priority 1-3 checks                        |

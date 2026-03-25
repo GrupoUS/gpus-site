@@ -63,11 +63,11 @@ When delegating research tasks, choose based on **where the answer lives**:
 - Map to `.data` before passing to React islands
 - Use `<ClientRouter />` (not `ViewTransitions`) for Astro 6
 - Use Tailwind v4 `@theme` tokens — never hardcode hex
-- Run `bunx astro check && bun run build` as validation gate
+- Run `bun run lint && bunx astro check && bun run build` as validation gate
 
 **MUST NOT DO:**
-- Add new React islands beyond the 3 allowed (CountdownTimer, FAQAccordion, Testimonials)
-- Create `src/content/config.ts` (Astro 6 infers schemas)
+- Add interactive React islands (only Aceternity UI visual effects in `src/components/ui/` are allowed)
+- Create `src/content/config.ts` (project uses `src/content.config.ts` with explicit schemas)
 - Use `client:*` directives on `.astro` components (only on React/Vue/Svelte)
 - Use npm/yarn/pnpm (bun only)
   </command-instruction>

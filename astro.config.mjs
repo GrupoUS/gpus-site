@@ -5,14 +5,38 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
 
+const redirectTargets = {
+	"/na-mesa-certa": "https://namesa.gpus.com.br/",
+	"/otb": "https://otb.gpus.com.br/",
+};
+
+// #region agent log
+void fetch(
+	"http://127.0.0.1:7777/ingest/0a9ce74c-a29a-4996-bf5d-a24a8b2822f7",
+	{
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"X-Debug-Session-Id": "5db282",
+		},
+		body: JSON.stringify({
+			sessionId: "5db282",
+			runId: "initial",
+			hypothesisId: "H1",
+			location: "astro.config.mjs:9",
+			message: "Astro redirect targets loaded",
+			data: redirectTargets,
+			timestamp: Date.now(),
+		}),
+	},
+).catch(() => {});
+// #endregion
+
 // https://astro.build/config
 export default defineConfig({
 	site: "https://grupous.com.br",
 	// Manter destinos alinhados a `externalSiteUrl` em na-mesa-certa.json e otb.json
-	redirects: {
-		"/na-mesa-certa": "https://namesacerta.com.br/",
-		"/otb": "https://ota-dubai.lovable.app/",
-	},
+	redirects: redirectTargets,
 	fonts: [
 		{
 			name: "Playfair Display",

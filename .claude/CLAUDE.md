@@ -52,17 +52,18 @@ src/components/
 ├── home/      # Hero, ProductsGrid, StatsSection, AboutPreview, CTASection
 ├── about/     # Mission, Values, TeamGrid
 ├── landing/   # Reusable product landing page sections (9 components)
-├── shared/    # SectionHeading, Card (glass-card), Button (4 variants)
+├── shared/    # SectionHeading, Card (glass-card), Button (4 variants), Logo
+├── ui/        # React Islands: Aceternity UI effects (aurora-background, spotlight, background-beams, text-generate-effect, lamp, moving-border, wavy-background)
 └── contact/   # ContactForm (if extracted)
 ```
 
 ### Key architectural decisions
 
 - **Tailwind v4 via Vite plugin** — configured in `astro.config.mjs` as `@tailwindcss/vite`. No `tailwind.config.js`. All custom tokens live in `src/styles/global.css` using `@theme {}` directive.
-- **Content Collections with config.ts** — `src/content.config.ts` defines Zod schemas + glob loaders for `products` (6 JSON files) and `team` (3 JSON files). Data is fetched via `getCollection()` in page/component frontmatter.
-- **Zero React Islands** — All components are `.astro` (zero client JS). FAQ uses native `<details>`/`<summary>` with CSS. Testimonials are static cards. Do NOT add React islands without justification.
+- **Content Collections with config.ts** — `src/content.config.ts` defines Zod schemas + glob loaders for `products` (7 JSON files) and `team` (3 JSON files). Data is fetched via `getCollection()` in page/component frontmatter.
+- **Minimal React Islands** — Aceternity UI visual effects in `src/components/ui/` (aurora-background, spotlight, beams, lamp, text-generate-effect). Used with `client:load` (hero) and `client:visible` (CTA sections). FAQ uses native `<details>`/`<summary>` with CSS. Testimonials support static grid or scroll-snap strip. Do NOT add React islands without justification.
 - **Multi-page (MPA)** — All navigation uses standard `<a>` tags with full page reload. No client-side router. No SPA patterns.
-- **Layout** — `src/layouts/Layout.astro` provides `<head>`, SEO meta, JSON-LD Organization schema, Google Fonts (Playfair Display + Inter), skip-link, noscript reveal fallback, IntersectionObserver for `data-reveal`. Language is `pt-BR`.
+- **Layout** — `src/layouts/Layout.astro` provides `<head>`, SEO meta, JSON-LD Organization + BreadcrumbList schemas, Astro 6 Fonts API (self-hosted Playfair Display + Inter), skip-link, noscript reveal fallback, IntersectionObserver for `data-reveal`. Language is `pt-BR`.
 
 ### Data flow for product landing pages
 

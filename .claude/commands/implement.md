@@ -298,13 +298,14 @@ TeamDelete();
 
 ```bash
 # After each task
+bun run lint              # Biome + oxlint
 bunx astro check          # TypeScript + Astro validation
 
 # After each phase
-bunx astro check && bun run build   # Full build validation
+bun run lint && bunx astro check && bun run build   # Full validation
 
 # Final
-bunx astro check && bun run build   # Full build must succeed
+bun run lint && bunx astro check && bun run build   # Full validation must succeed
 ```
 
 ### Gate Enforcement
@@ -434,13 +435,13 @@ Quality Gates:
 Before marking any Astro task as complete, verify:
 
 - [ ] `.astro` components for static content (zero JS default)
-- [ ] React islands only for interactive components — `client:load` or `client:visible`
+- [ ] React islands only for Aceternity UI visual effects (`src/components/ui/`) — `client:load` (hero) or `client:visible` (below fold)
 - [ ] Content data via `getCollection()` — mapped to `.data` for React props
 - [ ] Tailwind v4 tokens from `@theme {}` — no hardcoded hex
-- [ ] `ClientRouter` (not `ViewTransitions`) in Layout
+- [ ] Fonts via Astro 6 Fonts API (self-hosted) — no Google CDN
 - [ ] Images with explicit `width`/`height` — LCP image: `loading="eager"` + `fetchpriority="high"`
-- [ ] Animations: `transform`/`opacity` only, `useReducedMotion()` guard
-- [ ] `bunx astro check && bun run build` passes
+- [ ] Animations: `transform`/`opacity` only, `prefers-reduced-motion` support
+- [ ] `bun run lint && bunx astro check && bun run build` passes
 
 ## References
 

@@ -66,7 +66,9 @@ Before declaring unrecoverable, verify:
 - [ ] `bunx astro check` passes (TypeScript + Content Collections)
 - [ ] `bun run build` succeeds (full static build)
 - [ ] No `ViewTransitions` usage (must be `ClientRouter`)
-- [ ] No `src/content/config.ts` (Astro 6 infers schemas)
+- [ ] Using `src/content.config.ts` (project uses explicit Zod schemas, NOT inference)
 - [ ] React island props are plain objects (`.data`, not `CollectionEntry`)
 - [ ] `client:*` directives only on `.tsx` files, never `.astro`
+- [ ] Fonts via Astro 6 Fonts API (`<Font />` component) — no Google CDN links
+- [ ] `bun run lint` passes (Biome + oxlint)
   </command-instruction>

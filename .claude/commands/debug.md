@@ -2,7 +2,7 @@
 description: Debug workflow com investigacao paralela, auditoria de landing page e frontend debug com browser automation
 ---
 
-# /debug - Na Mesa Certa Debug Workflow
+# /debug - Grupo US Debug Workflow
 
 **ARGUMENTS**: $ARGUMENTS
 
@@ -40,6 +40,7 @@ If you have not completed Phase 1, you CANNOT propose fixes.
 ### Quality Gates (canonical reference)
 
 ```bash
+bun run lint 2>&1 | tail -10         # Biome + oxlint
 bunx astro check 2>&1 | tail -30    # TypeScript + Astro validation
 bun run build 2>&1 | tail -30       # Static build check
 ```
@@ -116,9 +117,9 @@ CONTEXT: $ARGUMENTS
 SKILLS: Load Skill("astro") → islands-architecture reference
 MISSION:
 1. Check client:* directives — only on React/Vue/Svelte, NEVER on .astro components
-   - client:load = immediate (CountdownTimer only)
-   - client:visible = viewport (FAQAccordion, Testimonials only)
-   - Only 3 React islands allowed total
+   - client:load = immediate (Hero visual effects: AuroraBackground, Spotlight, TextGenerateEffect)
+   - client:visible = viewport (CTA effects: LampBackdrop, BackgroundBeams)
+   - Only Aceternity UI visual effects in src/components/ui/ — no interactive React islands
 2. Verify props serialization — map CollectionEntry to .data before passing
    - No functions, Dates, class instances — only plain objects
 3. Check hydration mismatch risks — Date/timezone, Math.random(), window/document
@@ -325,10 +326,10 @@ for (const bp of breakpoints) {
 After ALL fixes, run the full gate:
 
 ```bash
-bunx astro check && bun run build
+bun run lint && bunx astro check && bun run build
 ```
 
-Both commands must pass with zero errors. If either fails, return to investigation.
+All commands must pass with zero errors. If any fails, return to investigation.
 
 ---
 
