@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" fill="none" role="img" aria-label="Grupo US">
-  <rect width="200" height="48" rx="6" fill="#0F1A2E"/>
-  <rect x="4" y="4" width="40" height="40" rx="8" stroke="#D4AF37" stroke-width="1.5" fill="transparent"/>
-  <path d="M14 36V12h4.2l5.1 9.2h.1L28.5 12H32v24h-3.2V17.2h-.1l-4.8 8.5h-2l-4.8-8.5h-.1V36H14z" fill="#D4AF37"/>
-  <text x="54" y="33" fill="#D4AF37" font-family="Georgia, serif" font-size="22" font-weight="700">Grupo US</text>
-</svg>
