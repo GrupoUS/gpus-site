@@ -8,26 +8,26 @@
 ### Technical Debt & Foundation
 
 - [x] **TECH-01**: Blocos `// #region agent log` removidos — *verificado 2026-03-26 (sem ocorrências no src)*
-- [ ] **TECH-02**: Fonts API ativa com `fontProviders.google()` em `astro.config.mjs` — *opcional evoluir para self-host completo sem Google CDN*
-- [ ] **TECH-03**: ~~`<ClientRouter />` / View Transitions~~ — **superseded:** `AGENTS.md` exige MPA sem router client-side; não implementar sem decisão de produto
+- [x] **TECH-02**: Fonts API ativa com `fontProviders.google()` em `astro.config.mjs` — *self-hosted via Astro Fonts API, sem CDN dependency. Verified Phase 1.*
+- [x] **TECH-03**: ~~`<ClientRouter />` / View Transitions~~ — **superseded:** `AGENTS.md` exige MPA sem router client-side; não implementar sem decisão de produto
 - [x] **TECH-04**: Página `404.astro` com branding Navy/Gold — *presente*
-- [ ] **TECH-05**: Favicon final de marca (auditar `public/favicon.*`)
+- [x] **TECH-05**: Favicon final de marca com gold #d4af37 — *6 ocorrências corrigidas. Verified Phase 1.*
 
 ### Content & Copy
 
-- [ ] **COPY-01**: Acentuação corrigida em todos os arquivos JSON de produtos (mínimo 7 arquivos) e nos componentes Astro com texto hardcoded
-- [ ] **COPY-02**: Copy de todos os 7 produtos reescrita com headlines e frases de impacto baseados em drasacha.com.br e no Manual de Inteligência
-- [ ] **COPY-03**: Meta descriptions únicas em todas as **8** páginas de conteúdo em `src/pages/` (e revisão contínua nas landings/redirects conforme necessidade)
-- [ ] **COPY-04**: Textos da equipe (Dra. Sacha, Maurício, Raquel) revisados e enriquecidos
+- [x] **COPY-01**: Acentuação corrigida em todos os 7 JSONs de produtos e componentes Astro — *Verified Phase 2*
+- [x] **COPY-02**: Copy dos 7 produtos reescrita com headlines e frases de impacto, descriptions ≥120 chars — *Verified Phase 2*
+- [x] **COPY-03**: Meta descriptions únicas em todas as 8 páginas de conteúdo (137-219 chars) — *Verified Phase 2*
+- [x] **COPY-04**: Bios equipe enriquecidos: CVO+CEEN+UFG (Sacha), "Mago das Finanças" (Maurício), TRINTAE3 (Raquel) — *Verified Phase 2*
 
 ### Visual & Animations
 
-- [ ] **VIS-01**: Hero da home com background aurora/mesh gradient animado via CSS ou React Island com `client:load`
-- [ ] **VIS-02**: Heroes das landing pages de produto com fundo animado consistente (variação do mesh gradient)
-- [ ] **VIS-03**: Utility `glass-card` atualizada para Liquid Glass real — `backdrop-filter: blur(12px)`, borda com gradiente, profundidade visual
-- [ ] **VIS-04**: Micro-interações nos ProductsGrid cards — glow dinâmico acompanhando o mouse (CSS ou React)
-- [x] **VIS-05**: Animações de scroll-reveal mais expressivas com spring physics (Framer Motion `client:visible`)
-- [ ] **VIS-06**: Hover states refinados em todos os botões (scale + glow + shadow)
+- [x] **VIS-01**: Aurora hero gold/navy ativo em aurora-background.tsx — *Verified Phase 3*
+- [x] **VIS-02**: Landing heroes com mesh gradient animado 20s, disabled mobile/reduced-motion — *Verified Phase 3*
+- [x] **VIS-03**: glass-card refinado (14% gold tint) + glass-card-bright em CTAs — *Verified Phase 3*
+- [x] **VIS-04**: Mousemove glow em ProductsGrid cards (CSS + inline JS, touch excluído) — *Verified Phase 3*
+- [x] **VIS-05**: 4 LazyMotion spring reveal islands (MotionReveal, HeroEntrance, LandingHeroEntrance, AnimatedStats) — *Verified Phase 3*
+- [x] **VIS-06**: Hover glow em todos os 4 variantes de botão — *Verified Phase 3*
 
 ### React Islands
 
@@ -81,21 +81,21 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TECH-01 | Phase 1 | Done |
-| TECH-02 | Phase 1 | Partial |
+| TECH-01 | Phase 1 | Complete |
+| TECH-02 | Phase 1 | Complete |
 | TECH-03 | Phase 1 | Superseded (MPA) |
-| TECH-04 | Phase 1 | Done |
-| TECH-05 | Phase 1 | Pending |
-| COPY-01 | Phase 2 | Pending |
-| COPY-02 | Phase 2 | Pending |
-| COPY-03 | Phase 2 | Pending |
-| COPY-04 | Phase 2 | Pending |
-| VIS-01 | Phase 3 | Pending |
-| VIS-02 | Phase 3 | Pending |
-| VIS-03 | Phase 3 | Pending |
-| VIS-04 | Phase 3 | Pending |
+| TECH-04 | Phase 1 | Complete |
+| TECH-05 | Phase 1 | Complete |
+| COPY-01 | Phase 2 | Complete |
+| COPY-02 | Phase 2 | Complete |
+| COPY-03 | Phase 2 | Complete |
+| COPY-04 | Phase 2 | Complete |
+| VIS-01 | Phase 3 | Complete |
+| VIS-02 | Phase 3 | Complete |
+| VIS-03 | Phase 3 | Complete |
+| VIS-04 | Phase 3 | Complete |
 | VIS-05 | Phase 3 | Complete |
-| VIS-06 | Phase 3 | Pending |
+| VIS-06 | Phase 3 | Complete |
 | ISLAND-01 | Phase 4 | Complete |
 | ISLAND-02 | Phase 4 | Complete |
 | ISLAND-03 | Phase 4 | Complete |
@@ -107,10 +107,12 @@
 | SEO-06 | Phase 5 | Pending |
 
 **Coverage:**
-- v1 requirements: 24 total
+- v1 requirements: 24 total (1 superseded)
+- Complete: 18
+- Pending: 6 (SEO-01 through SEO-06 — Phase 5)
 - Mapped to phases: 24
 - Unmapped: 0 ✓
 
 ---
-*Requirements defined: 2026-03-25*  
-*Last updated: 2026-03-26 — sync rotas, WhatsApp Laura, TECH-03 superseded, TECH-01/04 done*
+*Requirements defined: 2026-03-25*
+*Last updated: 2026-03-26 — Phases 1-4 complete; all TECH/COPY/VIS/ISLAND requirements verified; SEO-01-06 pending Phase 5*

@@ -99,38 +99,48 @@ Plans:
 
 ---
 
-## Phase 5 — SEO Technical Layer
+## Phase 5 — SEO Technical Layer + Cleanup
 
-**Goal:** Structured data completa, OG images reais e sitemap otimizado para rankeamento organico dos produtos.
+**Goal:** Structured data completa, OG images reais, sitemap otimizado e limpeza de componentes deprecados para fechar todas as lacunas do plano v1.
 
-**Why now:** Visual e conteudo prontos. SEO tecnico agora tem copy real para indexar.
+**Why now:** Visual, conteudo e islands prontos. SEO tecnico agora tem copy real para indexar. Cleanup aproveita o momento pre-QA.
+
+**Gap closure:** Closes audit gaps SEO-01 through SEO-06 from v1.0-MILESTONE-AUDIT.md.
+
+**Current state audit:**
+- `robots.txt` exists but Disallows `/termos`+`/politica-de-privacidade` instead of `/404`
+- BreadcrumbList JSON-LD exists globally in Layout.astro; some pages pass breadcrumbs prop
+- Default `og-image.png` exists; no per-page OG images
+- No JSON-LD Course/Product on product pages
+- Sitemap has no priorities
+- JourneyTimeline.astro and Testimonials.astro have zero importers (deprecated by Phase 4)
 
 ### Plans
 
-**5.1 — JSON-LD Per Product**
-Adicionar schema rico nas rotas que **geram HTML no repo** (`curso-auriculo.astro`, `mentoria-black-neon.astro`) e, se no futuro voltarem paginas Astro para outros produtos, repetir o padrao.
-Rotas que hoje sao **apenas redirect** (`/trintae3`, `/comunidade-us`, `/neon-dash`, etc.) nao tem `.astro` local — schema ficaria no destino externo ou exigiria pagina intermediaria (decisao de produto).
+**5.1 — JSON-LD Per Product (SEO-01, SEO-02)**
+- Schema `Course` on `curso-auriculo.astro` (Astro page exists)
+- Schema `Product` on `mentoria-black-neon.astro` (Astro page exists)
+- SEO-02 (OTB Event schema): OTB is redirect-only — no local `.astro` page. Mark as N/A unless product decision creates local page.
+- BreadcrumbList per-page coverage audit (SEO-04) — verify all internal pages pass breadcrumbs
 
-- Schema `Course` para formacoes (ex.: Curso Auriculo; TRINTAE3/COMU se houver pagina propria no futuro)
-- Schema `Product` + `Offer` para Mentoria Black Neon e NeonDash
-- Campos: `name`, `description`, `provider` (Grupo US), `offers.price`, `educationalCredentialAwarded`
-
-**5.2 — OG Images**
+**5.2 — OG Images (SEO-03)**
 - Criar `public/og/` com imagens 1200x630 por pagina
 - Formato: fundo navy, titulo em Playfair Display dourado, logo Grupo US
-- Geracao: script `scripts/generate-og.ts` ou SVG estatico
+- Geracao: SVG estatico ou script
 - Atualizar `Layout.astro` para referenciar `/og/[slug].png`
 
-**5.3 — Sitemap Priorities + robots.txt**
-- Configurar `@astrojs/sitemap` com `customPages` e prioridades manuais:
-  - home: 1.0 | landings: 0.9 | sobre/contato: 0.7 | termos/privacidade: 0.3
-- Criar `public/robots.txt`:
-  ```
-  User-agent: *
-  Allow: /
-  Disallow: /404
-  Sitemap: https://grupous.com.br/sitemap-index.xml
-  ```
+**5.3 — Sitemap Priorities + robots.txt Fix (SEO-05, SEO-06)**
+- Sitemap priorities: home 1.0, landings 0.9, sobre/contato 0.7, legais 0.3
+- Fix `robots.txt`: Disallow `/404` (not `/termos`/`/politica-de-privacidade`)
+
+**5.4 — Deprecated Component Cleanup**
+- Remove `src/components/home/JourneyTimeline.astro` (replaced by JourneyTimeline.tsx, 0 importers)
+- Remove `src/components/landing/Testimonials.astro` (replaced by TestimonialCarousel.tsx, 0 importers)
+
+Plans:
+- [ ] 05-01-PLAN.md — JSON-LD schemas + BreadcrumbList audit (SEO-01, SEO-02, SEO-04)
+- [ ] 05-02-PLAN.md — OG images per page (SEO-03)
+- [ ] 05-03-PLAN.md — Sitemap priorities + robots.txt fix + deprecated cleanup (SEO-05, SEO-06)
 
 **Requirements:** SEO-01, SEO-02, SEO-03, SEO-04, SEO-05, SEO-06
 
