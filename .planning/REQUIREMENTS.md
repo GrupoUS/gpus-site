@@ -39,7 +39,7 @@
 
 - [ ] **SEO-01**: JSON-LD `Course`/`Product` onde há `.astro` local (**curso-auriculo**, **mentoria-black-neon**); redirects externos fora do escopo deste repo salvo nova página
 - [ ] **SEO-02**: JSON-LD `Event` schema na página OTB e `Product` na página OTB
-- [ ] **SEO-03**: OG images estáticas (1200×630) por página, criadas como SVG ou PNG e referenciadas no meta
+- [x] **SEO-03**: OG images estáticas (1200×630) por página, criadas como SVG ou PNG e referenciadas no meta
 - [ ] **SEO-04**: BreadcrumbList JSON-LD em todas as páginas internas (além do existente no layout global)
 - [ ] **SEO-05**: `sitemap.xml` com prioridades — home (1.0), landings (0.9), sobre/contato (0.7), legais (0.3)
 - [ ] **SEO-06**: `robots.txt` explícito com Disallow para `/404` e Allow para o restante
@@ -101,7 +101,7 @@
 | ISLAND-03 | Phase 4 | Complete |
 | SEO-01 | Phase 5 | Pending |
 | SEO-02 | Phase 5 | Pending |
-| SEO-03 | Phase 5 | Pending |
+| SEO-03 | Phase 5 | Complete |
 | SEO-04 | Phase 5 | Pending |
 | SEO-05 | Phase 5 | Pending |
 | SEO-06 | Phase 5 | Pending |
