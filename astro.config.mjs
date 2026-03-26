@@ -52,6 +52,29 @@ export default defineConfig({
 				}
 				return true;
 			},
+			serialize(item) {
+				const pathname = new URL(item.url).pathname.replace(/\/$/, "") || "/";
+
+				/** @type {Record<string, { priority: number; changefreq: string }>} */
+				const config = {
+					"/": { priority: 1.0, changefreq: "weekly" },
+					"/curso-auriculo": { priority: 0.9, changefreq: "monthly" },
+					"/mentoria-black-neon": { priority: 0.9, changefreq: "monthly" },
+					"/otb": { priority: 0.9, changefreq: "monthly" },
+					"/sobre": { priority: 0.7, changefreq: "monthly" },
+					"/contato": { priority: 0.7, changefreq: "monthly" },
+					"/termos": { priority: 0.3, changefreq: "yearly" },
+					"/politica-de-privacidade": { priority: 0.3, changefreq: "yearly" },
+				};
+
+				const entry = config[pathname];
+				if (entry) {
+					item.priority = entry.priority;
+					item.changefreq = entry.changefreq;
+				}
+
+				return item;
+			},
 		}),
 	],
 	vite: {
