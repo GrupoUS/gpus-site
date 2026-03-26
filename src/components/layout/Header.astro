@@ -151,7 +151,7 @@ const navLinks = [
 
 	<!-- Mobile Menu Overlay -->
 	<div
-		class="fixed inset-0 top-0 z-40 hidden flex-col bg-navy/98 backdrop-blur-lg lg:hidden"
+		class="fixed inset-0 top-0 z-40 flex -translate-y-full flex-col bg-navy/98 opacity-0 backdrop-blur-lg transition-[transform,opacity,visibility] duration-300 ease-out invisible pointer-events-none lg:hidden"
 		id="mobile-menu"
 		aria-label="Menu de navegação mobile"
 		role="dialog"
@@ -273,8 +273,8 @@ const navLinks = [
 
 		function openMenu() {
 			if (!mobileMenu || !hamburgerBtn || !hamburgerIcon || !closeIcon) return;
-			mobileMenu.classList.remove("hidden");
-			mobileMenu.classList.add("flex");
+			mobileMenu.classList.remove("-translate-y-full", "opacity-0", "invisible", "pointer-events-none");
+			mobileMenu.classList.add("translate-y-0", "opacity-100", "visible", "pointer-events-auto");
 			hamburgerBtn.setAttribute("aria-expanded", "true");
 			hamburgerIcon.classList.add("hidden");
 			closeIcon.classList.remove("hidden");
@@ -286,12 +286,19 @@ const navLinks = [
 
 		function closeMenu() {
 			if (!mobileMenu || !hamburgerBtn || !hamburgerIcon || !closeIcon) return;
-			mobileMenu.classList.add("hidden");
-			mobileMenu.classList.remove("flex");
+			mobileMenu.classList.add("-translate-y-full", "opacity-0", "pointer-events-none");
+			mobileMenu.classList.remove("translate-y-0", "opacity-100", "pointer-events-auto");
 			hamburgerBtn.setAttribute("aria-expanded", "false");
 			hamburgerIcon.classList.remove("hidden");
 			closeIcon.classList.add("hidden");
 			document.body.style.overflow = "";
+			// Delay invisible/visible swap to allow transition to complete
+			setTimeout(() => {
+				if (mobileMenu.classList.contains("-translate-y-full")) {
+					mobileMenu.classList.add("invisible");
+					mobileMenu.classList.remove("visible");
+				}
+			}, 300);
 
 			// Return focus to hamburger
 			hamburgerBtn.focus();
@@ -302,7 +309,7 @@ const navLinks = [
 
 		// Close on Escape key
 		document.addEventListener("keydown", (e) => {
-			if (e.key === "Escape" && !mobileMenu?.classList.contains("hidden")) {
+			if (e.key === "Escape" && !mobileMenu?.classList.contains("-translate-y-full")) {
 				closeMenu();
 			}
 		});
