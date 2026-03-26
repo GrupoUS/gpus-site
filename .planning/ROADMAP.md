@@ -72,6 +72,13 @@ Atualizar `src/styles/global.css`:
 - `data-reveal` animations: migrar de CSS puro para Framer Motion `motion.div` com `client:visible` nas seções principais
 - Header dropdown: animação smooth de slide + fade
 
+**Status (2026-03-26):** Plan 01 complete (CSS foundation). Plans 02-03 in progress.
+
+Plans:
+- [x] 03-01-PLAN.md -- CSS foundation: aurora navy/gold, mesh gradient, glass-card-bright, button hover glows (VIS-01, VIS-02, VIS-03, VIS-06)
+- [ ] 03-02-PLAN.md -- Micro-interactions: mousemove glow, mobile menu transition (VIS-04, VIS-05)
+- [ ] 03-03-PLAN.md -- Motion reveals: Framer Motion spring entrances for hero, CTA, stats (remaining VIS items)
+
 **Requirements:** VIS-01, VIS-02, VIS-03, VIS-04, VIS-05, VIS-06
 
 ---
