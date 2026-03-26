@@ -23,7 +23,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 
 **Core value:** Excelência percebida em segundos — design, copy e jornada claros; conversão via WhatsApp **Laura (+55 62 9470-5081)** quando aplicável.
 
-**Current focus:** Phase 04 complete; Phase 05 (SEO Technical Layer) next
+**Current focus:** Phase 05 in progress; Plan 05-01 (JSON-LD + OTB landing + breadcrumbs) complete
 
 ## Active Milestone
 
@@ -37,13 +37,13 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 | 2 | Content & Copy Overhaul | **Completo (02-01 a 02-03)** — accents, product copy, SEO meta descriptions (all 8 pages ≥120 chars), team bios enriched |
 | 3 | Visual Uplift & Animations | **In progress** — All 3 plans complete (CSS foundation + micro-interactions + Motion reveals); human-verify checkpoint pending |
 | 4 | React Islands | **Complete (04-01 + 04-02)** — JourneyTimeline.tsx, TestimonialCarousel.tsx, WhatsAppFloatingButton.tsx (all 3 islands built and wired) |
-| 5 | SEO Technical Layer | Parcial — JSON-LD org/breadcrumb; falta Course/Product per page etc. |
+| 5 | SEO Technical Layer | **In progress (05-01 complete)** — JSON-LD Course/Product/Event per page; OTB local landing; breadcrumbs 7/9; Plans 5.2+5.3 pending |
 | 6 | QA & Ship | Recorrente a cada release |
 
 ## Key Context for Future Sessions
 
 - **WhatsApp:** `src/lib/whatsapp.ts` — não duplicar `wa.me/55…` em componentes
-- **Rotas:** 8 páginas em `src/pages/` + 5 redirects; landings "full" no repo: `curso-auriculo`, `mentoria-black-neon`
+- **Rotas:** 9 páginas em `src/pages/` + 4 redirects; landings "full" no repo: `curso-auriculo`, `mentoria-black-neon`, `otb`
 - **Codebase map:** `.planning/codebase/` — **STACK.md** e **STRUCTURE.md** atualizados 2026-03-26
 - **Jornada:** curso-auriculo → comunidade-us → trintae3 → mentoria-black-neon → otb
 - **Gates:** `bun run lint` + `bunx astro check` + `bun run build`
@@ -86,5 +86,13 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 - Used biome-ignore for m.a anchor content rule -- Biome cannot resolve Motion m.a as standard anchor with aria-label
 - client:load for WhatsApp button (not client:visible) -- fixed-position elements never trigger IntersectionObserver until footer
 
+## Decisions (Phase 05)
+
+- Layout.astro jsonLd prop renders per-page structured data in head alongside Organization and BreadcrumbList
+- OTB externalSiteUrl removed for local page; cta.url kept as external enrollment link per CTA vs navigation distinction
+- OTB landing uses standard template (no custom sections); event details in differentials/faqs
+- Event JSON-LD uses MixedEventAttendanceMode (online modules + Dubai immersion)
+- No pricing fields in JSON-LD per D-04 (external checkout via Kiwify/WhatsApp)
+
 ---
-*Last updated: 2026-03-26 (Phase 04 complete -- all 3 islands: JourneyTimeline, TestimonialCarousel, WhatsAppFloatingButton)*
+*Last updated: 2026-03-26 (Phase 05 Plan 01 complete -- JSON-LD Course/Product/Event, OTB landing page, breadcrumbs 7/9)*

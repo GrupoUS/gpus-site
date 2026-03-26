@@ -37,10 +37,10 @@
 
 ### SEO Técnico
 
-- [ ] **SEO-01**: JSON-LD `Course`/`Product` onde há `.astro` local (**curso-auriculo**, **mentoria-black-neon**); redirects externos fora do escopo deste repo salvo nova página
-- [ ] **SEO-02**: JSON-LD `Event` schema na página OTB e `Product` na página OTB
+- [x] **SEO-01**: JSON-LD `Course`/`Product` onde há `.astro` local (**curso-auriculo**, **mentoria-black-neon**); redirects externos fora do escopo deste repo salvo nova página — *Verified Phase 5 Plan 01*
+- [x] **SEO-02**: JSON-LD `Event` schema na página OTB (local landing page criada) — *Verified Phase 5 Plan 01*
 - [ ] **SEO-03**: OG images estáticas (1200×630) por página, criadas como SVG ou PNG e referenciadas no meta
-- [ ] **SEO-04**: BreadcrumbList JSON-LD em todas as páginas internas (além do existente no layout global)
+- [x] **SEO-04**: BreadcrumbList JSON-LD em 7/9 páginas internas (all except index and 404) — *Verified Phase 5 Plan 01*
 - [ ] **SEO-05**: `sitemap.xml` com prioridades — home (1.0), landings (0.9), sobre/contato (0.7), legais (0.3)
 - [ ] **SEO-06**: `robots.txt` explícito com Disallow para `/404` e Allow para o restante
 
@@ -99,20 +99,20 @@
 | ISLAND-01 | Phase 4 | Complete |
 | ISLAND-02 | Phase 4 | Complete |
 | ISLAND-03 | Phase 4 | Complete |
-| SEO-01 | Phase 5 | Pending |
-| SEO-02 | Phase 5 | Pending |
+| SEO-01 | Phase 5 | Complete |
+| SEO-02 | Phase 5 | Complete |
 | SEO-03 | Phase 5 | Pending |
-| SEO-04 | Phase 5 | Pending |
+| SEO-04 | Phase 5 | Complete |
 | SEO-05 | Phase 5 | Pending |
 | SEO-06 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 24 total (1 superseded)
-- Complete: 18
-- Pending: 6 (SEO-01 through SEO-06 — Phase 5)
+- Complete: 21
+- Pending: 3 (SEO-03, SEO-05, SEO-06 — Phase 5 Plans 02+03)
 - Mapped to phases: 24
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-25*
-*Last updated: 2026-03-26 — Phases 1-4 complete; all TECH/COPY/VIS/ISLAND requirements verified; SEO-01-06 pending Phase 5*
+*Last updated: 2026-03-26 — Phase 5 Plan 01: SEO-01, SEO-02, SEO-04 complete; SEO-03, SEO-05, SEO-06 pending Plans 02+03*

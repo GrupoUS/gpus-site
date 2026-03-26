@@ -3,7 +3,7 @@
 **Milestone:** Enhancement — Visual Premium + SEO + React Islands
 **Stack:** Astro 6 + Tailwind v4 + React 19 + Framer Motion + Bun
 **Gates por fase:** `bun run lint` + `bunx astro check` + `bun run build`
-**Sync codigo (2026-03-26):** 8 paginas em `src/pages/` + 5 redirects; WhatsApp SDR **+55 62 9470-5081** (`src/lib/whatsapp.ts`); **MPA sem `ClientRouter`** (ver `AGENTS.md`).
+**Sync codigo (2026-03-26):** 9 paginas em `src/pages/` + 4 redirects; WhatsApp SDR **+55 62 9470-5081** (`src/lib/whatsapp.ts`); **MPA sem `ClientRouter`** (ver `AGENTS.md`).
 
 ---
 
@@ -110,7 +110,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — JSON-LD schemas (Course/Product/Event) + OTB local landing page + BreadcrumbList completion (SEO-01, SEO-02, SEO-04)
+- [x] 05-01-PLAN.md — JSON-LD schemas (Course/Product/Event) + OTB local landing page + BreadcrumbList completion (SEO-01, SEO-02, SEO-04)
 - [ ] 05-02-PLAN.md — OG image SVG sources + ogImage prop wiring on all pages (SEO-03)
 - [ ] 05-03-PLAN.md — Sitemap serialize with priorities + robots.txt fix + deprecated component cleanup (SEO-05, SEO-06)
 
