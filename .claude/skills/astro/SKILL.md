@@ -11,6 +11,14 @@ Comprehensive Astro knowledge base for building fast, content-driven static site
 
 Astro renders pages to static HTML by default with zero client-side JavaScript. Interactive components ("islands") opt-in via `client:*` directives. Server-first rendering ensures fast performance and excellent SEO.
 
+## Repository override — Grupo US institutional site (`gpus`)
+
+When this repo is the **Grupo US** static site (see root `AGENTS.md` and `.claude/CLAUDE.md`):
+
+- **Routing:** Multi-page app — normal `<a>` links and full page reload. **Do not** add `<ClientRouter />`, client-side app routers, or SPA-style navigation unless the user **explicitly** overrides `AGENTS.md`.
+- **Islands:** Prefer `.astro` and zero JS; add React (or other) islands only with clear justification and minimal `client:*` usage.
+- **Conflict rule:** If generic Astro documentation (including sections below on View Transitions / `ClientRouter`) conflicts with `AGENTS.md`, **the repo wins**.
+
 ## When to Use
 
 - Implementing new Astro components, pages, or layouts
@@ -120,6 +128,8 @@ import { ClientRouter } from 'astro:transitions';
   <ClientRouter />  <!-- Replaces deprecated ViewTransitions -->
 </head>
 ```
+
+**Grupo US institutional repo:** Do **not** add `ClientRouter` or SPA-style transitions unless the user explicitly overrides the no-SPA rule in `AGENTS.md`. The pattern above is for **other** Astro projects only.
 
 ### Styling
 

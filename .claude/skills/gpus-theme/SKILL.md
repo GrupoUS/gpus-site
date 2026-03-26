@@ -9,6 +9,15 @@ Portable design system from the Portal Grupo US project featuring a Navy/Gold co
 
 > **Identity:** Navy backgrounds + Gold accents. Professional, premium, educational.
 
+## Institutional site (`gpus` repo) vs portable theme
+
+Portable assets in this skill support **light and dark** (see palette table and toggle tips below). The **Grupo US Astro institutional site** in this repository uses **dark navy / gold only** per root `AGENTS.md` — **no light/dark product toggle** unless product scope changes.
+
+When editing **that** site:
+
+- Use `src/styles/global.css` `@theme` and project tokens (`navy`, `gold`, semantic `bg-background`, etc.).
+- Treat **Dark Mode Toggle** and **View Transition API** theme-toggle notes below as **for other consumers** of `theme-tokens.css`, not as defaults for the institutional build.
+
 ---
 
 ## Quick Start
@@ -114,9 +123,9 @@ export default {
 
 ## Usage Tips
 
-### Dark Mode Toggle
+### Dark Mode Toggle (portable / other projects)
 
-The theme uses `.dark` class on `<html>` element:
+The portable theme uses `.dark` class on `<html>` element:
 
 ```typescript
 document.documentElement.classList.toggle("dark");
@@ -134,6 +143,6 @@ body {
 }
 ```
 
-### View Transition API
+### View Transition API (portable / other projects)
 
-For animated theme toggle, use the View Transition API selectors in `theme-tokens.css`.
+For animated theme toggle when using portable tokens, use the View Transition API selectors in `theme-tokens.css`. **Not applicable** to the institutional `gpus` site while it remains single-theme per `AGENTS.md`.

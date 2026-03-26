@@ -12,6 +12,7 @@ Domain knowledge for **Grupo US** (health aesthetics education ecosystem): brand
 - Draft or review **Portuguese** marketing copy, FAQ, WhatsApp scripts, or landing messaging for Grupo US offers.
 - Decide **which product** fits a persona or funnel stage (student journey).
 - Edit **`src/content/products/*.json`** or institutional pages — keep alignment with schema and avoid inventing facts.
+- **UI or layout** that changes home journey, product grid order, CTAs, landing copy, or JSON in `src/content/products/` — load this skill **early**, together with `astro` / `gpus-theme` (see `.claude/commands/design.md`).
 - Explain **differences** between institutional site (`grupous.com.br`), **drasacha.com.br**, and the **Google Doc manual**.
 - Onboard an agent to **IDs** (`produto_*`, `pessoa_*`, `empresa_grupo_us`) for tools or RAG.
 

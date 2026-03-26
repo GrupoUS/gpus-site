@@ -1,6 +1,6 @@
 ---
 name: planning
-description: Use when the /plan command is executed, when creating implementation plans or architectural designs, when tasks have high uncertainty requiring research before coding, when brainstorming new features, when feature scope keeps expanding, when multiple approaches exist with unclear trade-offs, when third-party API integration is needed, when web scraping, crawling, or structured data extraction is required, when NotebookLM knowledge synthesis or project memory is needed, or when the user asks "how should we build X".
+description: Use when the /plan command is executed, when creating implementation plans or architectural designs, when tasks have high uncertainty requiring research before coding, when brainstorming new features, when feature scope keeps expanding, when multiple approaches exist with unclear trade-offs, when third-party API integration is needed, when web scraping, crawling, or structured data extraction is required, when NotebookLM Deep Research feeds a Planning Knowledge Base before planning, when evolving the planning skill from research exports, or when the user asks "how should we build X".
 ---
 
 # Planning Skill — D.R.P.I.V Methodology
@@ -94,7 +94,7 @@ DISCOVER → RESEARCH → PLAN → IMPLEMENT → VALIDATE
 1. Codebase → Grep/Glob/Read          → Confidence: 5
 2. Tavily → search/context/QNA        → Confidence: 4-5
 3. Crawl4AI → extract/scrape          → Confidence: 4-5 (live data)
-4. NotebookLM → project memory        → Confidence: 4-5 (validation)
+4. NotebookLM → Deep Research + synthesis → Confidence: 4-5 (multi-source; see Planning Knowledge Base)
 5. Sequential Thinking                → For synthesis
 ```
 
@@ -207,9 +207,11 @@ config = CrawlerRunConfig(
 
 ---
 
-## Phase 1B: NotebookLM Knowledge Synthesis — Optional
+## Phase 1B: NotebookLM — Research-First Knowledge Pipeline (Optional)
 
-Use when research involves multi-source aggregation, persistent project memory, or post-implementation retrospectives.
+Use when research involves **multi-source domain knowledge**, **plan-vs-research validation**, **project memory**, or **post-implementation retrospectives**.
+
+**Outcome-first rule:** If NotebookLM is used, convert outputs into a **Planning Knowledge Base** (template in `references/notebooklm.md`) **before** Phase 2 PLAN. Do not treat a vague auto-summary alone as sufficient — run **targeted synthesis queries** (frameworks, steps, pitfalls, benchmarks).
 
 ### Prerequisites
 
@@ -218,60 +220,36 @@ which nlm && nlm doctor   # Verify before any NLM operation
 # If auth expired: nlm login
 ```
 
-**If either check fails:** Skip all NLM hooks. Log: "NotebookLM unavailable — skipping." Never block the main workflow.
+**If either check fails:** Skip all NLM steps. Log: `NotebookLM unavailable — skipping.` Never block the main workflow.
 
-### Notebook Strategy
+### Research pack pattern (multi-angle)
 
-- **Create a NEW notebook** per planning session
-- **Reuse** only if the topic exactly matches a previous notebook
-- Check: `nlm notebook list` → scan titles → create or reuse
+1. Bootstrap notebook + sources (requirements, `AGENTS.md`, existing plans).
+2. Run **2–3** Deep Research queries on **different angles** (e.g. frameworks / tooling / failure modes); `research import` into the same notebook.
+3. **Synthesis:** ask NotebookLM specific questions so the skill-grade knowledge is **actionable**, not generic.
+4. Fill **Planning Knowledge Base** → then merge distilled rows into the Required Output research table.
+5. After drafting the plan, **add plan as source** and run coverage / risk / contradiction queries.
 
-### D.R.P.I.V Hooks
+### Notebook strategy
 
-**Phase 0 — Bootstrap:**
-```bash
-nlm notebook list                                                        # Check for existing
-nlm notebook create "Na Mesa Certa - Feature Description"                # Create if none matches
-nlm alias set feature-slug <notebook-id>
-nlm source add feature-slug --text "Requirements: ..." --title "Requirements" --wait
-nlm source add feature-slug --file docs/existing-plan.md --wait          # If exists
-```
+- **Reuse** a notebook only when title/topic **matches** the current initiative.
+- Otherwise **create** a new notebook per topic.
+- `nlm notebook list` → scan titles → create or reuse.
 
-**Phase 1 — Research Aggregation:**
-```bash
-nlm research start "query" --notebook-id <id> --mode deep
-nlm research status <id> --max-wait 300
-nlm research import <id> <task-id>
-nlm source add <id> --url "https://..." --wait                           # Manual sources
+### Quick command spine (full detail + cheatsheet: `references/notebooklm.md`)
 
-# Extract synthesized findings
-nlm notebook query <id> "Summarize key technical findings with sources"
-nlm notebook query <id> "List all edge cases mentioned across sources"
-nlm notebook query <id> "Extract security considerations"
-```
+**Bootstrap:**
+`nlm notebook list` → `nlm notebook create "…"` → `nlm alias set …` → `nlm source add … --wait`
 
-**Phase 2 — Plan Validation:**
-```bash
-nlm source add <id> --file docs/PLAN-slug.md --title "Plan v1" --wait
-nlm notebook query <id> "Does this plan address all findings? What's missing?"
-nlm notebook query <id> "Identify risks not covered in the plan"
-nlm notebook query <id> "Are there contradictions between plan and research?"
-```
+**Deep Research:**
+`nlm research start "…" --notebook-id <id> --mode deep` → `nlm research status <id> --max-wait 300` → `nlm research import <id> <task-id>`
 
-**Phase 3 — Decision Logging (during implementation):**
-```bash
-nlm source add <id> --text "Decision: Chose X over Y because..." --title "ADR" --wait
-nlm source add <id> --text "Blocker: ..." --title "Implementation Note" --wait
-```
+**Synthesis (examples):**
+`nlm notebook query <id> "What core principles recur across sources? Cite."`
+`nlm notebook query <id> "List frameworks, edge cases, and failure modes."`
 
-**Phase 4 — Retrospective (after validation):**
-```bash
-nlm audio create <id> --format deep_dive --length long --confirm
-nlm report create <id> --format "Briefing Doc" --confirm
-nlm flashcards create <id> --difficulty medium --confirm
-nlm studio status <id>   # Poll until ready
-nlm download report <id> <artifact-id> --output docs/briefing.md
-```
+**Plan validation:**
+`nlm source add <id> --file docs/PLAN-slug.md --title "Plan v1" --wait` → gap / risk / contradiction queries (see `references/notebooklm.md`)
 
 ### Constraints
 
@@ -279,7 +257,7 @@ nlm download report <id> <artifact-id> --output docs/briefing.md
 |-------|-----|
 | CLI not installed | `uv tool install notebooklm-mcp-cli` |
 | Auth expired | `nlm login` |
-| Rate limit (~50/day) | Batch queries; fall back to Tavily |
+| Rate limit (~50/day) | Batch queries; `fast` for recon, `deep` for primary; fall back to Tavily |
 | Source hangs | Cancel, retry without `--wait`, check `nlm source list` |
 | Research returns nothing | Broader query, `--mode deep`, fall back to Tavily |
 | Breaking API change | `uv tool upgrade notebooklm-mcp-cli` |
@@ -287,8 +265,8 @@ nlm download report <id> <artifact-id> --output docs/briefing.md
 **Always use `--wait`** when adding sources — they aren't queryable until processed.
 **Never reuse notebooks from unrelated topics.**
 
-> Full CLI reference: `references/notebooklm-cli.md`
-> Detailed per-phase hooks: `references/notebooklm-hooks.md`
+> **Single reference:** `references/notebooklm.md` (method + D.R.P.I.V mapping + full `nlm` cheatsheet)  
+> **Upgrade planning skill from research packs:** `references/planning-skill-from-notebooklm-prompt.md`
 
 ---
 
@@ -410,6 +388,8 @@ bun run check
 | Low-confidence as-is | Flag, validate, alternatives |
 | Use NLM without checking `which nlm` | Always verify CLI first |
 | Not using `--wait` on NLM sources | Sources not queryable until processed |
+| Paste only the vague NLM summary into a plan | Run targeted synthesis queries; fill Planning Knowledge Base first |
+| Plan domain moves without NLM traceability | Mark gaps; cite NotebookLM/source or downgrade confidence |
 | Schema-less scraping for repetitive data | Generate schema once, reuse |
 | Block workflow on NLM/Crawl4AI failure | Always optional — degrade gracefully |
 
@@ -435,7 +415,7 @@ RESEARCH CASCADE:
 1. Codebase (Grep/Glob/Read)
 2. Tavily (web search)
 3. Crawl4AI (live extraction)    ← optional, non-blocking
-4. NotebookLM (synthesis/memory) ← optional, non-blocking
+4. NotebookLM (Deep Research → Planning KB) ← optional, non-blocking
 5. Sequential Thinking
 
 GOLDEN RULES:
@@ -457,8 +437,10 @@ GOLDEN RULES:
 - `references/01-discover.md` — Brainstorming protocol
 - `references/02-plan.md` — Plan template
 - `references/03-risk.md` — Pre-mortem + ADR (L6+)
-- `references/notebooklm-cli.md` — Full `nlm` CLI command reference
-- `references/notebooklm-hooks.md` — Detailed per-phase NLM workflow
+- `references/notebooklm.md` — NotebookLM method + Planning Knowledge Base + `nlm` cheatsheet
+- `references/planning-skill-from-notebooklm-prompt.md` — NotebookLM research → skill upgrade prompt + **PlanningSkillCoach** SYSTEM prompt (tool-agnostic CEO planning)
+- `references/notebooklm-cli.md` — Redirect → `notebooklm.md`
+- `references/notebooklm-hooks.md` — Redirect → `notebooklm.md`
 - `references/crawl4ai-sdk.md` — Complete Crawl4AI SDK reference
 - `scripts/basic_crawler.py` — Simple markdown extraction with screenshots
 - `scripts/batch_crawler.py` — Multi-URL concurrent processing
