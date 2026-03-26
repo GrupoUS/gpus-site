@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-last_updated: "2026-03-26T03:10:31.101Z"
+last_updated: "2026-03-26T04:04:00Z"
 progress:
   total_phases: 1
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 1
+  total_plans: 3
+  completed_plans: 3
 ---
 
 # Project State
@@ -34,7 +34,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 | Phase | Name | Status |
 |-------|------|--------|
 | 1 | Technical Debt & Foundation | **Parcial** — debug removido; 404 OK; fonts API OK (Google provider); **sem** ClientRouter por decisão MPA |
-| 2 | Content & Copy Overhaul | **Parcial** — copy/SEO evoluídos em várias rotas; revisão contínua |
+| 2 | Content & Copy Overhaul | **Completo (02-01 a 02-03)** — accents, product copy, SEO meta descriptions (all 8 pages ≥120 chars), team bios enriched |
 | 3 | Visual Uplift & Animations | Em aberto conforme roadmap |
 | 4 | React Islands | Parcial — ilhas Aceternity na home/CTA; `JourneyTimeline` é **`.astro`**, não `.tsx` |
 | 5 | SEO Technical Layer | Parcial — JSON-LD org/breadcrumb; falta Course/Product per page etc. |
@@ -58,5 +58,11 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 - `evals/site/**` — experimentos /evolve comerciais
 - `AGENTS.md` — regras canônicas do repo (MPA, WhatsApp, collections)
 
+## Decisions (Phase 02)
+
+- COPY-03 complete: all 8 content pages have unique meta descriptions ≥120 chars; legal pages upgraded from placeholders (34/36 chars) to 165/197 chars
+- COPY-04 complete: team bios enriched with source-verified credentials — CVO+CEEN+UFG for Sacha, "Mago das Finanças"+CFO for Maurício, TRINTAE3 curadoria for Raquel
+- Raquel bio intentionally conservative — limited by available source material per RESEARCH.md; stakeholder input may enrich further
+
 ---
-*Last updated: 2026-03-26*
+*Last updated: 2026-03-26 (02-03 complete)*
