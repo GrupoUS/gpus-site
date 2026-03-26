@@ -19,7 +19,9 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 | **Debug** | Sem `#region agent log` / `127.0.0.1:7777` no código |
 | **404 / legal** | `404.astro`, `termos.astro`, `politica-de-privacidade.astro` presentes |
 | **Fontes** | Astro Fonts API em `astro.config.mjs` com `fontProviders.google()` (Playfair + Inter) |
-| **Jornada na home** | `JourneyTimeline.astro` (Astro estático), não `JourneyTimeline.tsx` |
+| **Jornada na home** | `JourneyTimeline.tsx` (React island com scroll-linked progress line + scroll-snap mobile) via `client:visible` |
+| **Depoimentos** | `TestimonialCarousel.tsx` (React island com drag, autoplay 4s, dot indicators) via `client:visible` |
+| **WhatsApp flutuante** | `WhatsAppFloatingButton.tsx` global via Layout.astro `client:load`, mensagens por página em landings |
 | **Integridade URLs** | `bun run check:external-urls` para redirects vs `externalSiteUrl` |
 
 ## Requirements
@@ -65,8 +67,9 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 
 **React Islands (só com justificativa)**
 
-- [ ] Carrossel de depoimentos com Framer (se sair do padrão atual em Astro)
-- [ ] Botão flutuante WhatsApp global (número: já definido em `src/lib/whatsapp.ts`)
+- [x] **ISLAND-01:** JourneyTimeline.tsx — timeline animada com scroll-linked progress line (desktop) + scroll-snap carousel (mobile), 5 nós clicáveis, Lucide icons. *Validated in Phase 4: React Islands*
+- [x] **ISLAND-02:** TestimonialCarousel.tsx — drag carousel com autoplay 4s, dot indicators, responsive 1/2/3 cards, glass-card blockquotes. *Validated in Phase 4: React Islands*
+- [x] **ISLAND-03:** WhatsAppFloatingButton.tsx — botão flutuante global com spring entrance aos 400px, mensagem por página em landings, offset para MobileCTABar. *Validated in Phase 4: React Islands*
 
 **SEO Técnico**
 
@@ -104,4 +107,4 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 | View Transitions | Planejado na v2 doc original | ⏸ Supersedido até decisão contrária |
 
 ---
-*Last updated: 2026-03-26 — Phase 3 (Visual Uplift & Animation System) complete. VIS-01/02/03/04/05/06 + ADV-05 verified (17/17 must-haves). Phases 1-2 also complete.*
+*Last updated: 2026-03-26 — Phase 4 (React Islands: Premium Interactions) complete. ISLAND-01/02/03 verified (10/10 must-haves). Phases 1-4 all complete. This is the last phase of v1.0 milestone.*
