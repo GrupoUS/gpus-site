@@ -1,8 +1,8 @@
 # Roadmap: Portal Grupo US v2
 
-**Milestone:** Enhancement — Visual Premium + SEO + React Islands  
-**Stack:** Astro 6 + Tailwind v4 + React 19 + Framer Motion + Bun  
-**Gates por fase:** `bun run lint` + `bunx astro check` + `bun run build`  
+**Milestone:** Enhancement — Visual Premium + SEO + React Islands
+**Stack:** Astro 6 + Tailwind v4 + React 19 + Framer Motion + Bun
+**Gates por fase:** `bun run lint` + `bunx astro check` + `bun run build`
 **Sync código (2026-03-26):** 8 páginas em `src/pages/` + 5 redirects; WhatsApp SDR **+55 62 9470-5081** (`src/lib/whatsapp.ts`); **MPA sem `ClientRouter`** (ver `AGENTS.md`).
 
 ---
@@ -32,25 +32,12 @@ Plans:
 
 **Why now:** Copy é a base de tudo. Sem conteúdo correto, visual e SEO não têm substância. Fazer antes do visual para não retrabalhar animações sobre conteúdo errado.
 
-### Plans
+**Plans:** 3 plans
 
-**2.1 — Fix Accents & Typography**
-Corrigir todos os arquivos JSON em `src/content/products/*.json` e `src/content/team/*.json`:
-- Acentuação: "Saude Estetica Avancada" → "Saúde Estética Avançada"
-- Aspas tipográficas onde relevante
-- Verificar componentes Astro com texto hardcoded (Header, Footer, páginas)
-
-**2.2 — Product Copy Rewrite**
-Reescrever / iterar campos `name`, `tagline`, `description`, `hero.headline`, `hero.subheadline`, `painPoints`, `pillars`, `benefits`, `differentials`, `faqs` para os **7** produtos em `src/content/products/` usando:
-- Fonte: `docs/plans/aprimoramento/gpus-company-info.md` (Manual de Inteligência)
-- Fonte: `.planning/research/drasacha-content.md` (pesquisa do drasacha.com.br — quando disponível)
-- Tom: profissional, acolhedor, inspirador, firme. Fala como "Nós".
-- Frases-chave: "Nós iluminamos", "Clareza é a nova gentileza", "Olhar de dono", "Excelência com entrega real"
-
-**2.3 — SEO Meta & Team**
-- Meta descriptions únicas por página (max 160 chars, com palavra-chave)
-- Bio da equipe enriquecidas (`src/content/team/*.json`)
-- Título de cada página com formato "[Produto/Seção] | Grupo US"
+Plans:
+- [ ] 02-01-PLAN.md — Audit e correção de acentuação em todos os JSONs e componentes Astro (COPY-01)
+- [ ] 02-02-PLAN.md — Reescrita e elevação do copy dos 7 produtos com audit-first (COPY-02)
+- [ ] 02-03-PLAN.md — Upgrade meta descriptions termos/privacidade + enriquecimento bios equipe (COPY-03, COPY-04)
 
 **Requirements:** COPY-01, COPY-02, COPY-03, COPY-04
 
@@ -96,7 +83,7 @@ Atualizar `src/styles/global.css`:
 ### Plans
 
 **4.1 — Journey Timeline**
-**Implementado hoje:** `src/components/home/JourneyTimeline.astro` (Astro estático + CSS).  
+**Implementado hoje:** `src/components/home/JourneyTimeline.astro` (Astro estático + CSS).
 **Plano original (opcional upgrade):** `JourneyTimeline.tsx` (`client:visible`):
 - 5 nós animados: Auriculoterapia → Comunidade US → TRINTAE3 → Mentoria Black Neon → OTB
 - Linha de progresso animada com Framer Motion
@@ -134,7 +121,7 @@ Atualizar `src/styles/global.css`:
 ### Plans
 
 **5.1 — JSON-LD Per Product**
-Adicionar schema rico nas rotas que **geram HTML no repo** (`curso-auriculo.astro`, `mentoria-black-neon.astro`) e, se no futuro voltarem páginas Astro para outros produtos, repetir o padrão.  
+Adicionar schema rico nas rotas que **geram HTML no repo** (`curso-auriculo.astro`, `mentoria-black-neon.astro`) e, se no futuro voltarem páginas Astro para outros produtos, repetir o padrão.
 Rotas que hoje são **apenas redirect** (`/trintae3`, `/comunidade-us`, `/neon-dash`, etc.) não têm `.astro` local — schema ficaria no destino externo ou exigiria página intermediária (decisão de produto).
 
 - Schema `Course` para formações (ex.: Curso Auriculo; TRINTAE3/COMU se houver página própria no futuro)
@@ -209,6 +196,7 @@ Rotas que hoje são **apenas redirect** (`/trintae3`, `/comunidade-us`, `/neon-d
 **Granularity:** Standard (3–5 plans per phase)
 
 ---
-*Roadmap created: 2026-03-25*  
-*Last synced with codebase: 2026-03-26 (rotas, MPA, WhatsApp Laura, Phase 1 status)*  
+*Roadmap created: 2026-03-25*
+*Last synced with codebase: 2026-03-26 (rotas, MPA, WhatsApp Laura, Phase 1 status)*
+*Phase 2 plans created: 2026-03-26*
 *Milestone: v2 Enhancement — Visual Premium + SEO + React Islands*
