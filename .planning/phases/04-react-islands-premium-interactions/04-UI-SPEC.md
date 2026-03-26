@@ -55,11 +55,11 @@ Source: Existing component patterns in `JourneyTimeline.astro`, `Testimonials.as
 | Role | Size | Weight | Line Height | Font | Usage in Phase 4 |
 |------|------|--------|-------------|------|-------------------|
 | Body | 14px (text-sm) | 400 (normal) | 1.625 (leading-relaxed) | Inter | Timeline stage summary, testimonial quote text, taglines |
-| Label | 12px (text-xs) | 600 (semibold) | 1.5 | Inter | Timeline eyebrow ("Entrada", "Comunidade"), stage number, carousel dot aria-labels |
+| Label | 12px (text-xs) | 700 (bold) | 1.5 | Inter | Timeline eyebrow ("Entrada", "Comunidade"), stage number, carousel dot aria-labels |
 | Heading | 24px (text-2xl) | 700 (bold) | 1.2 | Playfair Display | Product name in timeline node, section heading "O que dizem nossos alunos" |
-| Display | 20px (text-xl) | 600 (semibold) | 1.3 | Playfair Display | Timeline section title "A jornada do aluno no ecossistema Grupo US" (via SectionHeading) |
+| Display | 20px (text-xl) | 700 (bold) | 1.3 | Playfair Display | Timeline section title "A jornada do aluno no ecossistema Grupo US" (via SectionHeading) |
 
-Weights used: 400 (body/quotes) and 600-700 (headings/labels). Matches existing site pattern -- no new weights introduced.
+Weights used: 400 (body/quotes) and 700 (headings/labels). 2 weights total. Hierarchy driven by size (12/14/20/24) rather than weight gradation.
 
 Source: Current `JourneyTimeline.astro` (text-xs, text-2xl, text-sm, text-3xl stage numbers), `Testimonials.astro` (leading-relaxed, font-semibold).
 
