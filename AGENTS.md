@@ -400,6 +400,28 @@ Each product landing page follows this flow (all components in `src/components/l
 
 ## Learnings log (evolve)
 
+### [2026-03-25] WhatsApp institucional: SDR Laura (+55 62 9470-5081)
+
+> Registro: `evals/site/sdr-laura-whatsapp/runs/2026-03-25-sdr-whatsapp/run.md` e `compound.md`.
+
+**Problema:** Vários `wa.me/5511920474028` hardcoded (Hero, LandingCTA, home CTA, contato, footer, JSON-LD); mentoria com `wa.link`; mensagens genéricas sem direcionar ao atendimento SDR.
+
+**Solução:** `src/lib/whatsapp.ts` como fonte única (`WHATSAPP_SDR_E164`, `whatsappUrlWithText`, `WHATSAPP_DEFAULT_SITE_MESSAGE`); landings e layout apontando para Laura; copy de CTA e `aria-label` com “Laura”; todos os `whatsappMessage` nos JSON com prefixo “Olá, Laura!”; mentoria `cta.url` em `wa.me` com texto alinhado; footer e Organization schema com telefone (62) e `wa.me/556294705081`.
+
+**Validação:** `bun run lint && bunx astro check && bun run build`.
+
+### [2026-03-25] Mentoria Black NEON: SEO, copy, CTA, FAQ de funil e LCP (NeonStory)
+
+> Registro: `evals/site/mentoria-black-neon-evolve/runs/2026-03-25-20x-loop/run.md` e `compound.md`.
+
+**Problema:** Title da página só repetia o nome do produto; H1 longo com destaque dourado na última palavra pouco memorável (“você”); meta e CTA menos alinhados a dono de clínica e qualificação no WhatsApp; FAQs sem objeção TRINTAE3 vs mentoria nem formato gravado vs vivo; `NeonStory` com `bg-[#fafaf9]` (hex solto) e imagem `eager`/`fetchpriority=high` competindo com hero texto-first.
+
+**Solução:** Title dedicado com keywords de escala + saúde estética; `description` com 6 meses, ICP e micro-CTA; hero reescrito terminando em **NEON**; story e highlight com “olhar de dono” e nome do produto; duas FAQs de funil; CTA alinhado à Laura (SDR) + mensagem pré-preenchida com vagas/ciclo; `ogImage={d.image}` na página; `NeonStory` com `bg-text-primary`, imagem `lazy`/`fetchpriority=low`, alt descritivo.
+
+**Validação:** `bun run lint && bunx astro check && bun run build`.
+
+**Nota:** O lote anterior citava `NeonStory` com `eager`+`high` para outro contexto de prioridade; nesta rota o hero é texto-first e a imagem da story costuma ser abaixo da dobra — priorizar LCP com `lazy`+`low` aqui.
+
 ### [2026-03-26] Lote 10× performance: debug off, idle hydration, preconnect, prioridades de imagem
 
 > Registro: `evals/site/performance-batch-2026-03-26/runs/2026-03-26-10x-perf/run.md`.

@@ -13,7 +13,7 @@
 
 **Messaging:**
 - WhatsApp Business — primary CTA channel across all landing pages
-  - Base URL: `https://wa.me/5511920474028`
+  - Base URL: `src/lib/whatsapp.ts` → `https://wa.me/556294705081` (SDR Laura)
   - Used in: `src/components/landing/LandingHero.astro`, `src/components/landing/LandingCTA.astro`, `src/components/home/CTASection.astro`, `src/components/layout/Footer.astro`, `src/pages/contato.astro`
   - Per-product messages: `cta.whatsappMessage` in each product JSON, URL-encoded at runtime
 

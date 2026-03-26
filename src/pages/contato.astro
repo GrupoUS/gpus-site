@@ -1,16 +1,22 @@
 ---
 import Button from "../components/shared/Button.astro";
 import Layout from "../layouts/Layout.astro";
+import {
+	WHATSAPP_DEFAULT_SITE_MESSAGE,
+	whatsappUrlWithText,
+} from "../lib/whatsapp";
 
 /** Defina no deploy: URL completa `https://formspree.io/f/xxxx` */
 const formAction = import.meta.env.PUBLIC_FORMSPREE_ACTION as
 	| string
 	| undefined;
+
+const contatoWhatsappHref = whatsappUrlWithText(WHATSAPP_DEFAULT_SITE_MESSAGE);
 ---
 
 <Layout
 	title="Contato — Grupo US | WhatsApp, e-mail e assessoria em programas"
-	description="Fale com o Grupo US: WhatsApp, e-mail ou formulário. Indicação de programa (curso, pós, comunidade, mentoria) para profissionais de saúde estética e harmonização."
+	description="Fale com a Laura (SDR) no WhatsApp ou use e-mail e formulário. Indicação de programa (curso, pós, comunidade, mentoria) para profissionais de saúde estética."
 	activeNav="contato"
 	breadcrumbs={[
 		{ name: "Início", url: "https://grupous.com.br/" },
@@ -157,19 +163,19 @@ const formAction = import.meta.env.PUBLIC_FORMSPREE_ACTION as
 						</div>
 						<div>
 							<h3 class="font-semibold text-text-primary mb-1">
-								WhatsApp
+								WhatsApp — Laura (SDR)
 							</h3>
 							<p class="text-text-muted text-sm mb-3">
-								Atendimento rápido e personalizado
+								Nossa assistente no WhatsApp direciona você ao programa certo, no seu ritmo.
 							</p>
 							<Button
 								variant="whatsapp"
 								size="sm"
-								href="https://wa.me/5511920474028?text=Ola!%20Gostaria%20de%20saber%20mais%20sobre%20o%20Grupo%20US"
+								href={contatoWhatsappHref}
 								target="_blank"
-								ariaLabel="Falar pelo WhatsApp (abre em nova aba)"
+								ariaLabel="Falar com a Laura no WhatsApp — Grupo US (abre em nova aba)"
 							>
-								Falar agora
+								Falar com a Laura
 							</Button>
 						</div>
 					</div>

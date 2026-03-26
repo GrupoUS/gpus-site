@@ -1,16 +1,16 @@
 {
 	"name": "Mentoria Black NEON",
 	"slug": "mentoria-black-neon",
-	"tagline": "A Mentoria Black para profissionais da Saúde Estética que decidiram sair do comum e construir uma carreira sólida, lucrativa e reconhecida.",
-	"description": "Mentoria BLACK NEON: 6 meses para escalar clínica de saúde estética — autoridade, plano de negócios e clientes premium, com menos dependência operacional do fundador.",
+	"tagline": "Mentoria de negócios de 6 meses para donos de clínica em saúde estética que querem escalar com estratégia — não só com mais horas de plantão.",
+	"description": "Mentoria Black NEON (6 meses): gestão, vendas e posicionamento premium para clínicas de saúde estética. Menos dependência do fundador. Fale no WhatsApp sobre vagas e próximo ciclo.",
 	"type": "Mentoria de Negócios",
 	"audience": "Profissionais da Saúde Estética que já atuam e querem escalar com estratégia",
 	"icon": "Rocket",
 	"image": "/images/products/mentoria-black-neon.webp",
 	"order": 3,
 	"hero": {
-		"headline": "Escale sua Clínica de Saúde Estética, aumente sua autoridade e conquiste a liberdade de um negócio que não depende 100% de você",
-		"subheadline": "Em 6 meses de acompanhamento estratégico, você vai desenvolver visão de negócio, acessar um plano personalizado e atrair clientes premium no mercado da Saúde Estética"
+		"headline": "Escale sua clínica de saúde estética com gestão, autoridade e clientes premium na Mentoria Black NEON",
+		"subheadline": "Seis meses de mentoria ativa: diagnóstico do seu negócio, plano de ação sob medida e suporte próximo — para você liderar com clareza e construir um negócio que não para quando você sai de plantão."
 	},
 	"painPoints": [
 		{
@@ -141,21 +141,29 @@
 		{
 			"question": "Qual o tempo de dedicação semanal necessário?",
 			"answer": "Recomendamos de 4 a 6 horas semanais entre encontros, implementação de tarefas e consumo de conteúdo complementar. O programa foi desenhado para quem tem agenda cheia."
+		},
+		{
+			"question": "A Black NEON substitui o TRINTAE3 ou é outra etapa?",
+			"answer": "São produtos diferentes. O TRINTAE3 é formação avançada (técnica + base de negócios) para quem quer se especializar. A Mentoria Black NEON é focada em donos de clínica que já operam e querem escalar gestão, vendas e posicionamento. Muitos mentorados chegam depois de uma base sólida de técnica e negócio."
+		},
+		{
+			"question": "Isso é curso gravado ou mentoria ao vivo?",
+			"answer": "É mentoria viva: encontros em grupo, sessões individuais, grupo no WhatsApp com Dra. Sacha e tutores, além de acesso às gravações dos encontros para revisar no seu ritmo — sem substituir o acompanhamento em tempo real."
 		}
 	],
 	"cta": {
-		"label": "Quero ser NEON",
-		"url": "https://wa.link/9syrbu",
-		"whatsappMessage": "Olá! Quero saber mais sobre a Mentoria Black NEON",
+		"label": "Falar com a Laura sobre a mentoria",
+		"url": "https://wa.me/556294705081?text=Ol%C3%A1%2C%20Laura!%20Sou%20dono(a)%20de%20cl%C3%ADnica%20em%20sa%C3%BAde%20est%C3%A9tica%20e%20quero%20saber%20sobre%20a%20Mentoria%20Black%20NEON%20%E2%80%94%20vagas%2C%20investimento%20e%20pr%C3%B3ximo%20ciclo.",
+		"whatsappMessage": "Olá, Laura! Sou dono(a) de clínica em saúde estética e quero saber sobre a Mentoria Black NEON — vagas, investimento e próximo ciclo.",
 		"type": "primary"
 	},
 	"story": {
-		"headline": "Um negócio de Saúde Estética vai muito além dos procedimentos",
+		"headline": "Um negócio em saúde estética exige mais que técnica: exige olhar de dono",
 		"paragraphs": [
-			"Você domina a técnica, as pessoas valorizam seus resultados, você é apaixonado pelo que faz. Mas, no dia a dia, a realidade pode ser desafiadora: a concorrência acirrada, a dependência de você na operação, a gestão financeira que tira o sono, a sensação de trabalhar incansavelmente sem ver o lucro desejado.",
-			"Você foi preparado para ser um excelente profissional, mas nunca te disseram como é construir uma empresa."
+			"Você domina a técnica, as pessoas confiam nos seus resultados e você ama o que faz. Só que no dia a dia aparecem concorrência, operação presa em você, finanças sem previsibilidade e a sensação de correr o tempo todo sem ver o lucro que o esforço merece.",
+			"Você foi preparado para ser um excelente profissional; construir empresa — com processos, time e oferta premium — é outra disciplina."
 		],
-		"highlight": "É por isso que o NEON não é apenas uma mentoria. É a sua virada de chave. Uma experiência completa que vai além da técnica, oferecendo o suporte estratégico que você precisa para acelerar sua carreira, estruturar um negócio saudável e consolidar sua marca como referência no mercado premium da Saúde Estética."
+		"highlight": "A Mentoria Black NEON existe para essa virada: combinar visão de negócio, gestão e marketing de relacionamento com a realidade de clínicas de estética — para você estruturar um negócio saudável e ser referência no mercado premium, sem abrir mão da sua essência."
 	},
 	"bonus": [
 		{

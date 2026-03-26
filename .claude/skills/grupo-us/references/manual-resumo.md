@@ -78,7 +78,7 @@ Ordem sugerida para recomendação:
 
 - Site oficial (vitrine): `https://drasacha.com.br/`  
 - E-mail: `suporte@drasacha.com.br`  
-- WhatsApp principal: `+55 11 92047-4028`  
+- WhatsApp principal (site institucional / SDR Laura): `+55 62 9470-5081` — CTAs em `src/lib/whatsapp.ts`  
 - Instagram: `@drasachagualberto`  
 
 ### Links citados no documento (hubs / LPs)
