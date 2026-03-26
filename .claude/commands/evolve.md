@@ -8,17 +8,30 @@ description: Captura aprendizados após tarefas bem-sucedidas, aprimora skills e
 
 ---
 
-## 1. PRIMEIRA AÇÃO: Analisar Contexto
+## 0. PRIMEIRA AÇÃO: Simplify (Qualidade de Código)
 
-Analise a conversa atual para extrair aprendizados. Não depende de skills externas.
+**Antes de capturar aprendizados, revise o código modificado.**
+
+Execute `Skill("simplify")` passando os arquivos alterados nesta sessão como contexto. O simplify revisa automaticamente:
+
+- Reutilização de funções/componentes já existentes
+- Complexidade desnecessária
+- Oportunidades de composição ou extração
+- Eficiência e legibilidade
+
+> Não pule esta etapa. O simplify pode revelar que a solução implementada pode ser refatorada antes de ser documentada como "boa prática".
+
+Após o simplify resolver os problemas encontrados, **re-execute as quality gates** antes de continuar:
+
+```bash
+bun run lint && bunx astro check && bun run build
+```
 
 ---
 
-## 2. FLUXO DE CAPTURA
+## 1. Analisar Contexto da Sessão
 
-### 2.1 Coletar Contexto da Sessão
-
-Analise a conversa atual para identificar:
+Analise a conversa atual para extrair aprendizados. Identifique:
 
 ```markdown
 ## Contexto Identificado
@@ -27,7 +40,7 @@ Analise a conversa atual para identificar:
 [Breve descrição do que foi feito]
 
 ### Problema Encontrado
-[Descrição do bug/erro/issue]
+[Descrição do bug/erro/issue — se houver]
 
 ### Root Cause
 [Causa raiz identificada]
@@ -36,20 +49,95 @@ Analise a conversa atual para identificar:
 [Código ou mudanças específicas]
 
 ### Validação
-[Comandos executados: check, lint, test, etc.]
+[Comandos executados: check, lint, build, etc.]
 ```
 
-### 2.2 Persistir em MEMORY.md
+---
 
-Documente o aprendizado no arquivo MEMORY.md do projeto:
+## 2. FLUXO DE CAPTURA
+
+### 2.1 Persistir em Memory (auto memory)
+
+O sistema de memória fica em `/home/mauricio/.claude/projects/-home-mauricio-gpus/memory/` e é carregado automaticamente pelo **Claude Code**, **Cursor** e **GSD** a cada nova conversa. Ele tem dois artefatos que devem ser mantidos sincronizados:
+
+| Artefato | Propósito | Carregado por |
+|----------|-----------|---------------|
+| `MEMORY.md` | Índice de ponteiros — uma linha por memória | Claude Code (auto-load), Cursor, GSD |
+| `<tipo>_<slug>.md` | Arquivo individual com o conteúdo completo | Lido sob demanda quando relevante |
+
+**MEMORY.md é truncado após 200 linhas** — mantenha cada entrada em até ~150 caracteres.
+
+#### Passo 1: Criar ou atualizar o arquivo de memória individual
+
+Escolha o tipo correto:
+
+- **`feedback_<slug>.md`** — padrão de código, correção de anti-pattern, preferência de abordagem
+- **`project_<slug>.md`** — decisão de arquitetura, mudança de convenção, contexto de milestone
+- **`user_<slug>.md`** — preferência do usuário, perfil de trabalho
+- **`reference_<slug>.md`** — ponteiro para recurso externo (URL, Linear, Slack)
+
+Formato do arquivo:
 
 ```markdown
-### [Data: YYYY-MM-DD] [Título do Aprendizado]
+---
+name: [título curto — mesmo texto usado no MEMORY.md]
+description: [uma linha — usada para decidir relevância em conversas futuras]
+type: feedback | project | user | reference
+---
 
-**Problema:** [descrição]
-**Root Cause:** [causa raiz]
-**Solução:** [fix aplicado]
-**Arquivos:** [lista de arquivos modificados]
+[Regra ou fato principal]
+
+**Why:** [motivação — incidente passado, preferência forte ou decisão técnica]
+**How to apply:** [quando/onde essa orientação entra em jogo]
+```
+
+> Se o arquivo já existe, **atualize-o** — não duplique. Verifique primeiro com Read.
+
+#### Passo 2: Atualizar MEMORY.md (índice)
+
+Após criar/atualizar o arquivo individual, adicione ou atualize a linha correspondente em `MEMORY.md`:
+
+```markdown
+- [Título da Memória](nome_do_arquivo.md) — gancho em uma linha que explica quando é relevante
+```
+
+Regras do índice:
+- Uma linha por memória, máximo ~150 caracteres
+- O gancho deve responder: "quando devo carregar este arquivo?"
+- Se a memória foi **atualizada** (não criada), atualize o gancho se mudou de escopo
+- Se a memória foi **removida** (obsoleta), remova a linha do índice também
+- Nunca escreva conteúdo de memória direto no `MEMORY.md` — só ponteiros
+
+Exemplo de entrada bem escrita:
+```markdown
+- [Nunca reverter cegamente](feedback_never_revert_blindly.md) — sempre ler/verificar antes de reverter ou deletar arquivos
+```
+
+### 2.2 GSD: Capturar Notas e Seeds
+
+Use os comandos GSD para persistir aprendizados no contexto do projeto:
+
+**Para aprendizados imediatos e acionáveis:**
+
+```
+/gsd:note "Aprendizado: [descrição concisa do que foi descoberto]"
+```
+
+**Para melhorias que devem ser aplicadas no próximo milestone ou fase relevante:**
+
+```
+/gsd:plant-seed "Quando [condição/trigger], aplicar [melhoria descoberta nesta sessão]"
+```
+
+Exemplos de seeds úteis:
+- `"Quando iniciar nova landing page, rodar /gsd:ui-phase antes de qualquer código"`
+- `"Quando tocar produtos externos, verificar astro.config.mjs redirects + check:external-urls"`
+- `"Quando criar novo React island, justificar explicitamente por que não pode ser .astro"`
+
+**Para tarefas pendentes identificadas durante a sessão:**
+
+```
+/gsd:add-todo "[tarefa identificada que ficou fora do escopo desta sessão]"
 ```
 
 ---
@@ -58,7 +146,7 @@ Documente o aprendizado no arquivo MEMORY.md do projeto:
 
 ### 3.1 Mapear Domínio Afetado
 
-Com base nos arquivos/modificações, sugerir skills relevantes:
+Com base nos arquivos/modificações, identificar skills relevantes:
 
 | Domínio | Arquivos | Skill Principal | Skill Complementar |
 |---------|----------|-----------------|-------------------|
@@ -70,6 +158,7 @@ Com base nos arquivos/modificações, sugerir skills relevantes:
 | Config / Build | `astro.config.mjs` | `astro` (configuration) | — |
 | Performance | Otimizações gerais | `performance-optimization` | `astro` (performance) |
 | Design Tokens | `src/styles/global.css` | `gpus-theme` | `astro` (styling-tailwind) |
+| Commands / Workflows | `.claude/commands/*.md` | — | — |
 
 ### 3.2 Perguntar ao Usuário
 
@@ -158,39 +247,45 @@ Adicionar seção ao AGENTS.md selecionado:
 
 ---
 
-## 6. SINCRONIZAR COM NOTEBOOKLM (Opcional)
+## 6. GSD: Session Report e Contexto Cross-Session
 
-Se configurado, adicione o aprendizado ao NotebookLM:
+### 6.1 Gerar Session Report
 
-```typescript
-// Apenas se o usuário tiver NotebookLM configurado
-notebooklm_notebook_add_text({
-  notebook_id: "<notebook-id-if-configured>",
-  title: `Fix - ${slug}`,
-  content: `## Problema
-[descrição]
+Sempre ao final do /evolve, gere um relatório da sessão para registrar o trabalho realizado:
 
-## Root Cause
-[causa]
-
-## Solução
-[fix]
-
-## Validação
-[bunx astro check && bun run build]`,
-});
 ```
+/gsd:session-report
+```
+
+O session-report captura: estimativa de tokens, resumo do trabalho, outcomes, e o que ficou pendente.
+
+### 6.2 Persistir Contexto Cross-Session (se necessário)
+
+Se a tarefa desta sessão **continua em sessões futuras** ou tem dependências que outras sessões precisam conhecer:
+
+```
+/gsd:thread "contexto: [o que foi feito e o que ainda precisa ser feito]"
+```
+
+Use threads para:
+- Trabalho que será continuado após `context reset`
+- Decisões arquiteturais que devem ser comunicadas na próxima sessão
+- Estado intermediário de uma feature multi-sessão
 
 ---
 
 ## 7. RESUMO FINAL
 
 ```
-Aprendizado capturado com sucesso!
+Evolve concluído!
 
-- MEMORY.md atualizado
-- Skills aprimoradas: [lista]
-- AGENTS.md atualizados: [lista]
+✅ Simplify executado (qualidade validada)
+✅ Quality gates passando
+✅ Memory atualizada (feedback/project)
+✅ GSD notes/seeds capturados
+✅ Skills aprimoradas: [lista]
+✅ AGENTS.md atualizados: [lista]
+✅ Session report gerado
 ```
 
 ---
@@ -212,6 +307,7 @@ Ao evoluir skills com aprendizados do Astro, priorize documentar:
 
 ## Referências
 
+- **simplify**: skill built-in do Claude Code — revisa código para reuso, qualidade e eficiência
 - **astro**: `.claude/skills/astro/SKILL.md` — Referência completa Astro 6
 - **skill-creator**: `.claude/skills/skill-creator/SKILL.md`
-- **NotebookLM**: `.claude/skills/planning/SKILL.md`
+- **GSD commands**: `/gsd:note`, `/gsd:plant-seed`, `/gsd:add-todo`, `/gsd:session-report`, `/gsd:thread`

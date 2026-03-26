@@ -25,6 +25,7 @@ Decide the lane first:
 | New page or substantial visual surface | Audit first, then hand the UI portion to `/design` |
 | Copy, legal, SEO, metadata, content sync, redirects, external URL alignment | Stay in `/plan` |
 | Hybrid task (data/config + UI) | Plan data/content/config here, then delegate the visual slice to `/design` |
+| Substantial new feature (multi-file, multi-phase) | Use `/gsd:discuss-phase` first to capture decisions, then `/gsd:plan-phase` for a research-backed plan |
 
 Do **not** send every frontend-adjacent task to `/design`. Many tasks in this repo are content integrity or routing work, not visual invention.
 
@@ -50,6 +51,8 @@ Before research or planning:
 If the repo already partially implements the requested feature, the plan must start from that real state.
 
 ## Phase 1: Research
+
+> For substantial tasks (new feature spanning multiple files or days), capture implementation decisions first with `/gsd:discuss-phase [N]` before researching — this prevents late-stage pivots when assumptions surface too late.
 
 Use the right research source for the question:
 
@@ -86,12 +89,24 @@ Convert findings into a runbook with:
 
 ### Required task shape
 
-Each task should say:
+Use GSD XML format for each task:
 
-- what changes
-- where it changes
-- why it belongs in that step
-- how it will be validated
+```xml
+<task type="auto">
+  <name>Task name</name>
+  <files>exact/file/path.ts, another/file.astro</files>
+  <action>What to do and how — be specific enough to execute without reinterpretation</action>
+  <verify>Command or check that proves the task is complete (e.g., bun run build passes)</verify>
+  <done>Acceptance criterion — what done looks like</done>
+</task>
+```
+
+**Wave grouping:** Group independent tasks into parallel waves. Tasks that depend on prior output form separate sequential waves. Label waves explicitly when dependencies exist:
+
+```
+WAVE 1 (parallel): task A + task B   # no dependencies
+WAVE 2: task C                        # depends on WAVE 1 output
+```
 
 ### Recommended workstream labels
 

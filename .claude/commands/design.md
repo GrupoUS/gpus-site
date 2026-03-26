@@ -21,7 +21,8 @@ description: Repo-aware design workflow for Grupo US. Audit current state first,
 
 - **Primary skills:** `astro`, `gpus-theme`
 - **Optional design support:** `ui-ux-pro-max` for substantial new surfaces or when visual direction is unclear
-- **UI verification:** `cursor-ide-browser` or browser-based subagent for screenshots and spot checks
+- **UI design contract:** `/gsd:ui-phase` — generates `UI-SPEC.md` with layout, interactions, and empty states before implementation. Use for new pages or major visual redesigns.
+- **UI verification:** browser MCP (check AGENTS.md for the correct `serverIdentifier`) for screenshots and spot checks
 - **Do not depend on:** Stitch MCP, hardcoded prototype workflows, or fixed "3 islands" rules
 
 ## Source-of-Truth Order
@@ -50,6 +51,7 @@ Before changing anything:
    - external product redirect-only
 3. Confirm whether related checks already fail (`bun run check:external-urls`, `bunx astro check`, `bun run build`, `bun run lint`).
 4. Identify existing patterns to preserve before inventing new ones.
+5. **If this is a new page or major visual redesign**, run `/gsd:ui-phase` first to generate a `UI-SPEC.md` design contract (layout, interactions, empty states, tokens) before writing any code.
 
 If the repo already contains the feature in partial form, treat the task as **preserve and finish**, not "start from zero."
 

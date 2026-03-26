@@ -76,6 +76,10 @@ grep -rn "hardcoded.*#[0-9a-fA-F]" src/ --include="*.astro" 2>/dev/null  # Hardc
 
 ---
 
+> For complex bugs that span multiple sessions or require persistent state across context resets, use `/gsd:debug` instead — it maintains a debug log and checkpoints across context windows.
+
+---
+
 ## 2. MODE A: DEBUG (mode=debug)
 
 ### 2.1 Phase 1 — Parallel Investigation
@@ -144,6 +148,7 @@ When agents complete:
 - Fix at the SOURCE, not the symptom
 - NEVER "while I'm here..."
 - Run Quality Gates after EACH fix
+- Commit atomically after each validated fix: `git commit -m "fix: <description>"`
 
 ### 2.4 Phase 4 — Validate
 
@@ -184,14 +189,16 @@ RETURN: File:line | P0-P3 | Description | Recommendation` });
 
 // Group B: Frontend (React Islands + Components)
 Task({ subagent_type: "debugger", run_in_background: true,
-  prompt: `Audit Group B — Frontend. Check: only 3 allowed React Islands
-(CountdownTimer client:load, FAQAccordion client:visible, Testimonials client:visible),
-client:* directives ONLY on .tsx components (NEVER on .astro),
-props: getCollection().map(e => e.data) before passing to React islands,
-prefers-reduced-motion on ALL Framer Motion (useReducedMotion hook),
-Lucide React only (no emoji icons), @theme tokens only (no hardcoded hex),
-Content Collections via getCollection/getEntry (no hardcoded data),
-glass utilities (.glass-card, .bg-mesh), Tailwind v4 @utility directives.
+  prompt: `Audit Group B — Frontend. Check:
+- React islands must have a real client-JS justification; Aceternity UI visual effects
+  (aurora-background, spotlight, background-beams, lamp, text-generate-effect) are the primary use case.
+  Flag any island that could be a static .astro component instead.
+- client:* directives ONLY on .tsx components (NEVER on .astro),
+- props: getCollection().map(e => e.data) before passing to React islands,
+- prefers-reduced-motion on ALL Framer Motion (useReducedMotion hook),
+- Lucide React only (no emoji icons), @theme tokens only (no hardcoded hex),
+- Content Collections via getCollection/getEntry (no hardcoded data),
+- glass utilities (.glass-card, .bg-mesh), Tailwind v4 @utility directives.
 RETURN: File:line | P0-P3 | Description | Recommendation` });
 
 // Group C: Performance & Accessibility
@@ -255,12 +262,10 @@ Determine target URL (default: `http://localhost:4321`):
 // Start dev server if not running
 Bash({ command: "bun run dev &", timeout: 5000 });
 
-// Navigate to the page
-mcp__plugin_playwright_playwright__browser_navigate({ url: targetUrl });
-
-// Take initial snapshot
-mcp__plugin_playwright_playwright__browser_snapshot({});
-mcp__plugin_playwright_playwright__browser_take_screenshot({});
+// Use Playwright MCP tools (check AGENTS.md for serverIdentifier):
+// browser_navigate({ url: targetUrl })
+// browser_snapshot({})             — accessibility tree
+// browser_take_screenshot({})      — visual state
 ```
 
 ### 4.3 Phase 2 — Investigate with Browser Evidence
@@ -286,11 +291,10 @@ const breakpoints = [
   { width: 1440, height: 900, name: "desktop" },
 ];
 
-for (const bp of breakpoints) {
-  mcp__plugin_playwright_playwright__browser_resize({ width: bp.width, height: bp.height });
-  mcp__plugin_playwright_playwright__browser_take_screenshot({});
-  // Check for horizontal overflow, broken layouts, hidden content
-}
+// For each breakpoint, use Playwright MCP tools:
+// browser_resize({ width: bp.width, height: bp.height })
+// browser_take_screenshot({})
+// Check for horizontal overflow, broken layouts, hidden content
 ```
 
 ### 4.5 Phase 4 — Fix and Validate
@@ -299,7 +303,8 @@ for (const bp of breakpoints) {
 2. Reload browser page
 3. Re-screenshot to confirm visual fix
 4. Run Quality Gates (Section 1)
-5. Repeat until resolved
+5. Commit atomically after each validated fix: `git commit -m "fix: <description>"`
+6. Repeat until resolved
 
 ---
 
