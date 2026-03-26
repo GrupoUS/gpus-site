@@ -31,7 +31,8 @@ description: Autoresearch duplo — (A) skills/prompts via EVOLVE_AUTORESEARCH +
 
 1. Se existir `<evolve_request>...</evolve_request>` válido → seguir **§1.1–1.4** (prompt/skill).
 2. Senão, se existir `<input>...</input>` com `<area>...</area>` → seguir **§1.5** (site / código) e carregar **`.claude/skills/auto-research-gpus/SKILL.md`**.
-3. Senão → **sem Fase 1**; vá para Fase 2 (captura).
+3. Senão, se **$ARGUMENTS** ou o texto do usuário pedir evolução do **site** (copy, SEO, conversão, narrativa, CTA, jornada, landing, produtos, institucional) **sem** XML → tratar como `<input><area>evolve</area></input>` (restrições explícitas do usuário → equivalente a `<constraint>...</constraint>`) e seguir **§1.5**.
+4. Senão → **sem Fase 1**; vá para Fase 2 (captura).
 
 ### 1.1 Detecção (modo prompt)
 

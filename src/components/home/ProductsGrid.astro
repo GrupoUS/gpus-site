@@ -7,36 +7,6 @@ const products = (await getCollection("products")).sort(
 	(a, b) => a.data.order - b.data.order,
 );
 
-const trackedExternalProducts = products
-	.filter(({ data }) => data.slug === "na-mesa-certa" || data.slug === "otb")
-	.map(({ data }) => ({
-		slug: data.slug,
-		href: data.externalSiteUrl ?? `/${data.slug}`,
-		external: Boolean(data.externalSiteUrl),
-	}));
-
-// #region agent log
-void fetch(
-	"http://127.0.0.1:7777/ingest/0a9ce74c-a29a-4996-bf5d-a24a8b2822f7",
-	{
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			"X-Debug-Session-Id": "5db282",
-		},
-		body: JSON.stringify({
-			sessionId: "5db282",
-			runId: "initial",
-			hypothesisId: "H2",
-			location: "src/components/home/ProductsGrid.astro:10",
-			message: "Home grid product links resolved",
-			data: { links: trackedExternalProducts },
-			timestamp: Date.now(),
-		}),
-	},
-).catch(() => {});
-// #endregion
-
 const iconPaths: Record<string, string> = {
 	GraduationCap:
 		'<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
@@ -70,8 +40,8 @@ const typeColors: Record<string, string> = {
 <section id="produtos" class="px-4 py-24 sm:px-6 lg:py-32">
 	<div class="mx-auto max-w-7xl">
 		<SectionHeading
-			title="Nosso Ecossistema"
-			subtitle="Soluções completas para cada fase da sua jornada profissional"
+			title="Programas do ecossistema"
+			subtitle="Da entrada técnica à mentoria de escala — cada card abre o destino oficial do programa (site institucional ou página do produto)."
 		/>
 
 		<div class="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -124,7 +94,7 @@ const typeColors: Record<string, string> = {
 
 						{/* Link */}
 						<span class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-gold transition-colors duration-200 hover:text-gold-light">
-							Saiba mais
+							Ver programa
 							<svg
 								class="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300"
 								viewBox="0 0 24 24"

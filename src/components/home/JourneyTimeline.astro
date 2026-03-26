@@ -9,35 +9,35 @@ const canonicalJourney = [
 		stage: "01",
 		eyebrow: "Entrada",
 		summary:
-			"Uma entrada de ticket mais acessivel para ganhar repertorio tecnico e colocar a primeira oferta em movimento.",
+			"Entrada acessível para ganhar repertório técnico e colocar a primeira oferta em movimento.",
 	},
 	{
 		slug: "comunidade-us",
 		stage: "02",
 		eyebrow: "Comunidade",
 		summary:
-			"Continuidade, networking e atualizacao recorrente para manter execucao, proximidade e referencia de mercado.",
+			"Continuidade, networking e atualização recorrente para manter execução, proximidade e referência de mercado.",
 	},
 	{
 		slug: "trintae3",
 		stage: "03",
-		eyebrow: "Formacao solida",
+		eyebrow: "Formação sólida",
 		summary:
-			"A fase de aprofundamento tecnico e de base de negocios para sair do operacional e construir autoridade.",
+			"Aprofundamento técnico e base de negócios para sair do operacional e construir autoridade.",
 	},
 	{
 		slug: "mentoria-black-neon",
 		stage: "04",
-		eyebrow: "Escala de negocio",
+		eyebrow: "Escala de negócio",
 		summary:
-			"Gestao, time, faturamento e previsibilidade para transformar uma boa operacao em empresa escalavel.",
+			"Gestão, time, faturamento e previsibilidade para transformar uma boa operação em empresa escalável.",
 	},
 	{
 		slug: "otb",
 		stage: "05",
 		eyebrow: "Elite global",
 		summary:
-			"A etapa internacional para quem quer reconhecimento, networking premium e repertorio de business em outro nivel.",
+			"Etapa internacional para reconhecimento, networking premium e repertório de business em outro nível.",
 	},
 ] as const;
 
@@ -82,7 +82,7 @@ const complementaryExperiences = complementaryExperienceSlugs
 	<div class="mx-auto max-w-7xl">
 		<SectionHeading
 			title="A jornada do aluno no ecossistema Grupo US"
-			subtitle="Os 5 estagios seguem a ordem canonica do manual e puxam destinos diretamente dos dados dos produtos, sem URLs manuais espalhadas pela home."
+			subtitle="Cinco estágios na ordem oficial da trilha; cada card usa os dados reais do produto (CTAs e destinos sempre alinhados ao catálogo)."
 		/>
 
 		<ol class="mt-16 grid gap-6 lg:grid-cols-5">
@@ -125,7 +125,7 @@ const complementaryExperiences = complementaryExperienceSlugs
 								rel={stage.pageHref.startsWith("http") ? "noopener noreferrer" : undefined}
 								class="inline-flex items-center gap-2 text-sm font-medium text-gold transition-colors duration-200 hover:text-gold-light"
 							>
-								Ver pagina do programa
+								Ver página do programa
 								<span aria-hidden="true">+</span>
 							</a>
 						) : null}
@@ -140,7 +140,7 @@ const complementaryExperiences = complementaryExperienceSlugs
 				data-reveal="up"
 			>
 				<p>
-					Experiencias complementares do ecossistema:
+					Experiências complementares do ecossistema:
 					{" "}
 					{complementaryExperiences.map((experience, index) => (
 						<>

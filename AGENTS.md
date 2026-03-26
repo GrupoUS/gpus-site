@@ -400,6 +400,26 @@ Each product landing page follows this flow (all components in `src/components/l
 
 ## Learnings log (evolve)
 
+### [2026-03-26] Lote 10× evolve: home institucional, CTA, meta de produtos e 404
+
+> Registro agregado: `evals/site/evolve-batch-2026-03-26/runs/2026-03-26-10x-loop/run.md` e `compound.md`.
+
+**Escopo:** dez ciclos seguidos (copy/SEO/conversão): grid de produtos (sem `fetch` de debug em localhost), seção CTA, preview “Sobre”, stats com `h2` acessível, meta de contato e sobre, blurb do rodapé, campo `description` em `trintae3`, `curso-auriculo` e `mentoria-black-neon`, copy e meta da 404.
+
+**Padrão:** `description` nos JSON de produto alimenta `<meta name="description">` nas landings que passam `description={d.description}` — tratar como **superfície SEO** junto com hero/tagline.
+
+**Validação:** `bun run lint && bunx astro check && bun run build`.
+
+### [2026-03-26] Home: alinhar SERP, Hero e jornada à trilha comercial
+
+> Run: `evals/site/home-narrative-seo/runs/2026-03-26-evolve-home/run.md`.
+
+**Problema:** Title/description da home e copy do Hero não guiavam com a mesma clareza a **intenção de busca** (formação + negócios em saúde estética) nem o **próximo passo**; a timeline da jornada tinha pt-BR sem acento e um subtítulo com vocabulário de implementação (“manual”, URLs).
+
+**Solução:** Title/meta da `index` e defaults do `Layout` (incl. JSON-LD Organization) com narrativa única; Hero com headline “referências na estética avançada”, subtítulo com pilares e trilha; CTA primário “Ver trilha de programas”; resumos da jornada revisados e subtítulo voltado ao visitante. Comando `/evolve`: **§1.0** passa a tratar pedidos em linguagem natural de evolução do site como `<area>evolve</area>`.
+
+**Validação:** `bun run lint && bunx astro check && bun run build`.
+
 ### [2026-03-25] Sincronizar roteiro de vendas e persona com o código
 
 > Após alinhar a landing ao copy oficial e à persona (Google Docs).

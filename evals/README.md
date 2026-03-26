@@ -65,6 +65,8 @@ After a **keep** decision, update `compound.md` with what should be preserved in
 
 `run.md` is the per-experiment record. Optional: add `metrics.txt` (before/after Lighthouse or build notes).
 
+**Batches:** when the user requests multiple consecutive loops in one session, you may record them under one run folder (e.g. `runs/<tag>-10x-loop/run.md`) plus a single `compound.md` for the batch, as long as each loop has its own **hypothesis**, **files touched**, and **keep \| discard** line.
+
 Primary human-readable log still remains **`AGENTS.md`** → `## Learnings log (evolve)`, but `compound.md` is the area-level memory for future autoresearch.
 
 Skill: `.claude/skills/auto-research-gpus/SKILL.md`.
