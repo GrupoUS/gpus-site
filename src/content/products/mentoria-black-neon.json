@@ -2,9 +2,9 @@
 	"name": "Mentoria Black NEON",
 	"slug": "mentoria-black-neon",
 	"tagline": "Mentoria de negócios de 6 meses para donos de clínica em Saúde Estética que querem escalar com estratégia — não só com mais horas de plantão.",
-	"description": "Seis meses de acompanhamento ativo em gestão, posicionamento premium e vendas para donos de clínicas de Saúde Estética que querem escalar com estratégia e menos dependência do fundador.",
+	"description": "Seis meses de acompanhamento ativo em gestão, posicionamento premium e vendas para donos de clínicas de Saúde Estética que querem crescer com método, inteligência de negócio e menos dependência do fundador.",
 	"type": "Mentoria de Negócios",
-	"audience": "Profissionais da Saúde Estética que já atuam e querem escalar com estratégia",
+	"audience": "Donos de clínica em Saúde Estética que já operam e querem estruturar o negócio para crescer",
 	"icon": "Rocket",
 	"image": "/images/products/mentoria-black-neon.webp",
 	"order": 3,
@@ -62,16 +62,12 @@
 		}
 	],
 	"benefits": [
-		"Grupo exclusivo no WhatsApp com Dra. Sacha, tutores e mentorados",
-		"Sessão 1:1 de Visão de Escala de Negócio com Dra. Sacha",
-		"Análise Financeira com especialista em investimentos",
-		"Sessão Individual de Reestruturação e Gestão",
-		"Sessão Individual de Vendas estratégicas",
-		"Raio-X NEON — mentorias mensais em grupo",
-		"Happy Hour Estratégico com experts convidados",
-		"Tutorias de Marketing, Tráfego e Investimentos",
-		"Divã NEON — encontros mensais com psicólogo",
-		"Acesso integral às gravações de todos os encontros"
+		"Diagnóstico individual e plano de ação sob medida para a sua clínica",
+		"Acompanhamento próximo com Dra. Sacha e tutores especializados",
+		"Inteligência financeira aplicada: análise, precificação e margem",
+		"Processos de gestão que reduzem sua dependência na operação",
+		"Estratégias de vendas premium validadas no mercado real",
+		"Networking com donos de clínica no mesmo estágio de crescimento"
 	],
 	"deliverables": [
 		{
@@ -163,7 +159,7 @@
 			"Você domina a técnica, as pessoas confiam nos seus resultados e você ama o que faz. Só que no dia a dia aparecem concorrência, operação presa em você, finanças sem previsibilidade e a sensação de correr o tempo todo sem ver o lucro que o esforço merece.",
 			"Você foi preparado para ser um excelente profissional; construir empresa — com processos, time e oferta premium — é outra disciplina."
 		],
-		"highlight": "A Mentoria Black NEON existe para essa virada: combinar visão de negócio, gestão e marketing de relacionamento com a realidade de clínicas de estética — para você estruturar um negócio saudável e ser referência no mercado premium, sem abrir mão da sua essência."
+		"highlight": "A Mentoria Black NEON existe para essa virada: combinar visão de negócio, gestão e marketing de relacionamento com a realidade de clínicas de estética — para você estruturar um negócio saudável e se posicionar como referência no mercado premium."
 	},
 	"bonus": [
 		{
@@ -186,7 +182,7 @@
 		"paragraphs": [
 			"Com mais de 13 anos como empresária e especialista em Saúde Estética Avançada, certificações internacionais por Harvard e Xiamen, pioneirismo acadêmico e centenas de mentorados transformados, meu propósito é claro: te mostrar que você também pode chegar lá.",
 			"Você não precisa fazer esse caminho sozinho. Com o direcionamento certo, você acelera seus resultados, constrói autoridade e atrai clientes de alto valor — tudo isso sem abrir mão da sua essência.",
-			"É por isso que criei o NEON, minha Mentoria Black. Para te ajudar a sair do comum, escalar com estratégia e viver o extraordinário na sua carreira."
+			"É por isso que criei o NEON, minha Mentoria Black. Para te ajudar a sair do comum, construir um negócio sólido e viver o extraordinário na sua carreira."
 		]
 	},
 	"testimonials": [
