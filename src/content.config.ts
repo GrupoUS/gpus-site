@@ -101,6 +101,20 @@ const products = defineCollection({
 				}),
 			)
 			.min(2),
+		event: z
+			.object({
+				startDate: z.string(),
+				endDate: z.string(),
+				location: z.object({
+					name: z.string(),
+					address: z.string(),
+					city: z.string().optional(),
+					country: z.string().optional(),
+				}),
+				attendanceMode: z.enum(["offline", "online", "mixed"]).optional(),
+				organizer: z.string().optional(),
+			})
+			.optional(),
 	}),
 });
 

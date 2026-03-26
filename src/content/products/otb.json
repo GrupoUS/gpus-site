@@ -7,7 +7,6 @@
 	"audience": "Profissionais de saúde estética em busca de elite global",
 	"icon": "Globe",
 	"image": "/images/products/otb.svg",
-	"externalSiteUrl": "https://otb.gpus.com.br/",
 	"order": 2,
 	"hero": {
 		"headline": "O MBA que une negócios e saúde estética com imersão presencial em Dubai",
@@ -109,5 +108,17 @@
 			"role": "Cirurgião Dentista Esteticista — Curitiba/PR",
 			"quote": "O networking internacional que construí no OTB vale mais do que qualquer certificado. Hoje tenho parceiros em vários países e minha clínica atende pacientes estrangeiros."
 		}
-	]
+	],
+	"event": {
+		"startDate": "2026-10-18",
+		"endDate": "2026-10-23",
+		"location": {
+			"name": "Taj Dubai / AMWC Dubai",
+			"address": "Dubai, United Arab Emirates",
+			"city": "Dubai",
+			"country": "AE"
+		},
+		"attendanceMode": "mixed",
+		"organizer": "Grupo US"
+	}
 }

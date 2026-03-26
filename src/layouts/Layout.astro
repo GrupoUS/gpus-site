@@ -15,6 +15,7 @@ interface Props {
 	breadcrumbs?: Array<{ name: string; url: string }>;
 	whatsappMessage?: string;
 	hasBottomBar?: boolean;
+	jsonLd?: Record<string, unknown>;
 }
 
 const {
@@ -25,6 +26,7 @@ const {
 	breadcrumbs,
 	whatsappMessage,
 	hasBottomBar = false,
+	jsonLd,
 } = Astro.props;
 
 const productNavLinks = productNavLinksFromCollection(
@@ -115,6 +117,14 @@ const organizationSchema = {
 						"item": item.url
 					}))
 				})}
+			/>
+		)}
+
+		{jsonLd && (
+			<script
+				is:inline
+				type="application/ld+json"
+				set:html={JSON.stringify(jsonLd)}
 			/>
 		)}
 
