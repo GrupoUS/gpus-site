@@ -111,8 +111,8 @@ Plans:
 
 Plans:
 - [x] 05-01-PLAN.md — JSON-LD schemas (Course/Product/Event) + OTB local landing page + BreadcrumbList completion (SEO-01, SEO-02, SEO-04)
-- [ ] 05-02-PLAN.md — OG image SVG sources + ogImage prop wiring on all pages (SEO-03)
-- [ ] 05-03-PLAN.md — Sitemap serialize with priorities + robots.txt fix + deprecated component cleanup (SEO-05, SEO-06)
+- [x] 05-02-PLAN.md — OG image SVG sources + ogImage prop wiring on all pages (SEO-03)
+- [x] 05-03-PLAN.md — Sitemap serialize with priorities + robots.txt fix + deprecated component cleanup (SEO-05, SEO-06)
 
 **Requirements:** SEO-01, SEO-02, SEO-03, SEO-04, SEO-05, SEO-06
 
