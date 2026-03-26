@@ -5,7 +5,7 @@
 	"tagline": "Pare de planejar e comece a executar. Sprints de 90 dias com métricas, cadência e o olhar de dono que transforma clínica em negócio previsível.",
 	"description": "Programa focado em ritmo de execução, indicadores e decisões rápidas para donos de clínicas que já têm base técnica e precisam acelerar resultados com acompanhamento próximo do time Grupo US.",
 	"type": "Programa de Execução",
-	"audience": "Donos de clínicas e gestores de saúde estética em fase de escala",
+	"audience": "Donos de clínicas e gestores de Saúde Estética em fase de escala",
 	"icon": "Gauge",
 	"image": "/images/products/neon-dash.webp",
 	"order": 7,
@@ -83,7 +83,7 @@
 		},
 		{
 			"question": "Como faço para me inscrever?",
-			"answer": "Acesse o site oficial do Neondash ou fale diretamente com nosso time pelo WhatsApp. Você receberá o cronograma do próximo ciclo, os valores atualizados e poderá tirar dúvidas antes de confirmar sua vaga."
+			"answer": "Acesse o site oficial do Neon Dash ou fale diretamente com nosso time pelo WhatsApp. Você receberá o cronograma do próximo ciclo, os valores atualizados e poderá tirar dúvidas antes de confirmar sua vaga."
 		}
 	],
 	"cta": {

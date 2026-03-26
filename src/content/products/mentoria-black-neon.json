@@ -1,15 +1,15 @@
 {
 	"name": "Mentoria Black NEON",
 	"slug": "mentoria-black-neon",
-	"tagline": "Mentoria de negócios de 6 meses para donos de clínica em saúde estética que querem escalar com estratégia — não só com mais horas de plantão.",
-	"description": "Mentoria Black NEON — 6 meses de acompanhamento ativo em gestão, posicionamento premium e vendas para donos de clínicas de Saúde Estética que querem escalar com estratégia e menos dependência do fundador.",
+	"tagline": "Mentoria de negócios de 6 meses para donos de clínica em Saúde Estética que querem escalar com estratégia — não só com mais horas de plantão.",
+	"description": "Seis meses de acompanhamento ativo em gestão, posicionamento premium e vendas para donos de clínicas de Saúde Estética que querem escalar com estratégia e menos dependência do fundador.",
 	"type": "Mentoria de Negócios",
 	"audience": "Profissionais da Saúde Estética que já atuam e querem escalar com estratégia",
 	"icon": "Rocket",
 	"image": "/images/products/mentoria-black-neon.webp",
 	"order": 3,
 	"hero": {
-		"headline": "Escale sua clínica de saúde estética com gestão, autoridade e clientes premium na Mentoria Black NEON",
+		"headline": "Escale sua clínica de Saúde Estética com gestão, autoridade e clientes premium na Mentoria Black NEON",
 		"subheadline": "Seis meses de mentoria ativa: diagnóstico do seu negócio, plano de ação sob medida e suporte próximo — para você liderar com clareza e construir um negócio que não para quando você sai de plantão."
 	},
 	"painPoints": [
@@ -118,7 +118,7 @@
 	"differentials": [
 		{
 			"title": "Focada exclusivamente em clínicas de estética",
-			"description": "Não é uma mentoria genérica de negócios. Cada estratégia, indicador e processo foi criado especificamente para a realidade de clínicas de saúde estética."
+			"description": "Não é uma mentoria genérica de negócios. Cada estratégia, indicador e processo foi criado especificamente para a realidade de clínicas de Saúde Estética."
 		},
 		{
 			"title": "6 meses de acompanhamento real",
@@ -158,7 +158,7 @@
 		"type": "primary"
 	},
 	"story": {
-		"headline": "Um negócio em saúde estética exige mais que técnica: exige olhar de dono",
+		"headline": "Um negócio em Saúde Estética exige mais que técnica: exige olhar de dono",
 		"paragraphs": [
 			"Você domina a técnica, as pessoas confiam nos seus resultados e você ama o que faz. Só que no dia a dia aparecem concorrência, operação presa em você, finanças sem previsibilidade e a sensação de correr o tempo todo sem ver o lucro que o esforço merece.",
 			"Você foi preparado para ser um excelente profissional; construir empresa — com processos, time e oferta premium — é outra disciplina."
