@@ -54,7 +54,13 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 
 **Visual & Animations**
 
-- [ ] Evoluções de glass / hero / micro-interações conforme `ROADMAP.md` fases 3–4
+- [x] **VIS-01:** Aurora hero com cores navy/gold (gold, gold-light, navy-lighter, gold-dark). *Validated in Phase 3: Visual Uplift & Animation System*
+- [x] **VIS-02:** Landing heroes com mesh gradient animado (20s ciclo), desabilitado mobile/reduced-motion. *Validated in Phase 3*
+- [x] **VIS-03:** glass-card refinado (14% gold tint) + glass-card-bright em CTAs. *Validated in Phase 3*
+- [x] **VIS-04:** Mousemove glow em ProductsGrid cards (CSS + inline JS, touch excluído). *Validated in Phase 3*
+- [x] **VIS-05:** Spring reveals em 4 seções (hero, CTA, landing hero, stats) com LazyMotion+m. *Validated in Phase 3*
+- [x] **VIS-06:** Hover glow em todos os 4 variantes de botão. *Validated in Phase 3*
+- [x] **ADV-05:** Count-up animado nos stats com formato brasileiro (+5.000, 26, 10+, 7). *Validated in Phase 3*
 - [ ] Onde couber, preferir Astro + CSS antes de novas ilhas React (`AGENTS.md`)
 
 **React Islands (só com justificativa)**
@@ -98,4 +104,4 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 | View Transitions | Planejado na v2 doc original | ⏸ Supersedido até decisão contrária |
 
 ---
-*Last updated: 2026-03-26 — Phase 2 (Content & Copy Overhaul) complete. COPY-01/02/03/04 verified (7/7 must-haves). Phase 1 partial (TECH-01/02/04/05 done; TECH-03 superseded).*
+*Last updated: 2026-03-26 — Phase 3 (Visual Uplift & Animation System) complete. VIS-01/02/03/04/05/06 + ADV-05 verified (17/17 must-haves). Phases 1-2 also complete.*
