@@ -1,16 +1,56 @@
 ---
-description: Captura aprendizados após tarefas bem-sucedidas, aprimora skills e AGENTS.md para evitar erros recorrentes
+description: Autoresearch objetivo para otimizar skills/prompts (EVOLVE_AUTORESEARCH) quando houver pedido estruturado; em seguida captura aprendizados, memory, GSD e session-report
 ---
 
-# /evolve — Captura de Aprendizados
+# /evolve — Autoresearch + Captura de Aprendizados
 
 **ARGUMENTS**: $ARGUMENTS
 
 ---
 
-## 0. PRIMEIRA AÇÃO: Simplify (Qualidade de Código)
+## Fluxo em duas fases
 
-**Antes de capturar aprendizados, revise o código modificado.**
+| Fase | Quando roda | Objetivo |
+|------|-------------|----------|
+| **1 — Autoresearch** | O usuário fornece um bloco `<evolve_request>...</evolve_request>` válido (em `$ARGUMENTS` ou na mensagem) **ou** pede explicitamente otimização de uma skill/prompt com os mesmos campos | Otimizar **somente o texto** do `target_skill_prompt` com evals objetivos, baseline obrigatório, harness **imutável** durante o run, múltiplas amostras e decisão **keep \| discard** por iteração |
+| **2 — Captura** | **Sempre** após a Fase 1, se ela rodou; **ou** sozinha se não houver autoresearch | Simplify (se código), quality gates, memory, GSD, skills/AGENTS, session-report |
+
+**Restrições constitucionais (nível prompt/skill):**
+
+- **Superfície editável:** apenas o `target_skill_prompt` em modo autoresearch.
+- **Superfície imutável durante o run:** critérios binários, fórmula de score, conjunto de casos de teste e regras de plateau — fixados após a definição inicial; mudança = **novo run**.
+- **Baseline primeiro:** avaliar o prompt atual antes de qualquer mutação; registrar no `<experiment_log>`.
+- **Sem métricas subjetivas** (“vibes”) como score principal.
+- **Nunca** promover candidato com score agregado **inferior** ao melhor atual.
+- **Nunca** assumir ferramentas inexistentes; lacunas vão em `<knowledge_gaps>`.
+
+---
+
+## Fase 1 — Autoresearch (condicional)
+
+### 1.1 Detecção
+
+- Procure `<evolve_request>` bem formado com campos obrigatórios: `target_skill_name`, `target_skill_prompt`, `task_domain`, `eval_constraints`, `resources/max_iterations`, `resources/samples_per_iteration`.
+- Se faltar campo obrigatório ou `eval_constraints` for ambíguo: faça **uma** pergunta objetiva (preferência múltipla escolha) e **não** inicie o loop até resposta.
+
+### 1.2 Execução
+
+1. Carregue e siga a skill **`evolve-autoresearch`** (meta-skill `EVOLVE_AUTORESEARCH`): `.claude/skills/evolve-autoresearch/SKILL.md`.
+2. Opcionalmente invoque `Skill("evolve-autoresearch")` com o conteúdo do request se o ambiente suportar.
+3. Produza **primeiro** a saída completa em `<evolve_response>...</evolve_response>` conforme o schema da skill (incluindo `eval_design`, `experiment_log` com **todas** as iterações, `candidate_id`, `score`, `delta_vs_baseline`, `decision` **keep \| discard**, `hypothesis` quando `store_rationale`, `changes_summary`, `knowledge_gaps`, `next_actions`).
+4. **Status:** `success` se houve melhora clara e critérios estáveis; `partial` em plateau ou orçamento; `failed` se inputs inválidos ou bloqueio total.
+
+> Inspiração de loop: projeto Karpathy [autoresearch](https://github.com/karpathy/autoresearch) — um artefato mutável, harness fixo, baseline, keep/discard por métrica.
+
+**Se não houver `<evolve_request>` válido:** pule a Fase 1 e vá direto para a Fase 2.
+
+---
+
+## Fase 2 — Captura (pós-autoresearch ou standalone)
+
+### 0. PRIMEIRA AÇÃO: Simplify (Qualidade de Código)
+
+**Quando houver código modificado nesta sessão**, antes de capturar aprendizados, revise o código.
 
 Execute `Skill("simplify")` passando os arquivos alterados nesta sessão como contexto. O simplify revisa automaticamente:
 
@@ -19,9 +59,9 @@ Execute `Skill("simplify")` passando os arquivos alterados nesta sessão como co
 - Oportunidades de composição ou extração
 - Eficiência e legibilidade
 
-> Não pule esta etapa. O simplify pode revelar que a solução implementada pode ser refatorada antes de ser documentada como "boa prática".
+> Se a sessão foi **apenas** otimização de prompt (Fase 1 sem arquivos de código tocados), documente isso no resumo e **pule** o simplify.
 
-Após o simplify resolver os problemas encontrados, **re-execute as quality gates** antes de continuar:
+Após o simplify resolver problemas (quando aplicável), **re-execute as quality gates**:
 
 ```bash
 bun run lint && bunx astro check && bun run build
@@ -29,9 +69,9 @@ bun run lint && bunx astro check && bun run build
 
 ---
 
-## 1. Analisar Contexto da Sessão
+### 1. Analisar Contexto da Sessão
 
-Analise a conversa atual para extrair aprendizados. Identifique:
+Analise a conversa atual para extrair aprendizados. Inclua, se a Fase 1 rodou, um resumo do autoresearch (status, melhor candidato, plateau). Identifique:
 
 ```markdown
 ## Contexto Identificado
@@ -54,7 +94,7 @@ Analise a conversa atual para extrair aprendizados. Identifique:
 
 ---
 
-## 2. FLUXO DE CAPTURA
+### 2. FLUXO DE CAPTURA
 
 ### 2.1 Persistir em Memory (auto memory)
 
@@ -142,7 +182,7 @@ Exemplos de seeds úteis:
 
 ---
 
-## 3. SELEÇÃO DE SKILLS (Semi-Automática)
+### 3. SELEÇÃO DE SKILLS (Semi-Automática)
 
 ### 3.1 Mapear Domínio Afetado
 
@@ -159,6 +199,7 @@ Com base nos arquivos/modificações, identificar skills relevantes:
 | Performance | Otimizações gerais | `performance-optimization` | `astro` (performance) |
 | Design Tokens | `src/styles/global.css` | `gpus-theme` | `astro` (styling-tailwind) |
 | Commands / Workflows | `.claude/commands/*.md` | — | — |
+| Autoresearch / otimização de prompts | `.claude/skills/**/SKILL.md` | `evolve-autoresearch` | `skill-creator` |
 
 ### 3.2 Perguntar ao Usuário
 
@@ -168,13 +209,14 @@ Com base na tarefa realizada, sugiro aprimorar:
 1. debugger (Astro/React components)
 2. AGENTS.md (Project rules)
 3. performance-optimization (se aplicável)
+4. evolve-autoresearch (se houve Fase 1 nesta sessão)
 
-Quais deseja atualizar? [1,2,3 ou Enter para todos marcados]
+Quais deseja atualizar? [1,2,3,4 ou Enter para todos marcados]
 ```
 
 ---
 
-## 4. APRIMORAR SKILLS
+### 4. APRIMORAR SKILLS
 
 ### 4.1 Template de Atualização
 
@@ -211,7 +253,7 @@ Para cada skill selecionada, adicionar em `references/` ou seção do SKILL.md:
 
 ---
 
-## 5. APRIMORAR AGENTS.md
+### 5. APRIMORAR AGENTS.md
 
 ### 5.1 Selecionar Arquivos
 
@@ -247,7 +289,7 @@ Adicionar seção ao AGENTS.md selecionado:
 
 ---
 
-## 6. GSD: Session Report e Contexto Cross-Session
+### 6. GSD: Session Report e Contexto Cross-Session
 
 ### 6.1 Gerar Session Report
 
@@ -274,13 +316,14 @@ Use threads para:
 
 ---
 
-## 7. RESUMO FINAL
+### 7. RESUMO FINAL
 
 ```
 Evolve concluído!
 
-✅ Simplify executado (qualidade validada)
-✅ Quality gates passando
+[Fase 1] Autoresearch: [executado — status | omitido — sem <evolve_request>]
+✅ Simplify executado quando aplicável (qualidade validada)
+✅ Quality gates passando quando código foi tocado
 ✅ Memory atualizada (feedback/project)
 ✅ GSD notes/seeds capturados
 ✅ Skills aprimoradas: [lista]
@@ -307,7 +350,9 @@ Ao evoluir skills com aprendizados do Astro, priorize documentar:
 
 ## Referências
 
+- **evolve-autoresearch / EVOLVE_AUTORESEARCH:** `.claude/skills/evolve-autoresearch/SKILL.md`
 - **simplify**: skill built-in do Claude Code — revisa código para reuso, qualidade e eficiência
 - **astro**: `.claude/skills/astro/SKILL.md` — Referência completa Astro 6
 - **skill-creator**: `.claude/skills/skill-creator/SKILL.md`
 - **GSD commands**: `/gsd:note`, `/gsd:plant-seed`, `/gsd:add-todo`, `/gsd:session-report`, `/gsd:thread`
+- **Karpathy autoresearch (inspiração de loop):** [github.com/karpathy/autoresearch](https://github.com/karpathy/autoresearch)

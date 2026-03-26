@@ -392,12 +392,12 @@ Which option?
 Implementacao completa!
 
 Proximos passos:
-1. /evolve — Capturar aprendizados (recomendado)
+1. /evolve — Autoresearch (opcional, com <evolve_request>) + captura de aprendizados (recomendado)
 2. Testar em staging — Validar em ambiente real
 3. Documentar — Atualizar README se necessario
 ```
 
-O `/evolve` ira registrar padroes uteis e atualizar documentacao.
+O `/evolve` pode primeiro rodar **EVOLVE_AUTORESEARCH** (baseline, evals objetivos, keep/discard) quando houver `<evolve_request>`; depois executa simplify/gates, memory, GSD e session-report. Sem request, apenas a fase de captura.
 
 ---
 

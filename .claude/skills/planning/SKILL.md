@@ -137,6 +137,17 @@ crawl4ai-doctor   # Verify installation
 # If issues: crawl4ai-setup
 ```
 
+**Install when missing** (WSL/Linux; `pip3 --user` puts CLIs in `~/.local/bin` — ensure that directory is on `PATH`):
+
+```bash
+pip3 install --user crawl4ai
+export PATH="$HOME/.local/bin:$PATH"
+python3 -m playwright install chromium
+crawl4ai-doctor
+```
+
+If `crawl4ai-doctor` still fails after browsers install, run it on your machine (some CI/sandbox hosts cannot launch Chromium). On Fedora/WSL you may need extra OS libs — follow prompts from `crawl4ai-setup`.
+
 ### When to Use
 
 | Trigger | Action |
@@ -201,6 +212,9 @@ config = CrawlerRunConfig(
 | JS not loading | Increase `page_timeout`, add `wait_for` |
 | Bot detection | `headless=False`, add `asyncio.sleep()` delays |
 | Hangs | Cancel, retry without `--wait`, check source list |
+| Playwright / “Executable doesn't exist” | `python3 -m playwright install chromium` |
+| Browser launches then closes | Re-run `crawl4ai-doctor` locally; check `crawl4ai-setup` / OS deps |
+| Chrome error `libatk-1.0.so.0` (Fedora/WSL) | `sudo dnf install -y atk at-spi2-atk at-spi2-core gtk3 libdrm mesa-libgbm libXcomposite libXdamage libXfixes libXrandr libXcursor alsa-lib` (pulls needed GTK/ATK stack for Playwright) |
 
 > Full SDK reference: `references/crawl4ai-sdk.md`
 > Scripts: `scripts/basic_crawler.py`, `scripts/batch_crawler.py`, `scripts/extraction_pipeline.py`
@@ -219,6 +233,8 @@ Use when research involves **multi-source domain knowledge**, **plan-vs-research
 which nlm && nlm doctor   # Verify before any NLM operation
 # If auth expired: nlm login
 ```
+
+If `nlm` is not found after `pip3 install --user notebooklm-mcp-cli`, add `export PATH="$HOME/.local/bin:$PATH"` (same as Crawl4AI).
 
 **If either check fails:** Skip all NLM steps. Log: `NotebookLM unavailable — skipping.` Never block the main workflow.
 

@@ -184,7 +184,7 @@ nlm share invite <id> colleague@company.com --role editor
 
 | Issue | Mitigation |
 |-------|------------|
-| CLI missing | `uv tool install notebooklm-mcp-cli` |
+| `nlm` missing / not on PATH | Install: `pip3 install --user notebooklm-mcp-cli` or `uv tool install notebooklm-mcp-cli`; then `export PATH="$HOME/.local/bin:$PATH"` if using pip `--user` |
 | Auth | `nlm login` |
 | Source hangs | Retry without `--wait`; `nlm source list` |
 | Empty research | Broaden query; confirm `--mode deep`; fall back to Tavily |
