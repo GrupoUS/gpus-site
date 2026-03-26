@@ -12,7 +12,7 @@ import NeonBonus from "../components/landing/NeonBonus.astro";
 import NeonStory from "../components/landing/NeonStory.astro";
 import PainPoints from "../components/landing/PainPoints.astro";
 import Pillars from "../components/landing/Pillars.astro";
-import Testimonials from "../components/landing/Testimonials.astro";
+import { TestimonialCarousel } from "../components/landing/TestimonialCarousel.tsx";
 import Layout from "../layouts/Layout.astro";
 
 const products = await getCollection("products");
@@ -54,7 +54,7 @@ const d = product.data;
 		<Differentials differentials={d.differentials} />
 
 		{/* S8: Testimonials — dark navy */}
-		<Testimonials testimonials={d.testimonials} />
+		<TestimonialCarousel client:visible testimonials={d.testimonials} />
 
 		{/* S9: Bio Dra. Sacha — light background (visual contrast) */}
 		{d.bio && <NeonBio bio={d.bio} />}

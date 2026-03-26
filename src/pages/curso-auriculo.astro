@@ -8,7 +8,7 @@ import LandingHero from "../components/landing/LandingHero.astro";
 import MobileCTABar from "../components/landing/MobileCTABar.astro";
 import PainPoints from "../components/landing/PainPoints.astro";
 import Pillars from "../components/landing/Pillars.astro";
-import Testimonials from "../components/landing/Testimonials.astro";
+import { TestimonialCarousel } from "../components/landing/TestimonialCarousel.tsx";
 import Layout from "../layouts/Layout.astro";
 
 const products = await getCollection("products");
@@ -32,7 +32,7 @@ const d = product.data;
 		<Pillars pillars={d.pillars} />
 		<Benefits benefits={d.benefits} />
 		<Differentials differentials={d.differentials} />
-		<Testimonials testimonials={d.testimonials} />
+		<TestimonialCarousel client:visible testimonials={d.testimonials} />
 		<FAQ faqs={d.faqs} />
 		<LandingCTA name={d.name} cta={d.cta} />
 	</div>
