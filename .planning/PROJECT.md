@@ -12,7 +12,7 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 
 | Tema | Situação |
 |------|-----------|
-| **Rotas** | **8** páginas `.astro` em `src/pages/`; **5** redirects estáticos em `astro.config.mjs` (`/trintae3`, `/comunidade-us`, `/neon-dash`, `/na-mesa-certa`, `/otb`) para destinos externos alinhados aos JSON |
+| **Rotas** | **9** páginas `.astro` em `src/pages/` (OTB agora é landing local); **4** redirects estáticos em `astro.config.mjs` (`/trintae3`, `/comunidade-us`, `/neon-dash`, `/na-mesa-certa`) |
 | **Produtos / equipe** | **7** JSON em `src/content/products/`; **13** JSON em `src/content/team/` |
 | **WhatsApp** | Número único no site: **+55 62 9470-5081** (Laura, SDR) — fonte `src/lib/whatsapp.ts` |
 | **Navegação** | MPA com reload completo; **não** usar `ClientRouter` / View Transitions como SPA |
@@ -73,9 +73,11 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 
 **SEO Técnico**
 
-- [ ] JSON-LD `Course`/`Product` por produto (onde fizer sentido sem inventar preços)
-- [ ] OG images dedicadas por rota
-- [ ] `robots.txt` explícito (se ainda não existir em `public/`)
+- [x] **SEO-01/02:** JSON-LD `Course` (curso-auriculo), `Product` (mentoria-black-neon), `Event` (OTB) + Layout.astro `jsonLd` prop. *Validated in Phase 5*
+- [x] **SEO-03:** 9 SVG OG image sources + ogImage prop on all pages. *Validated in Phase 5*
+- [x] **SEO-04:** BreadcrumbList JSON-LD em 7/9 páginas internas. *Validated in Phase 5*
+- [x] **SEO-05:** Sitemap com priorities (1.0/0.9/0.7/0.3) e changefreq via serialize callback. *Validated in Phase 5*
+- [x] **SEO-06:** robots.txt Disallow /404 only — legal pages indexable. *Validated in Phase 5*
 
 ### Out of Scope
 
@@ -103,8 +105,8 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 |---------|-----------|---------|
 | MPA sem ClientRouter | Performance, simplicidade, alinhamento “anti-SPA” institucional | ✓ Ativo |
 | WhatsApp via `src/lib/whatsapp.ts` | Um número (Laura), mensagens consistentes | ✓ Ativo |
-| Redirects para landings externas | TRINTAE3, COMU, Neon Dash, Na Mesa, OTB hospedados fora do Astro | ✓ Ativo |
+| Redirects para landings externas | TRINTAE3, COMU, Neon Dash, Na Mesa hospedados fora do Astro; OTB agora local | ✓ Ativo |
 | View Transitions | Planejado na v2 doc original | ⏸ Supersedido até decisão contrária |
 
 ---
-*Last updated: 2026-03-26 — Phase 4 (React Islands: Premium Interactions) complete. ISLAND-01/02/03 verified (10/10 must-haves). Phases 1-4 all complete. This is the last phase of v1.0 milestone.*
+*Last updated: 2026-03-26 — Phase 5 (SEO Technical Layer + Cleanup) complete. SEO-01 through SEO-06 verified (12/12 must-haves). All v1.0 milestone phases (1-5) complete. 24/24 requirements satisfied.*
