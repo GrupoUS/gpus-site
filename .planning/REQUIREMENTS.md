@@ -26,7 +26,7 @@
 - [ ] **VIS-02**: Heroes das landing pages de produto com fundo animado consistente (variação do mesh gradient)
 - [ ] **VIS-03**: Utility `glass-card` atualizada para Liquid Glass real — `backdrop-filter: blur(12px)`, borda com gradiente, profundidade visual
 - [ ] **VIS-04**: Micro-interações nos ProductsGrid cards — glow dinâmico acompanhando o mouse (CSS ou React)
-- [ ] **VIS-05**: Animações de scroll-reveal mais expressivas com spring physics (Framer Motion `client:visible`)
+- [x] **VIS-05**: Animações de scroll-reveal mais expressivas com spring physics (Framer Motion `client:visible`)
 - [ ] **VIS-06**: Hover states refinados em todos os botões (scale + glow + shadow)
 
 ### React Islands
@@ -94,7 +94,7 @@
 | VIS-02 | Phase 3 | Pending |
 | VIS-03 | Phase 3 | Pending |
 | VIS-04 | Phase 3 | Pending |
-| VIS-05 | Phase 3 | Pending |
+| VIS-05 | Phase 3 | Complete |
 | VIS-06 | Phase 3 | Pending |
 | ISLAND-01 | Phase 4 | Pending |
 | ISLAND-02 | Phase 4 | Pending |

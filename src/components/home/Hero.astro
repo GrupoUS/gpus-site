@@ -1,6 +1,7 @@
 ---
 import Button from "../shared/Button.astro";
 import { AuroraBackground } from "../ui/aurora-background";
+import { HeroEntrance } from "../ui/HeroEntrance";
 import { Spotlight } from "../ui/spotlight";
 import { TextGenerateEffect } from "../ui/text-generate-effect";
 ---
@@ -9,16 +10,16 @@ import { TextGenerateEffect } from "../ui/text-generate-effect";
 	<AuroraBackground client:idle className="min-h-screen bg-navy">
 		<Spotlight fill="#d4af37" className="-top-40 left-0 md:left-60 md:-top-20" />
 
-		<div class="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6">
+		<HeroEntrance client:idle className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6">
 			<!-- Gold badge -->
-			<div data-reveal="up">
+			<div>
 				<span class="inline-block rounded-sm border border-gold/30 bg-navy-light/80 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-gold">
 					Formação · Gestão · Comunidade
 				</span>
 			</div>
 
 			<!-- Headline with text generate effect -->
-			<div class="mt-8" data-reveal="up" data-reveal-delay="1">
+			<div class="mt-8">
 				<TextGenerateEffect
 					client:idle
 					words="Transformamos profissionais da saúde em referências na estética avançada"
@@ -29,8 +30,6 @@ import { TextGenerateEffect } from "../ui/text-generate-effect";
 			<!-- Subtitle -->
 			<p
 				class="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-text-muted md:text-xl"
-				data-reveal="up"
-				data-reveal-delay="2"
 			>
 				Programas com quem lidera o mercado: técnica, gestão e networking para você
 				crescer em autoridade, faturamento e reputação — com trilha clara do primeiro
@@ -40,8 +39,6 @@ import { TextGenerateEffect } from "../ui/text-generate-effect";
 			<!-- CTA Buttons -->
 			<div
 				class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
-				data-reveal="up"
-				data-reveal-delay="3"
 			>
 				<Button variant="primary" href="#produtos" size="lg">
 					Ver trilha de programas
@@ -50,6 +47,6 @@ import { TextGenerateEffect } from "../ui/text-generate-effect";
 					Fale conosco
 				</Button>
 			</div>
-		</div>
+		</HeroEntrance>
 	</AuroraBackground>
 </section>
