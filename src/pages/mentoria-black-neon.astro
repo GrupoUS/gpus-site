@@ -26,6 +26,8 @@ const d = product.data;
 	description={d.description}
 	ogImage={d.image}
 	activeNav="produtos"
+	whatsappMessage={d.cta.whatsappMessage}
+	hasBottomBar={true}
 	breadcrumbs={[
 		{ name: "Início", url: "https://grupous.com.br/" },
 		{ name: d.name, url: `https://grupous.com.br/${d.slug}` }

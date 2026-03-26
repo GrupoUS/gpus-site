@@ -3,6 +3,7 @@ import { Font } from "astro:assets";
 import { getCollection } from "astro:content";
 import Footer from "../components/layout/Footer.astro";
 import Header from "../components/layout/Header.astro";
+import { WhatsAppFloatingButton } from "../components/shared/WhatsAppFloatingButton.tsx";
 import { productNavLinksFromCollection } from "../lib/productsNav";
 import "../styles/global.css";
 
@@ -12,6 +13,8 @@ interface Props {
 	ogImage?: string;
 	activeNav?: string;
 	breadcrumbs?: Array<{ name: string; url: string }>;
+	whatsappMessage?: string;
+	hasBottomBar?: boolean;
 }
 
 const {
@@ -20,6 +23,8 @@ const {
 	ogImage = "/og-image.png",
 	activeNav,
 	breadcrumbs,
+	whatsappMessage,
+	hasBottomBar = false,
 } = Astro.props;
 
 const productNavLinks = productNavLinksFromCollection(
@@ -136,6 +141,12 @@ const organizationSchema = {
 		<main id="conteudo-principal" tabindex="-1">
 			<slot />
 		</main>
+
+		<WhatsAppFloatingButton
+			client:load
+			message={whatsappMessage}
+			hasBottomBar={hasBottomBar}
+		/>
 
 		<Footer productNavLinks={productNavLinks} />
 
