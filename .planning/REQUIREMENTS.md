@@ -31,8 +31,8 @@
 
 ### React Islands
 
-- [ ] **ISLAND-01**: Jornada na home — **hoje:** `JourneyTimeline.astro` (estático). *Upgrade opcional:* `JourneyTimeline.tsx` com Framer Motion se justificado
-- [ ] **ISLAND-02**: `TestimonialCarousel.tsx` — carrossel Framer Motion com swipe, autoplay (4s), indicadores, usado em todas as landing pages substituindo `Testimonials.astro` estático
+- [x] **ISLAND-01**: Jornada na home — **hoje:** `JourneyTimeline.astro` (estático). *Upgrade opcional:* `JourneyTimeline.tsx` com Framer Motion se justificado
+- [x] **ISLAND-02**: `TestimonialCarousel.tsx` — carrossel Framer Motion com swipe, autoplay (4s), indicadores, usado em todas as landing pages substituindo `Testimonials.astro` estático
 - [ ] **ISLAND-03**: `WhatsAppFloatingButton.tsx` — botão flutuante `client:load`; **número e URL** devem usar `src/lib/whatsapp.ts` (Laura +55 62 9470-5081)
 
 ### SEO Técnico
@@ -96,8 +96,8 @@
 | VIS-04 | Phase 3 | Pending |
 | VIS-05 | Phase 3 | Complete |
 | VIS-06 | Phase 3 | Pending |
-| ISLAND-01 | Phase 4 | Pending |
-| ISLAND-02 | Phase 4 | Pending |
+| ISLAND-01 | Phase 4 | Complete |
+| ISLAND-02 | Phase 4 | Complete |
 | ISLAND-03 | Phase 4 | Pending |
 | SEO-01 | Phase 5 | Pending |
 | SEO-02 | Phase 5 | Pending |

@@ -92,7 +92,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — JourneyTimeline.tsx + TestimonialCarousel.tsx: animated timeline with scroll-linked progress line + drag carousel with autoplay (ISLAND-01, ISLAND-02)
+- [x] 04-01-PLAN.md — JourneyTimeline.tsx + TestimonialCarousel.tsx: animated timeline with scroll-linked progress line + drag carousel with autoplay (ISLAND-01, ISLAND-02)
 - [ ] 04-02-PLAN.md — WhatsAppFloatingButton.tsx: global floating button with scroll-triggered entrance + per-page messages via Layout.astro (ISLAND-03)
 
 **Requirements:** ISLAND-01, ISLAND-02, ISLAND-03
