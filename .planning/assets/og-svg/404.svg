@@ -1,0 +1,16 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Navy background -->
+  <rect width="1200" height="630" fill="#1a1a2e"/>
+
+  <!-- Page title (legal variant: 48px) -->
+  <text x="60" y="280" font-family="Playfair Display, serif" font-size="48" font-weight="700" fill="#d4af37">Pagina nao encontrada</text>
+
+  <!-- Subtitle -->
+  <text x="60" y="340" font-family="Inter, sans-serif" font-size="24" fill="#94a3b8">Grupo US</text>
+
+  <!-- Gold accent line -->
+  <rect x="60" y="400" width="200" height="3" fill="#d4af37" rx="1.5"/>
+
+  <!-- Brand wordmark -->
+  <text x="1140" y="580" font-family="Playfair Display, serif" font-size="28" font-weight="600" fill="#d4af37" text-anchor="end">Grupo US</text>
+</svg>
