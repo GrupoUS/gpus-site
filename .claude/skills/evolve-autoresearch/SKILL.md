@@ -104,6 +104,79 @@ Include **every** iteration (including baseline as `candidate_id` = `baseline` w
 - **Never** delete prior history from `<experiment_log>`; archive worse candidates in text if `keep_all_candidates` is true.
 - **Never** claim tools that are not available; list limits under `<knowledge_gaps>`.
 
+## `evals/` tree (mandatory for each autoresearch run)
+
+Every run that optimizes a target skill **must** create (or extend) a directory:
+
+`evals/<skill-slug>/runs/<run-id>/`
+
+Minimum artifacts:
+
+| File | Purpose |
+|------|---------|
+| `experiments.tsv` | Objective history (Karpathy-style); from the Python CLI |
+| `applied.md` | **Improvements applied** — each `keep` promotion, what changed in the prompt |
+| `backlog.md` | **Still to improve** — failing criteria, `<knowledge_gaps>`, `<next_actions>`, plateau reasons |
+
+Put the **run path** inside `<next_actions>` so humans can find it. Fill `applied.md` / `backlog.md` after scoring; do not leave them empty if the response contained substance.
+
+Canonical layout: [`evals/README.md`](../../../evals/README.md) (repo root).
+
+## Python experiment log (Karpathy-style TSV)
+
+**Path:** `.claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py` (stdlib only).
+
+**Preferred init** (creates `evals/<slug>/runs/<id>/`, TSV, meta, **`applied.md`**, **`backlog.md`**):
+
+```bash
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py init \
+  --evals-root evals \
+  --skill-slug diagram_generator \
+  --target-skill-name diagram_generator \
+  --note "optional note"
+```
+
+Or **`--run-dir`** for a custom path; add **`--with-evals-docs`** to emit `applied.md` + `backlog.md` there.
+
+**Append** one row per baseline / candidate / failure:
+
+```bash
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py append \
+  --run-dir evals/diagram_generator/runs/<run-id> \
+  --iteration 0 \
+  --candidate-id baseline \
+  --score 28 \
+  --delta-vs-baseline 0 \
+  --decision keep \
+  --changes-summary "unchanged prompt, baseline eval"
+```
+
+Use **`discard`** for worse candidates; **`crash`** only for harness/tooling failures (Karpathy-style).
+
+**Import** `<evolve_response>` XML → all `<iteration>` rows; **`--write-best`** → `best_skill_prompt.txt`; **`--merge-backlog`** → append `<knowledge_gaps>` and `<next_actions>` into `backlog.md`:
+
+```bash
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py import-response \
+  --run-dir evals/diagram_generator/runs/<run-id> \
+  --file path/to/response.xml \
+  --write-best \
+  --merge-backlog
+```
+
+Child tags under `<iteration>`: `candidate_id`, `score`, `delta_vs_baseline`, `decision`, `hypothesis`, `changes_summary` (hyphenated variants OK).
+
+**Stats** (optional sample gate):
+
+```bash
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py stats \
+  --run-dir evals/diagram_generator/runs/<run-id> \
+  --require-min-rows 5
+```
+
+**TSV columns:** `iteration`, `candidate_id`, `score`, `delta_vs_baseline`, `decision`, `hypothesis`, `changes_summary` (tab-separated).
+
+Emit `<evolve_response>` in chat **and** persist under `evals/` for auditability and diffs.
+
 ## Few-shot A — diagram-style (expected behavior sketch)
 
 **Input:**

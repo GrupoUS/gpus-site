@@ -1,5 +1,4 @@
----
-description: Autoresearch objetivo para otimizar skills/prompts (EVOLVE_AUTORESEARCH) quando houver pedido estruturado; em seguida captura aprendizados, memory, GSD e session-report
+description: Autoresearch duplo — (A) skills/prompts via EVOLVE_AUTORESEARCH + evals/TSV; (B) site Astro via auto-research-gpus com foco principal em copy, SEO e conversão; depois captura memory/GSD/session-report
 ---
 
 # /evolve — Autoresearch + Captura de Aprendizados
@@ -12,23 +11,29 @@ description: Autoresearch objetivo para otimizar skills/prompts (EVOLVE_AUTORESE
 
 | Fase | Quando roda | Objetivo |
 |------|-------------|----------|
-| **1 — Autoresearch** | O usuário fornece um bloco `<evolve_request>...</evolve_request>` válido (em `$ARGUMENTS` ou na mensagem) **ou** pede explicitamente otimização de uma skill/prompt com os mesmos campos | Otimizar **somente o texto** do `target_skill_prompt` com evals objetivos, baseline obrigatório, harness **imutável** durante o run, múltiplas amostras e decisão **keep \| discard** por iteração |
+| **1 — Autoresearch** | Ver **ordem de detecção** abaixo: ou otimização de **prompt/skill** (`<evolve_request>`), ou autoresearch de **código do site** (`<input><area>`) | (A) Meta-skill `EVOLVE_AUTORESEARCH` + pasta `evals/` para prompts; (B) skill **`auto-research-gpus`** — prioridade padrão em **copy, SEO, CTA e estratégia comercial**, depois baseline mensurável, **uma** hipótese por turno, patch mínimo, **keep \| discard \| investigate**, log em `AGENTS.md` e em `evals/site/...` |
 | **2 — Captura** | **Sempre** após a Fase 1, se ela rodou; **ou** sozinha se não houver autoresearch | Simplify (se código), quality gates, memory, GSD, skills/AGENTS, session-report |
 
-**Restrições constitucionais (nível prompt/skill):**
+**Restrições constitucionais do site** (sempre): ver `AGENTS.md` — Astro SSG, Bun, Lucide (sem emoji como ícone), `getCollection()`, sem SPA, animações só transform/opacity ou grid 0fr/1fr, bundle enxuto.
 
-- **Superfície editável:** apenas o `target_skill_prompt` em modo autoresearch.
-- **Superfície imutável durante o run:** critérios binários, fórmula de score, conjunto de casos de teste e regras de plateau — fixados após a definição inicial; mudança = **novo run**.
-- **Baseline primeiro:** avaliar o prompt atual antes de qualquer mutação; registrar no `<experiment_log>`.
-- **Sem métricas subjetivas** (“vibes”) como score principal.
-- **Nunca** promover candidato com score agregado **inferior** ao melhor atual.
-- **Nunca** assumir ferramentas inexistentes; lacunas vão em `<knowledge_gaps>`.
+**Objetivo principal do modo site:** sempre priorizar melhorias que aumentem **atração de clientes e vendas**: copy, SEO, promessa, diferenciação, prova, CTA, jornada e clareza comercial. Performance entra depois, ou antes apenas quando for gargalo claro de conversão.
+
+**Restrições específicas do modo prompt** (`<evolve_request>` apenas):**
+
+- **Superfície editável:** apenas o `target_skill_prompt` nesse modo.
+- **Harness imutável** no run; baseline primeiro; sem métrica subjetiva; não promover pior candidato; lacunas em `<knowledge_gaps>`.
 
 ---
 
 ## Fase 1 — Autoresearch (condicional)
 
-### 1.1 Detecção
+### 1.0 Ordem de detecção (obrigatória)
+
+1. Se existir `<evolve_request>...</evolve_request>` válido → seguir **§1.1–1.4** (prompt/skill).
+2. Senão, se existir `<input>...</input>` com `<area>...</area>` → seguir **§1.5** (site / código) e carregar **`.claude/skills/auto-research-gpus/SKILL.md`**.
+3. Senão → **sem Fase 1**; vá para Fase 2 (captura).
+
+### 1.1 Detecção (modo prompt)
 
 - Procure `<evolve_request>` bem formado com campos obrigatórios: `target_skill_name`, `target_skill_prompt`, `task_domain`, `eval_constraints`, `resources/max_iterations`, `resources/samples_per_iteration`.
 - Se faltar campo obrigatório ou `eval_constraints` for ambíguo: faça **uma** pergunta objetiva (preferência múltipla escolha) e **não** inicie o loop até resposta.
@@ -42,7 +47,66 @@ description: Autoresearch objetivo para otimizar skills/prompts (EVOLVE_AUTORESE
 
 > Inspiração de loop: projeto Karpathy [autoresearch](https://github.com/karpathy/autoresearch) — um artefato mutável, harness fixo, baseline, keep/discard por métrica.
 
-**Se não houver `<evolve_request>` válido:** pule a Fase 1 e vá direto para a Fase 2.
+### 1.3 Pasta `evals/` (obrigatória no modo prompt)
+
+Quando a Fase 1 for o modo **`<evolve_request>`** (otimização de skill/prompt), **é obrigatório** materializar o run sob o repositório em:
+
+`evals/<skill-slug>/runs/<run-id>/`
+
+Use um **slug** estável derivado de `target_skill_name` (minúsculas, hífens, sem espaços).
+
+Cada run **deve** conter, no mínimo:
+
+| Artefato | Função |
+|----------|--------|
+| `experiments.tsv` | Histórico objetivo (baseline + candidatos + keep/discard), via CLI Python |
+| `applied.md` | **O que já foi aplicado** — linhas com candidatos `keep`, resumo da mudança no prompt |
+| `backlog.md` | **O que ainda pode melhorar** — `<knowledge_gaps>`, `<next_actions>`, critérios que ainda falham, plateau |
+
+O agente deve **preencher** `applied.md` e `backlog.md` após o `<evolve_response>` (não deixar só template vazio se houve conteúdo).
+
+Referência: [`evals/README.md`](../../evals/README.md) na raiz do repo.
+
+### 1.4 Persistência em disco (Python — modo prompt)
+
+No modo **`<evolve_request>`**, o CLI `.claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py` cria a árvore `evals/<skill-slug>/runs/...` e o TSV.
+
+- **`init`** — `experiments.tsv` + `run_meta.txt`; com `--evals-root evals --skill-slug <slug>` define `run-dir` = `evals/<slug>/runs/<run-id>/` e cria **`applied.md`** + **`backlog.md`** (templates). Alternativa: `--run-dir` explícito; use `--with-evals-docs` para gerar os dois `.md`.
+- **`append`** — uma linha por baseline/candidato/falha (`keep` \| `discard` \| `crash`).
+- **`import-response`** — acrescenta todas as `<iteration>` ao TSV; `--write-best` grava `best_skill_prompt.txt`; **`--merge-backlog`** anexa `<knowledge_gaps>` e `<next_actions>` ao `backlog.md`.
+- **`stats`** — conta linhas; `--require-min-rows N` como gate.
+
+Fluxo recomendado (raiz do repo):
+
+```bash
+RUN=$(python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py init \
+  --evals-root evals \
+  --skill-slug <slug> \
+  --target-skill-name "<nome do evolve_request>" \
+  --note "evolve run")
+# RUN imprime o caminho do diretório criado
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py import-response \
+  --run-dir "$RUN" --file /tmp/evolve-response.xml --write-best --merge-backlog
+```
+
+Depois edite `applied.md` com a lista de promoções **keep** em linguagem humana.
+
+Detalhes: `.claude/skills/evolve-autoresearch/SKILL.md` (seções **evals tree** e **Python experiment log**).
+
+### 1.5 Autoresearch site — GPUS (modo `<input>`)
+
+Quando **§1.0** escolher este ramo:
+
+1. Carregue **`.claude/skills/auto-research-gpus/SKILL.md`** e **`.claude/skills/grupo-us/SKILL.md`** cedo (`Skill(...)` se disponível).
+2. Interpretar `<area>`: área explícita (ex.: “otimizar hero para vender mais”, “melhorar SEO do trintae3”) **ou** literal **`evolve`**.
+3. Se o valor for **`evolve`**, escolher **um** experimento de maior impacto nesta ordem: **copy e oferta** → **SEO e discoverability** → **CTA e jornada** → **fricção de conversão** → **performance**.
+3. Respeitar `<constraint>` como restrição dura (ex.: sem novas dependências).
+4. Produzir **`<answer>...</answer>`** no schema da skill: `reasoning`, `baseline`, `experiment` (tag `YYYY-MM-DD-slug`, branch `autoresearch/...`, hipótese, arquivos), `validation` (comandos **Bun**: `bun run lint`, `bunx astro check`, `bun run build`; browser review / Lighthouse quando fizer sentido), `decision` **keep \| discard \| investigate**, `log_entry` pronto para **`AGENTS.md`** → `## Learnings log (evolve)`.
+5. **Loop:** em um único turno, execute **um** ciclo completo salvo pedido explícito do usuário para lote. “Rodar até parar” só com opt-in claro do usuário (custo/tempo).
+6. **Disco — obrigatório quando houver Fase 1 site com resultado útil:** copie o `<answer>` (ou resumo + métricas) para `evals/site/<area-slug>/runs/<tag>/run.md` e atualize `evals/site/<area-slug>/compound.md` com o aprendizado comercial reutilizável. Ver [`evals/README.md`](../../evals/README.md) (seção *Site code autoresearch*).
+7. Quando o experimento tocar copy, SEO, CTA, slugs, metadata, FAQs ou jornada, tratar métricas comerciais e binárias como baseline principal: clareza da promessa, alinhamento título/meta/H1, CTA explícita, prova visível, diferenciação e correspondência com estágio do funil. Use performance como métrica secundária, salvo gargalo claro.
+
+**Se nenhum dos dois XMLs válidos:** pule a Fase 1 e vá direto para a Fase 2 (não crie `evals/` só por captura).
 
 ---
 
@@ -200,6 +264,7 @@ Com base nos arquivos/modificações, identificar skills relevantes:
 | Design Tokens | `src/styles/global.css` | `gpus-theme` | `astro` (styling-tailwind) |
 | Commands / Workflows | `.claude/commands/*.md` | — | — |
 | Autoresearch / otimização de prompts | `.claude/skills/**/SKILL.md` | `evolve-autoresearch` | `skill-creator` |
+| Autoresearch site (copy, SEO, CTA, jornada, LCP/CLS) | `src/**`, `astro.config.mjs`, `src/content/**` | `auto-research-gpus` | `grupo-us`, `astro`, `performance-optimization`, `debugger` |
 
 ### 3.2 Perguntar ao Usuário
 
@@ -209,9 +274,11 @@ Com base na tarefa realizada, sugiro aprimorar:
 1. debugger (Astro/React components)
 2. AGENTS.md (Project rules)
 3. performance-optimization (se aplicável)
-4. evolve-autoresearch (se houve Fase 1 nesta sessão)
+4. evolve-autoresearch (se houve Fase 1 prompt nesta sessão)
+5. auto-research-gpus (se houve Fase 1 site nesta sessão)
+6. grupo-us (se houve experimento de copy, SEO, CTA ou jornada)
 
-Quais deseja atualizar? [1,2,3,4 ou Enter para todos marcados]
+Quais deseja atualizar? [1,2,3,4,5,6 ou Enter para todos marcados]
 ```
 
 ---
@@ -321,7 +388,7 @@ Use threads para:
 ```
 Evolve concluído!
 
-[Fase 1] Autoresearch: [executado — status | omitido — sem <evolve_request>]
+[Fase 1] Autoresearch: [prompt — status \| site — decision \| omitido — sem XML válido]
 ✅ Simplify executado quando aplicável (qualidade validada)
 ✅ Quality gates passando quando código foi tocado
 ✅ Memory atualizada (feedback/project)
@@ -351,6 +418,10 @@ Ao evoluir skills com aprendizados do Astro, priorize documentar:
 ## Referências
 
 - **evolve-autoresearch / EVOLVE_AUTORESEARCH:** `.claude/skills/evolve-autoresearch/SKILL.md`
+- **auto-research-gpus (site v2):** `.claude/skills/auto-research-gpus/SKILL.md`
+- **grupo-us (voz, jornada, vendas):** `.claude/skills/grupo-us/SKILL.md`
+- **Pasta `evals/` (layout):** `evals/README.md`
+- **TSV log (Python):** `.claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py`
 - **simplify**: skill built-in do Claude Code — revisa código para reuso, qualidade e eficiência
 - **astro**: `.claude/skills/astro/SKILL.md` — Referência completa Astro 6
 - **skill-creator**: `.claude/skills/skill-creator/SKILL.md`

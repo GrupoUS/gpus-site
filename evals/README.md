@@ -1,0 +1,70 @@
+# Evals — EVOLVE_AUTORESEARCH
+
+This tree is **mandatory** whenever `/evolve` runs **Fase 1** (autoresearch with `<evolve_request>`).
+
+## Layout
+
+```text
+evals/
+  <skill-slug>/
+    runs/
+      <run-id>/
+        experiments.tsv      # append-only (Python CLI)
+        run_meta.txt
+        applied.md             # what was promoted (keep) — fill after each run
+        backlog.md             # gaps, next_actions, failing criteria — keep current
+        best_skill_prompt.txt  # optional; from import-response --write-best
+```
+
+- **`applied.md`**: concrete prompt changes that **won** (candidate id, score, short summary).
+- **`backlog.md`**: what is **not** solved yet — copy from `<knowledge_gaps>`, `<next_actions>`, and any criterion that still fails on samples.
+
+Use one `runs/<run-id>/` folder per optimization session so history stays diff-friendly.
+
+## Bootstrap
+
+From the repo root:
+
+```bash
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py init \
+  --evals-root evals \
+  --skill-slug <target_skill_name_slug> \
+  --target-skill-name "Human name" \
+  --note "optional"
+```
+
+Then `import-response` with `--merge-backlog` to append gaps from the XML into `backlog.md`.
+
+See `.claude/commands/evolve.md` (Fase 1) and `.claude/skills/evolve-autoresearch/SKILL.md`.
+
+---
+
+## Site code autoresearch (GPUS `/evolve` + `<input><area>`)
+
+When `/evolve` runs **site autoresearch** for copy, SEO, CTA strategy, funnel flow, conversion friction, or supporting performance work, use this layout:
+
+```text
+evals/
+  site/
+    <area-slug>/
+      compound.md      # durable learnings across runs for this commercial area
+      runs/
+        <YYYY-MM-DD>-<slug>/
+          run.md        # full <answer> or metrics + decision (keep/discard/investigate)
+```
+
+`compound.md` should accumulate:
+
+- winning copy patterns
+- SEO structures that worked
+- CTA phrasings worth preserving
+- objections that remain unresolved
+- funnel or journey insights worth reusing
+
+After a **keep** decision, update `compound.md` with what should be preserved in future runs. After **investigate**, update it with what is still unclear and what evidence is missing.
+
+`run.md` is the per-experiment record. Optional: add `metrics.txt` (before/after Lighthouse or build notes).
+
+Primary human-readable log still remains **`AGENTS.md`** → `## Learnings log (evolve)`, but `compound.md` is the area-level memory for future autoresearch.
+
+Skill: `.claude/skills/auto-research-gpus/SKILL.md`.
