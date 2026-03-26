@@ -400,6 +400,36 @@ Each product landing page follows this flow (all components in `src/components/l
 
 ## Learnings log (evolve)
 
+### [2026-03-26] EVOLVE_AUTORESEARCH: ciclo real de autoaprimoramento da skill
+
+> Run: `evals/evolve-autoresearch-self-improve/runs/2026-03-26-self-skill-cycle/`.
+
+**Problema:** Mesmo após alinhar a skill ao `karpathy/autoresearch`, faltavam duas regras operacionais que o `program.md` upstream deixa mais nítidas: (1) em autoaprimoramento, **um único artefato pontuado por run**; qualquer sync do arquivo irmão é camada `program.md`; (2) disciplina explícita para **crash** com retry limitado e histórico append-only preservado.
+
+**Solução:** Rodado um ciclo local com `<evolve_request>` sobre a própria `SKILL.md` (3 amostras, 6 critérios binários). Baseline marcou **11/18**; `c_program_sync` subiu para **17/18**; vencedor `c_program_sync_crash` marcou **18/18**. Aplicadas à `.claude/skills/evolve-autoresearch/SKILL.md` as seções **Self-improvement runs (program.md-class)** e **Crash discipline**. `.claude/commands/evolve.md` ganhou a regra operacional equivalente: um alvo pontuado por run e `crash` com no máximo uma correção rápida antes de descartar.
+
+**Validação:** `python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_harness.py init-run ...`; `evolve_autoresearch_score.py score-candidate` para baseline + 2 candidatos; `evolve_autoresearch_report.py build-response`; `bun run lint`.
+
+### [2026-03-26] EVOLVE_AUTORESEARCH: toolchain local para harness, candidatos, scoring e response
+
+> Scripts Python stdlib criados em `.claude/skills/evolve-autoresearch/scripts/`.
+
+**Problema:** O workflow já documentava `<evolve_request>`, `experiments.tsv` e `evolve-response.xml`, mas na prática só existia o logger/importador TSV. Faltavam scripts para **congelar o harness**, **seedar candidatos**, **validar o orçamento fixo de grading** e **montar o XML final** sem trabalho manual excessivo.
+
+**Solução:** Adicionados `evolve_autoresearch_harness.py` (`init-run`), `evolve_autoresearch_mutate.py` (`seed-candidates`), `evolve_autoresearch_score.py` (`score-candidate`) e `evolve_autoresearch_report.py` (`build-response`), além de `scripts/README.md`. `SKILL.md`, `.claude/commands/evolve.md` e `evals/README.md` passaram a referenciar o fluxo novo: request → harness congelado → candidatos → grade sheets → `experiments.tsv` → `evolve-response.xml`.
+
+**Validação:** `python3 -m py_compile` nos scripts; smoke test ponta a ponta com `<evolve_request>` mínimo em `/tmp`; `bun run lint`.
+
+### [2026-03-26] EVOLVE_AUTORESEARCH: alinhamento explícito ao karpathy/autoresearch
+
+> Documentação; sem `<evolve_request>` nem TSV desta vez.
+
+**Problema:** A meta-skill já citava Karpathy, mas não deixava explícito o modelo de **três superfícies** (`prepare.py` congelado, `train.py` = artefato único do agente, `program.md` = contexto humano) nem o paralelo **orçamento fixo** (lá: janela de treino; aqui: mesmo `samples_per_iteration` e pool por candidato).
+
+**Solução:** `.claude/skills/evolve-autoresearch/SKILL.md` ganhou a seção *Karpathy autoresearch — structural mapping*, regra *Fixed grading budget per candidate* e referência ao branch `master`. `.claude/commands/evolve.md` §1.2 e §1.5: paralelo resumido, link `tree/master`, correção da numeração duplicada (dois itens `3.` em §1.5).
+
+**Validação:** revisão textual; `bun run lint` na raiz do repo (escopo do projeto).
+
 ### [2026-03-25] Curso de Aurículo: checkout-first com Kiwify + FAQ de compra
 
 > Registro: `evals/site/curso-auriculo-conversion/runs/2026-03-25-checkout-cta/run.md`.
@@ -417,6 +447,16 @@ Each product landing page follows this flow (all components in `src/components/l
 **Problema:** Mesmo após alinhar o checkout, a página ainda podia ganhar clareza em transformação, qualificação do visitante, linguagem do botão e ordem de objeções. A promessa seguia parcialmente feature-first e faltava contexto operacional perto do CTA.
 
 **Solução:** Batch de 10 loops com base em boas práticas de landing pages de curso: `LandingHero` agora mostra a `tagline`; `cta.helperText` opcional em `src/content.config.ts` permite colocar contexto operacional perto do botão; `curso-auriculo.json` recebeu headline com prazo, CTA “Garantir minha inscrição”, helper text, benefícios mais orientados a resultado e FAQ em ordem de decisão (fit, inclusão da técnica, formato, comparação com `TRINTAE3`, condições comerciais e suporte no WhatsApp). Title da rota também foi refinado.
+
+**Validação:** `bun run lint && bunx astro check && bun run build`.
+
+### [2026-03-26] Curso de Aurículo: EVOLVE_AUTORESEARCH em CTA e copy (âncora temporal + checkout explícito)
+
+> Registro: `evals/site/curso-auriculo-conversion/runs/2026-03-26-evolve-autoresearch-cta/run.md` e `evals/curso-auriculo-landing-copy/runs/2026-03-26-cta-copy-evolve/`.
+
+**Problema:** H1 começava com benefício genérico (“Adicione…”), o que atrasava a leitura do prazo/formato; CTA “Garantir minha inscrição” era válido porém menos explícito em primeira pessoa; meta e helper podiam ser mais diretos sobre checkout vs Laura.
+
+**Solução:** Harness binário (7 critérios × 3 personas) na meta-skill `evolve-autoresearch`; candidato `c_timeframe_action` promovido. `hero.headline` passa a abrir com **“Em 3 dias presenciais,”**; `cta.label` **“Quero me inscrever agora”**; `helperText` e `description` nomeiam checkout/valores atualizados; FAQ de inscrição alinhada ao texto do CTA; title da rota com “inscrição” para SERP. Spec vencedora em `best_skill_prompt.txt` do run.
 
 **Validação:** `bun run lint && bunx astro check && bun run build`.
 

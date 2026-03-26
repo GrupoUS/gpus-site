@@ -264,10 +264,20 @@ Task({
 
 FILE: path/to/Component.astro:10-25
 Include complete code.
-Run: bun run build`,
-  run_in_background: true, // Run as parallel background task
+Run: bun run build
+
+## MANDATORY CONTEXT
+**Original request:** [verbatim user message that started this session]
+**User decisions:** [approach choices made so far — e.g., "user chose Option B for the hero layout"]
+**Prior agent findings:** [1-2 sentence summary from each completed agent — key facts only]
+**Current plan state:** [phase N, task X of Y — what has already been done]
+**Do NOT redo:** [what prior agents already covered — skip to avoid duplication]
+`,
+  run_in_background: true,
 })
 ```
+
+> **MANDATORY CONTEXT RULE**: Every `Task({})` prompt MUST include the 5 context fields above. Agents without context make assumptions that conflict with prior decisions and waste tokens redoing research.
 
 ---
 
@@ -518,6 +528,25 @@ Do not parallelize when:
 5. **Self-review before handoff** - Run 5-criterion check
 6. **Quality gates** - Verify before marking complete
 7. **Clean up** - Use TeamDelete when work complete
+8. **MINIMUM AGENT RULE** - Do not spawn an agent when you can answer with a direct repo read or a single tool call. Only spawn when the task is genuinely too large or requires a different specialty. Over-delegation wastes tokens and context.
+9. **PASS CONTEXT ON EVERY SPAWN** - Include all 5 mandatory context fields (original request, user decisions, prior findings, plan state, do-not-redo). An agent spawned without context will rediscover what you already know.
+
+### Sequential Planning → Parallel Execution
+
+Planning phases are always **sequential** (each decision gates the next). Execution phases should be **parallel** where tasks are independent.
+
+```
+PLAN (sequential):          EXECUTE (parallel where safe):
+Phase 0: Discover           Wave 1: Task A ─┐
+    ↓                                Task B ─┴→ Wait → Wave 2: Task C
+Phase 1: Research               (independent)         (depends on Wave 1)
+    ↓
+Phase 2: Plan + Review
+    ↓
+Hand off to /implement
+```
+
+**Never parallelize tasks that share write targets or depend on each other's output.**
 
 ---
 

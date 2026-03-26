@@ -50,6 +50,27 @@ Before research or planning:
 
 If the repo already partially implements the requested feature, the plan must start from that real state.
 
+## Phase 0.5: Socratic Gate (new features and non-trivial refactors)
+
+**Skip if:** bug fix, copy change, redirect alignment, or single-file tweak.
+
+Before researching or planning, surface hidden constraints by asking at least **3 strategic questions**:
+
+1. **Scope** — What must this change *not* break? (journey order, CTA destinations, external routing, existing sections)
+2. **Assumption** — What are you assuming about the user's intent that might be wrong?
+3. **Constraint** — Are there performance, a11y, or conversion impacts from the chosen approach?
+
+Add domain-specific questions when relevant:
+
+| Task domain | Additional question |
+| --- | --- |
+| UI change | "Does this replace an existing section or add alongside it?" |
+| Content change | "Is this copy already live on the canonical page, or proposed new?" |
+| Architecture | "Are there other pages or components sharing this pattern that must change together?" |
+| CTA / journey | "Which part of the conversion funnel does this affect?" |
+
+Wait for answers before starting research. If the user says "just plan it", proceed with **explicit stated assumptions** instead of implicit ones.
+
 ## Phase 1: Research
 
 > For substantial tasks (new feature spanning multiple files or days), capture implementation decisions first with `/gsd:discuss-phase [N]` before researching — this prevents late-stage pivots when assumptions surface too late.

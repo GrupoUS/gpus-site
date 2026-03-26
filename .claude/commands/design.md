@@ -210,3 +210,9 @@ A `/design` task is done only when:
 - Any external product routing stays aligned
 - Required validation commands pass
 - Visible UI changes meet the **acceptance minimum** in Validation Gates
+- **Tier B/C visual changes: Maestro Auditor check passed:**
+  - **Template Test** — "Can I find this exact layout in a Tailwind UI/generic template?" If yes, push harder for distinctiveness before shipping.
+  - **Memory Test** — "Will the user remember one specific visual element 24 hours later?" If nothing stands out, the design is forgettable.
+  - **Differentiation Test** — "Does this feel like Grupo US / Dra. Sacha, or like any health/education SaaS template?" Generic = reject.
+
+> `MAESTRO RULE: "If I can find this layout in a Tailwind UI template, I have failed."`

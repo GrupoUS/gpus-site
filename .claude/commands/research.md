@@ -33,6 +33,23 @@ For Astro-specific research, use this cascade:
 3. **Codebase explorer** — Check existing patterns in `src/`
 4. **Tavily/Web** — Only if 1-3 are insufficient
 
+### Context7 3-Step Lookup Protocol
+
+**NEVER call `query-docs` without a valid resolved ID. Always follow this sequence:**
+
+```
+Step 1: resolve-library-id("library name")         → returns candidate IDs
+Step 2: Select the correct ID from the results
+Step 3: query-docs(selectedId, "specific question") → returns relevant docs
+```
+
+**Limits:** Max 3 Context7 calls per research session to avoid context bloat. If a library is in the pre-resolved table below, skip Step 1.
+
+**For libraries NOT in the table:**
+- Do NOT guess or fabricate library IDs
+- Always run `resolve-library-id` first
+- If resolution returns no results, fall back to `librarian` agent with Tavily/WebFetch
+
 ### Context7 Astro Library IDs (Pre-resolved)
 
 | Library ID | Source | Best For |

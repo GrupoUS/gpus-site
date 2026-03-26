@@ -36,6 +36,7 @@ Source: [github.com/karpathy/autoresearch/tree/master](https://github.com/karpat
 2. **Fixed experiment budget (comparability)** — Training runs for a **fixed wall-clock** so results stay comparable across hyperparameter/architecture changes. Here: use the **same** test pool and the **same** number of graded executions per candidate (full `samples_per_iteration`); never grade more loosely for “promising” candidates or tighten only for baseline.
 3. **Objective primary metric** — Upstream uses `val_bpa` (lower is better). Here the primary score is the **sum of binary criterion passes** across samples (declared in `<eval_design>`); keep it mechanical, not “vibes.”
 
+
 ## Self-improvement runs (program.md-class)
 
 When the user asks to improve **this** meta-skill or the `/evolve` command itself, keep the scored run constrained to **one target artifact**.
@@ -43,15 +44,6 @@ When the user asks to improve **this** meta-skill or the `/evolve` command itsel
 - Pick exactly one scored target (normally this `SKILL.md` text *or* the command text excerpt), treat it as the mutable surface, and baseline it first.
 - If the user also wants the sibling orchestration file updated (for example `/evolve`), do that **only after** one target artifact wins the run. Treat the sibling update as `program.md`-layer sync, not as a second scored target.
 - In these self-improvement runs, the fixed sample pool must include at least one ordinary optimize case, one self-improvement boundary case, and one crash/failure case.
-
-## Crash discipline
-
-If a candidate crashes, emits unusable output, or breaks the scoring/import path:
-
-1. Decide whether the failure is a **small operational bug** (worth one quick retry after a local fix) or a **broken idea** (log `crash` and move on).
-2. Never mutate the harness, criteria, or sample budget to rescue a crashing candidate.
-3. Preserve append-only history: write a `crash` row in `experiments.tsv`, keep the baseline/current best unchanged, and note the cause in `knowledge_gaps` or `backlog.md`.
-4. Prefer abandoning a fragile candidate over adding large prompt complexity for a tiny gain.
 
 ## Methodology (A.P.T.E / D.R.P.I.V)
 

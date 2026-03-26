@@ -36,6 +36,7 @@ Source: [github.com/karpathy/autoresearch/tree/master](https://github.com/karpat
 2. **Fixed experiment budget (comparability)** — Training runs for a **fixed wall-clock** so results stay comparable across hyperparameter/architecture changes. Here: use the **same** test pool and the **same** number of graded executions per candidate (full `samples_per_iteration`); never grade more loosely for “promising” candidates or tighten only for baseline.
 3. **Objective primary metric** — Upstream uses `val_bpa` (lower is better). Here the primary score is the **sum of binary criterion passes** across samples (declared in `<eval_design>`); keep it mechanical, not “vibes.”
 
+
 ## Self-improvement runs (program.md-class)
 
 When the user asks to improve **this** meta-skill or the `/evolve` command itself, keep the scored run constrained to **one target artifact**.

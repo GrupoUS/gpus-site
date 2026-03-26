@@ -14,6 +14,10 @@ evals/
         applied.md             # what was promoted (keep) — fill after each run
         backlog.md             # gaps, next_actions, failing criteria — keep current
         best_skill_prompt.txt  # optional; from import-response --write-best
+        harness.json           # frozen criteria, scoring formula, sample budget
+        test_cases.jsonl       # fixed golden set for this run
+        candidates/            # baseline + candidate prompt files
+        grades/                # grade sheets and scored results
 ```
 
 - **`applied.md`**: concrete prompt changes that **won** (candidate id, score, short summary).
@@ -36,6 +40,21 @@ python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py in
 Then `import-response` with `--merge-backlog` to append gaps from the XML into `backlog.md`.
 
 See `.claude/commands/evolve.md` (Fase 1) and `.claude/skills/evolve-autoresearch/SKILL.md`.
+
+Alternative bootstrap flow:
+
+```bash
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_harness.py init-run \
+  --file /tmp/evolve-request.xml
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_mutate.py seed-candidates \
+  --run-dir evals/<slug>/runs/<run-id>
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_score.py score-candidate \
+  --run-dir evals/<slug>/runs/<run-id> \
+  --grade-file evals/<slug>/runs/<run-id>/grades/baseline.json
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_report.py build-response \
+  --run-dir evals/<slug>/runs/<run-id> \
+  --append-backlog
+```
 
 ---
 

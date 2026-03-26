@@ -1,16 +1,16 @@
 {
 	"name": "Curso de Aurículo",
 	"slug": "curso-auriculo",
-	"tagline": "Para profissionais da saúde e estética que querem adicionar uma nova técnica ao portfólio sem depender de formação longa, equipamentos caros ou aposta no escuro.",
-	"description": "Curso presencial de Aurículo com Técnica de Perfuração Auricular: 3 dias de imersão prática para profissionais da saúde e estética ampliarem o portfólio com uma técnica integrativa aplicável na rotina clínica. Veja investimento e formas de pagamento na página de vendas.",
+	"tagline": "Para quem atua em saúde ou estética e quer uma técnica integrativa aplicável na rotina — sem formação longa, equipamentos caros ou aposta no escuro.",
+	"description": "Imersão presencial de 3 dias: Curso de Aurículo com Técnica de Perfuração Auricular para ampliar o portfólio com segurança na aplicação. Investimento, lote e parcelamento você confere no checkout (botão principal).",
 	"type": "Curso Técnico",
 	"audience": "Profissionais da saúde e estética",
 	"icon": "Ear",
 	"image": "/images/products/curso-auriculo.svg",
 	"order": 5,
 	"hero": {
-		"headline": "Adicione auriculoterapia e perfuração auricular ao seu portfólio em 3 dias com o Curso de Aurículo",
-		"subheadline": "Uma imersão presencial para profissionais da saúde e estética que querem começar com segurança, diversificar a clínica e sair com uma técnica aplicável já nos próximos atendimentos."
+		"headline": "Em 3 dias presenciais, adicione auriculoterapia e perfuração auricular ao seu portfólio — Curso de Aurículo",
+		"subheadline": "Imersão para profissionais da saúde e estética que querem começar com segurança, diversificar a clínica e sair aplicando a técnica já nos próximos atendimentos."
 	},
 	"painPoints": [
 		{
@@ -94,14 +94,14 @@
 		},
 		{
 			"question": "Como faço para me inscrever ou tirar dúvidas antes da compra?",
-			"answer": "O botão principal desta página leva direto para a página de vendas. Se você quiser validar se este curso é o próximo passo certo para você antes de concluir a inscrição, pode usar o botão de WhatsApp para falar com a Laura."
+			"answer": "O botão principal abre o checkout (Kiwify) para você concluir a inscrição. Se quiser validar se o curso é o próximo passo certo antes de fechar, use o WhatsApp para falar com a Laura."
 		}
 	],
 	"cta": {
-		"label": "Garantir minha inscrição",
+		"label": "Quero me inscrever agora",
 		"url": "https://pay.kiwify.com.br/kMXdriO",
 		"whatsappMessage": "Olá, Laura! Quero tirar uma dúvida antes de me inscrever no Curso de Aurículo com Técnica de Perfuração Auricular.",
-		"helperText": "No botão principal você acessa a página de vendas com investimento, lote e formas de pagamento atualizadas. Se quiser validar seu fit antes de concluir, fale com a Laura no WhatsApp.",
+		"helperText": "O botão principal abre o checkout com valores, lote e parcelamento atualizados. Antes de fechar a compra, use o WhatsApp para alinhar dúvidas com a Laura.",
 		"type": "primary"
 	},
 	"testimonials": [

@@ -2,7 +2,7 @@
 """
 Karpathy autoresearch-style experiment log for EVOLVE_AUTORESEARCH.
 
-Mirrors the discipline of results.tsv in github.com/karpathy/autoresearch:
+Mirrors the discipline of experiment logs in github.com/karpathy/autoresearch (master):
 tab-separated rows, append-only history, keep/discard semantics.
 
 Uses only the Python standard library.

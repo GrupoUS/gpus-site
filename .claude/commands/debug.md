@@ -82,6 +82,20 @@ grep -rn "hardcoded.*#[0-9a-fA-F]" src/ --include="*.astro" 2>/dev/null  # Hardc
 
 ## 2. MODE A: DEBUG (mode=debug)
 
+### 2.0 Select Investigation Strategy
+
+Before spawning agents, pick the strategy that fits the bug type:
+
+| Bug Type | Strategy | How |
+| -------- | -------- | --- |
+| Regression (used to work, now broken) | **Git Bisect** | `git bisect start; git bisect bad HEAD; git bisect good <last-good-commit>` to find the breaking commit |
+| Intermittent / hard to reproduce | **Binary Search** | Comment out / disable half the code path to narrow the failing region; repeat until isolated |
+| Unknown root cause | **5 Whys** | Ask "why did this fail?" five times — stop at systemic cause, not symptom |
+| State / data corruption | **Data Flow Trace** | Follow data from source (JSON/API) → transform → render; inspect at each boundary |
+| Visual / layout discrepancy | **Visual Diff** | Screenshot before/after change; compare DOM via accessibility snapshot |
+
+Pick **one** primary strategy. Switch only if it yields no new information after 2 rounds.
+
 ### 2.1 Phase 1 — Parallel Investigation
 
 Spawn parallel research agents targeting the relevant layers:

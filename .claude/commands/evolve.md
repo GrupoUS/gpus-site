@@ -45,8 +45,9 @@ description: Autoresearch duplo — (A) skills/prompts via EVOLVE_AUTORESEARCH +
 2. Opcionalmente invoque `Skill("evolve-autoresearch")` com o conteúdo do request se o ambiente suportar.
 3. Produza **primeiro** a saída completa em `<evolve_response>...</evolve_response>` conforme o schema da skill (incluindo `eval_design`, `experiment_log` com **todas** as iterações, `candidate_id`, `score`, `delta_vs_baseline`, `decision` **keep \| discard**, `hypothesis` quando `store_rationale`, `changes_summary`, `knowledge_gaps`, `next_actions`).
 4. **Status:** `success` se houve melhora clara e critérios estáveis; `partial` em plateau ou orçamento; `failed` se inputs inválidos ou bloqueio total.
+5. Se o pedido for **autoaprimorar esta meta-skill ou o próprio `/evolve`**, rode o experimento com **um único artefato pontuado**. Qualquer ajuste no arquivo irmão entra **depois** como sync de camada `program.md`, não como segundo alvo do mesmo run.
 
-> Inspiração de loop: projeto Karpathy [autoresearch](https://github.com/karpathy/autoresearch) — um artefato mutável, harness fixo, baseline, keep/discard por métrica.
+> Paralelo [karpathy/autoresearch](https://github.com/karpathy/autoresearch/tree/master): **`prepare.py`** ≈ harness congelado (critérios, pool, amostras); **`train.py`** ≈ só o `target_skill_prompt` num `<evolve_request>`; **`program.md`** ≈ esta skill + este comando (edição humana entre runs). Orçamento fixo de grading por candidato — ver `.claude/skills/evolve-autoresearch/SKILL.md` § *Karpathy autoresearch — structural mapping*.
 
 ### 1.3 Pasta `evals/` (obrigatória no modo prompt)
 
@@ -70,27 +71,36 @@ Referência: [`evals/README.md`](../../evals/README.md) na raiz do repo.
 
 ### 1.4 Persistência em disco (Python — modo prompt)
 
-No modo **`<evolve_request>`**, o CLI `.claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py` cria a árvore `evals/<skill-slug>/runs/...` e o TSV.
+No modo **`<evolve_request>`**, use o toolchain em `.claude/skills/evolve-autoresearch/scripts/` para transformar o request em um run auditável:
 
-- **`init`** — `experiments.tsv` + `run_meta.txt`; com `--evals-root evals --skill-slug <slug>` define `run-dir` = `evals/<slug>/runs/<run-id>/` e cria **`applied.md`** + **`backlog.md`** (templates). Alternativa: `--run-dir` explícito; use `--with-evals-docs` para gerar os dois `.md`.
-- **`append`** — uma linha por baseline/candidato/falha (`keep` \| `discard` \| `crash`).
-- **`import-response`** — acrescenta todas as `<iteration>` ao TSV; `--write-best` grava `best_skill_prompt.txt`; **`--merge-backlog`** anexa `<knowledge_gaps>` e `<next_actions>` ao `backlog.md`.
-- **`stats`** — conta linhas; `--require-min-rows N` como gate.
+- **`evolve_autoresearch_harness.py init-run`** — parseia o XML, congela o harness e cria `request.json`, `harness.json`, `test_cases.jsonl`, `candidates/`, `grades/`.
+- **`evolve_autoresearch_mutate.py seed-candidates`** — opcional; cria candidatos determinísticos e diff-friendly a partir do baseline + constraints.
+- **`evolve_autoresearch_score.py score-candidate`** — valida o grade sheet contra `harness.json`, aplica orçamento fixo por candidato, calcula score e escreve `keep \| discard \| crash` em `experiments.tsv`.
+- **`evolve_autoresearch_report.py build-response`** — monta `evolve-response.xml` e pode anexar `knowledge_gaps` / `next_actions` ao `backlog.md`.
+- **`evolve_autoresearch_log.py`** — utilitário compatível com o fluxo antigo (`init`, `append`, `import-response`, `stats`) e bom para importar XMLs já existentes.
+
+Se um candidato **crashar** no modo prompt:
+
+- Faça no máximo **uma** tentativa rápida de correção quando o problema for operacional e local (ex.: arquivo malformado, campo ausente, import quebrado).
+- Se a ideia continuar frágil, registre `crash`, mantenha baseline/current best, não altere o harness e siga para o próximo candidato.
 
 Fluxo recomendado (raiz do repo):
 
 ```bash
-RUN=$(python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py init \
-  --evals-root evals \
-  --skill-slug <slug> \
-  --target-skill-name "<nome do evolve_request>" \
-  --note "evolve run")
-# RUN imprime o caminho do diretório criado
-python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py import-response \
-  --run-dir "$RUN" --file /tmp/evolve-response.xml --write-best --merge-backlog
+RUN=$(python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_harness.py init-run \
+  --file /tmp/evolve-request.xml)
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_mutate.py seed-candidates \
+  --run-dir "$RUN"
+# preencher test_cases.jsonl e grade sheets antes de pontuar
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_score.py score-candidate \
+  --run-dir "$RUN" \
+  --grade-file "$RUN/grades/baseline.json"
+python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_report.py build-response \
+  --run-dir "$RUN" \
+  --append-backlog
 ```
 
-Depois edite `applied.md` com a lista de promoções **keep** em linguagem humana.
+Depois revise `applied.md` e `backlog.md` para enriquecer o contexto humano quando necessário.
 
 Detalhes: `.claude/skills/evolve-autoresearch/SKILL.md` (seções **evals tree** e **Python experiment log**).
 
@@ -101,11 +111,11 @@ Quando **§1.0** escolher este ramo:
 1. Carregue **`.claude/skills/auto-research-gpus/SKILL.md`** e **`.claude/skills/grupo-us/SKILL.md`** cedo (`Skill(...)` se disponível).
 2. Interpretar `<area>`: área explícita (ex.: “otimizar hero para vender mais”, “melhorar SEO do trintae3”) **ou** literal **`evolve`**.
 3. Se o valor for **`evolve`**, escolher **um** experimento de maior impacto nesta ordem: **copy e oferta** → **SEO e discoverability** → **CTA e jornada** → **fricção de conversão** → **performance**.
-3. Respeitar `<constraint>` como restrição dura (ex.: sem novas dependências).
-4. Produzir **`<answer>...</answer>`** no schema da skill: `reasoning`, `baseline`, `experiment` (tag `YYYY-MM-DD-slug`, branch `autoresearch/...`, hipótese, arquivos), `validation` (comandos **Bun**: `bun run lint`, `bunx astro check`, `bun run build`; browser review / Lighthouse quando fizer sentido), `decision` **keep \| discard \| investigate**, `log_entry` pronto para **`AGENTS.md`** → `## Learnings log (evolve)`.
-5. **Loop:** em um único turno, execute **um** ciclo completo salvo pedido explícito do usuário para lote. “Rodar até parar” só com opt-in claro do usuário (custo/tempo).
-6. **Disco — obrigatório quando houver Fase 1 site com resultado útil:** copie o `<answer>` (ou resumo + métricas) para `evals/site/<area-slug>/runs/<tag>/run.md` e atualize `evals/site/<area-slug>/compound.md` com o aprendizado comercial reutilizável. Ver [`evals/README.md`](../../evals/README.md) (seção *Site code autoresearch*).
-7. Quando o experimento tocar copy, SEO, CTA, slugs, metadata, FAQs ou jornada, tratar métricas comerciais e binárias como baseline principal: clareza da promessa, alinhamento título/meta/H1, CTA explícita, prova visível, diferenciação e correspondência com estágio do funil. Use performance como métrica secundária, salvo gargalo claro.
+4. Respeitar `<constraint>` como restrição dura (ex.: sem novas dependências).
+5. Produzir **`<answer>...</answer>`** no schema da skill: `reasoning`, `baseline`, `experiment` (tag `YYYY-MM-DD-slug`, branch `autoresearch/...`, hipótese, arquivos), `validation` (comandos **Bun**: `bun run lint`, `bunx astro check`, `bun run build`; browser review / Lighthouse quando fizer sentido), `decision` **keep \| discard \| investigate**, `log_entry` pronto para **`AGENTS.md`** → `## Learnings log (evolve)`.
+6. **Loop:** em um único turno, execute **um** ciclo completo salvo pedido explícito do usuário para lote. “Rodar até parar” só com opt-in claro do usuário (custo/tempo).
+7. **Disco — obrigatório quando houver Fase 1 site com resultado útil:** copie o `<answer>` (ou resumo + métricas) para `evals/site/<area-slug>/runs/<tag>/run.md` e atualize `evals/site/<area-slug>/compound.md` com o aprendizado comercial reutilizável. Ver [`evals/README.md`](../../evals/README.md) (seção *Site code autoresearch*).
+8. Quando o experimento tocar copy, SEO, CTA, slugs, metadata, FAQs ou jornada, tratar métricas comerciais e binárias como baseline principal: clareza da promessa, alinhamento título/meta/H1, CTA explícita, prova visível, diferenciação e correspondência com estágio do funil. Use performance como métrica secundária, salvo gargalo claro.
 
 **Se nenhum dos dois XMLs válidos:** pule a Fase 1 e vá direto para a Fase 2 (não crie `evals/` só por captura).
 
@@ -427,4 +437,4 @@ Ao evoluir skills com aprendizados do Astro, priorize documentar:
 - **astro**: `.claude/skills/astro/SKILL.md` — Referência completa Astro 6
 - **skill-creator**: `.claude/skills/skill-creator/SKILL.md`
 - **GSD commands**: `/gsd:note`, `/gsd:plant-seed`, `/gsd:add-todo`, `/gsd:session-report`, `/gsd:thread`
-- **Karpathy autoresearch (inspiração de loop):** [github.com/karpathy/autoresearch](https://github.com/karpathy/autoresearch)
+- **Karpathy autoresearch (inspiração de loop):** [github.com/karpathy/autoresearch/tree/master](https://github.com/karpathy/autoresearch/tree/master)

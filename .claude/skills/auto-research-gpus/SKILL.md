@@ -5,7 +5,7 @@ description: Use when /evolve receives site autoresearch with <input><area>, esp
 # Auto-research — GPUS site edition (v2)
 
 **Stack:** Astro 6 · Tailwind CSS v4 · React 19 (Islands) · Framer Motion · **Bun**  
-**Inspiration:** [karpathy/autoresearch](https://github.com/karpathy/autoresearch) · **Methods:** D.R.P.I.V + A.P.T.E (Analyze → Plan → Test → Evaluate; map *Think/Elaborate* to design + patch narrative)
+**Inspiration:** [karpathy/autoresearch](https://github.com/karpathy/autoresearch/tree/master) · **Methods:** D.R.P.I.V + A.P.T.E (Analyze → Plan → Test → Evaluate; map *Think/Elaborate* to design + patch narrative)
 
 ## Identity
 

@@ -9,6 +9,8 @@ Reutilizar em próximos ciclos de autoresearch comercial da rota `/curso-auricul
 - **FAQ de compra reduz fricção sem inventar preço:** incluir resposta explícita sobre como se inscrever e como usar o WhatsApp antes da compra aumenta clareza comercial sem depender de lotes ou parcelamento variáveis.
 - **Title dedicado na página Astro:** trocar `name — Grupo US` por um title orientado à intenção de busca melhora o alinhamento entre SERP, H1 e CTA.
 - **Headline com transformação + prazo + contexto inicial:** para esta oferta, a fórmula "resultado + em 3 dias + sem depender de formação longa/custo alto" ficou mais forte do que uma headline genérica sobre crescimento de mercado.
+- **Âncora temporal nas primeiras palavras do H1:** abrir com “Em 3 dias presenciais,” (ou equivalente) melhora escaneabilidade antes do fecho com o nome do curso; manter oferta (auriculoterapia + perfuração) visível no mesmo bloco.
+- **CTA em primeira pessoa com tempo explícito:** “Quero me inscrever agora” comunica ação imediata sem inventar escassez; continuar nomeando checkout no helper e na FAQ de inscrição.
 - **Tagline como qualificação antes do H1:** usar a `tagline` visível no `LandingHero` ajuda o visitante a se identificar rapidamente antes de ler a promessa principal.
 - **Helper text opcional no CTA:** `cta.helperText` perto do botão principal reduz risco percebido ao explicar onde ver investimento, lote e formas de pagamento, sem competir com o CTA.
 - **FAQ na ordem da decisão:** fit -> o que inclui -> formato/esforço -> comparação com próxima etapa do ecossistema -> condições comerciais -> canal para dúvidas.
