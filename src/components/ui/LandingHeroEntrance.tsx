@@ -1,8 +1,12 @@
 "use client";
-import { LazyMotion, domAnimation } from "motion/react";
+import {
+	domAnimation,
+	LazyMotion,
+	useInView,
+	useReducedMotion,
+} from "motion/react";
 import * as m from "motion/react-m";
-import { useReducedMotion, useInView } from "motion/react";
-import { useRef, Children, type ReactNode } from "react";
+import { Children, type ReactNode, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface LandingHeroEntranceProps {
@@ -30,11 +34,9 @@ export function LandingHeroEntrance({
 			<m.div ref={ref} className={cn(className)}>
 				{childArray.map((child, i) => (
 					<m.div
-						key={i}
+						key={`landing-entrance-${String(i)}`}
 						initial={{ opacity: 0, y: 24 }}
-						animate={
-							isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }
-						}
+						animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
 						transition={{
 							type: "spring",
 							stiffness: 200,

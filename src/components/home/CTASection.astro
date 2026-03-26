@@ -5,6 +5,7 @@ import {
 } from "../../lib/whatsapp";
 import Button from "../shared/Button.astro";
 import { LampBackdrop } from "../ui/lamp";
+import { MotionReveal } from "../ui/MotionReveal";
 
 const whatsappUrl = whatsappUrlWithText(WHATSAPP_DEFAULT_SITE_MESSAGE);
 ---
@@ -17,10 +18,9 @@ const whatsappUrl = whatsappUrlWithText(WHATSAPP_DEFAULT_SITE_MESSAGE);
 	<div
 		class="relative z-50 flex w-full -translate-y-80 flex-col items-center px-5"
 	>
-		<div class="relative z-50 mx-auto max-w-3xl text-center">
+		<MotionReveal client:visible className="relative z-50 mx-auto max-w-3xl text-center">
 		<h2
 			class="font-serif text-3xl font-bold leading-tight text-text-primary md:text-4xl lg:text-5xl"
-			data-reveal="up"
 		>
 			Quer o programa certo para o seu{" "}
 			<span class="text-gold">momento</span>?
@@ -28,8 +28,6 @@ const whatsappUrl = whatsappUrlWithText(WHATSAPP_DEFAULT_SITE_MESSAGE);
 
 		<p
 			class="mx-auto mt-6 max-w-2xl text-lg text-text-muted"
-			data-reveal="up"
-			data-reveal-delay="1"
 		>
 			Fale com a Laura no WhatsApp: ela entende seu momento e indica a trilha (curso, pós,
 			comunidade ou mentoria) alinhada à sua meta de faturamento e autoridade.
@@ -37,8 +35,6 @@ const whatsappUrl = whatsappUrlWithText(WHATSAPP_DEFAULT_SITE_MESSAGE);
 
 		<div
 			class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
-			data-reveal="up"
-			data-reveal-delay="2"
 		>
 			<Button
 				variant="whatsapp"
@@ -63,6 +59,6 @@ const whatsappUrl = whatsappUrlWithText(WHATSAPP_DEFAULT_SITE_MESSAGE);
 				Formulário de contato
 			</Button>
 		</div>
-		</div>
+		</MotionReveal>
 	</div>
 </div>
