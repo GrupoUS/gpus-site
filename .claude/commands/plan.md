@@ -50,7 +50,7 @@ Before research or planning:
 
 If the repo already partially implements the requested feature, the plan must start from that real state.
 
-## Phase 0.5: Socratic Gate (new features and non-trivial refactors)
+## Phase 0.5: Socratic Gate *(skipping this surfaces ambiguous assumptions at implement time — costly re-planning)*
 
 **Skip if:** bug fix, copy change, redirect alignment, or single-file tweak.
 

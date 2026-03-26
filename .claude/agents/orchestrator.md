@@ -266,7 +266,7 @@ FILE: path/to/Component.astro:10-25
 Include complete code.
 Run: bun run build
 
-## MANDATORY CONTEXT
+## MANDATORY CONTEXT *(agents without context rediscover what you already know — fill every field)*
 **Original request:** [verbatim user message that started this session]
 **User decisions:** [approach choices made so far — e.g., "user chose Option B for the hero layout"]
 **Prior agent findings:** [1-2 sentence summary from each completed agent — key facts only]

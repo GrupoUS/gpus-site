@@ -33,7 +33,7 @@ For Astro-specific research, use this cascade:
 3. **Codebase explorer** — Check existing patterns in `src/`
 4. **Tavily/Web** — Only if 1-3 are insufficient
 
-### Context7 3-Step Lookup Protocol
+### Context7 3-Step Lookup Protocol *(guessing a library ID returns wrong docs — the 3-step costs one call and saves re-researching later)*
 
 **NEVER call `query-docs` without a valid resolved ID. Always follow this sequence:**
 

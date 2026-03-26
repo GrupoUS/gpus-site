@@ -82,7 +82,7 @@ grep -rn "hardcoded.*#[0-9a-fA-F]" src/ --include="*.astro" 2>/dev/null  # Hardc
 
 ## 2. MODE A: DEBUG (mode=debug)
 
-### 2.0 Select Investigation Strategy
+### 2.0 Select Investigation Strategy *(picking the wrong strategy wastes agent cycles — one row match prevents a full re-investigation)*
 
 Before spawning agents, pick the strategy that fits the bug type:
 
