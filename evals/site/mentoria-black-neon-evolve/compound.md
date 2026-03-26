@@ -17,6 +17,12 @@ Reutilizar em próximos ciclos de autoresearch comercial.
 - Em landings com **hero só texto** acima da dobra, imagem da faixa `NeonStory` fica **abaixo da dobra** em muitos viewports: usar `loading="lazy"` e `fetchpriority="low"` para não competir com LCP; manter `width`/`height` para CLS 0.
 - Fundo claro da faixa: `bg-text-primary` (token `--color-text-primary`) em vez de hex solto.
 
+## Copy de-duplication (2026-03-26)
+
+- **benefits[] vs deliverables[] shadow:** When `deliverables` exists, the page renders it and ignores `benefits`. Keep both arrays with **distinct content** — benefits = outcomes, deliverables = specific sessions/activities.
+- **Phrase echo limit:** Core brand phrases ("escalar com estratégia") should appear max 2x — in the primary positioning (tagline) and in user-language mirrors (painPoints). Description, audience, and bio should vary.
+- **Story highlight autonomy:** `story.highlight` should carry its own closing, not repeat `bio` verbatim. The bio is personal (Dra. Sacha's voice), the story is structural (product pitch).
+
 ## Backlog sugerido
 
 - Medir SERP real / CTR após deploy (Search Console).

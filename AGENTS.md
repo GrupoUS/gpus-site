@@ -400,6 +400,15 @@ Each product landing page follows this flow (all components in `src/components/l
 
 ## Learnings log (evolve)
 
+### [2026-03-26] Mentoria Black NEON: copy de-duplication — echo reduction + dead data cleanup
+
+> Registro: `evals/site/mentoria-black-neon-evolve/runs/2026-03-26-copy-dedup/run.md`.
+
+**Hypothesis:** Reducing phrase repetition and removing dead data makes each landing section read with distinct voice, improving perceived offer depth.
+**Result:** "escalar com estratégia" 4x → 2x | "sem abrir mão da sua essência" 2x → 1x | dead benefits[] 10 items → 0 | decision: **keep**
+**Pattern:** When `deliverables[]` shadows `benefits[]` via conditional render, keep both with distinct content (outcomes vs activities). Core brand phrases max 2x — primary positioning + user-language mirror. Bio and story.highlight need autonomous closings.
+**Validation:** `bun run lint && bunx astro check && bun run build`
+
 ### [2026-03-26] EVOLVE_AUTORESEARCH: ciclo real de autoaprimoramento da skill
 
 > Run: `evals/evolve-autoresearch-self-improve/runs/2026-03-26-self-skill-cycle/`.
