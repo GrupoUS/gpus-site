@@ -124,7 +124,8 @@ const typeColors: Record<string, string> = {
 		const grid = document.querySelector("[data-glow-grid]");
 		if (!grid || window.matchMedia("(pointer: coarse)").matches) return;
 
-		grid.addEventListener("mousemove", (e) => {
+		grid.addEventListener("mousemove", (evt) => {
+			const e = evt as MouseEvent;
 			const cards = grid.querySelectorAll("[data-glow-card]");
 			for (const card of cards) {
 				const rect = card.getBoundingClientRect();
