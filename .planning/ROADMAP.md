@@ -34,10 +34,12 @@ Plans:
 
 **Plans:** 3 plans
 
+**Status (2026-03-26):** ✓ Complete — COPY-01/02/03/04 verified (7/7 must-haves passed)
+
 Plans:
-- [ ] 02-01-PLAN.md — Audit e correção de acentuação em todos os JSONs e componentes Astro (COPY-01)
-- [ ] 02-02-PLAN.md — Reescrita e elevação do copy dos 7 produtos com audit-first (COPY-02)
-- [ ] 02-03-PLAN.md — Upgrade meta descriptions termos/privacidade + enriquecimento bios equipe (COPY-03, COPY-04)
+- [x] 02-01-PLAN.md — Audit e correção de acentuação em todos os JSONs e componentes Astro (COPY-01) ✓
+- [x] 02-02-PLAN.md — Reescrita e elevação do copy dos 7 produtos com audit-first (COPY-02) ✓
+- [x] 02-03-PLAN.md — Upgrade meta descriptions termos/privacidade + enriquecimento bios equipe (COPY-03, COPY-04) ✓
 
 **Requirements:** COPY-01, COPY-02, COPY-03, COPY-04
 

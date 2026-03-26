@@ -47,8 +47,10 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 
 **Content & Copy**
 
-- [ ] Revisão contínua de acentuação e copy vs Manual / drasacha.com.br
-- [ ] Meta descriptions e títulos por página (progresso parcial em landings e home)
+- [x] **COPY-01:** Acentuação corrigida em todos os 7 JSONs de produtos e componentes Astro. *Validated in Phase 2: Content & Copy Overhaul*
+- [x] **COPY-02:** Copy dos 7 produtos reescrita com headlines e frases de impacto, descriptions ≥120 chars. *Validated in Phase 2: Content & Copy Overhaul*
+- [x] **COPY-03:** Meta descriptions únicas em todas as 8 páginas de conteúdo (≥120 chars). *Validated in Phase 2: Content & Copy Overhaul*
+- [x] **COPY-04:** Bios da equipe enriquecidos — CVO+CEEN+UFG (Sacha), "Mago das Finanças" (Maurício), TRINTAE3 (Raquel). *Validated in Phase 2: Content & Copy Overhaul*
 
 **Visual & Animations**
 
@@ -96,4 +98,4 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 | View Transitions | Planejado na v2 doc original | ⏸ Supersedido até decisão contrária |
 
 ---
-*Last updated: 2026-03-26 — Phase 1 (Technical Debt & Foundation) complete. TECH-01/02/04/05 verified; TECH-03 superseded.*
+*Last updated: 2026-03-26 — Phase 2 (Content & Copy Overhaul) complete. COPY-01/02/03/04 verified (7/7 must-haves). Phase 1 partial (TECH-01/02/04/05 done; TECH-03 superseded).*
