@@ -23,8 +23,9 @@ const { story, image = "/images/sacha-hero.webp" } = Astro.props;
 						width="800"
 						height="1000"
 						class="h-auto w-full object-cover"
-						loading="lazy"
+						loading="eager"
 						decoding="async"
+						fetchpriority="high"
 					/>
 				</div>
 				<!-- Decorative gold accent -->

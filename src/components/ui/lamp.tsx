@@ -1,36 +1,9 @@
 "use client";
 import { motion } from "motion/react";
-import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 /** Animated lamp visuals only. Compose with Astro markup as a sibling so CTAs stay static HTML (data-reveal, Button.astro). */
 export const LampBackdrop = ({ className }: { className?: string }) => {
-	// #region agent log
-	useEffect(() => {
-		const section = document.getElementById("cta-lamp-section");
-		fetch("http://127.0.0.1:7777/ingest/0a9ce74c-a29a-4996-bf5d-a24a8b2822f7", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"X-Debug-Session-Id": "651d29",
-			},
-			body: JSON.stringify({
-				sessionId: "651d29",
-				location: "lamp.tsx:LampBackdrop",
-				message: "data-reveal nodes in CTA section vs document",
-				data: {
-					revealInCtaSection:
-						section?.querySelectorAll("[data-reveal]").length ?? -1,
-					revealInDocument: document.querySelectorAll("[data-reveal]").length,
-				},
-				timestamp: Date.now(),
-				hypothesisId: "B",
-				runId: "verify",
-			}),
-		}).catch(() => {});
-	}, []);
-	// #endregion
-
 	return (
 		<div
 			className={cn(

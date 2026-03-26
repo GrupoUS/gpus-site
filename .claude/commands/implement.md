@@ -435,7 +435,7 @@ Quality Gates:
 Before marking any Astro task as complete, verify:
 
 - [ ] `.astro` components for static content (zero JS default)
-- [ ] React islands only for Aceternity UI visual effects (`src/components/ui/`) — `client:load` (hero) or `client:visible` (below fold)
+- [ ] React islands only for Aceternity UI visual effects (`src/components/ui/`) — `client:idle` (hero visual-only) ou `client:visible` (below fold); `client:load` só se houver interação crítica imediata
 - [ ] Content data via `getCollection()` — mapped to `.data` for React props
 - [ ] Tailwind v4 tokens from `@theme {}` — no hardcoded hex
 - [ ] Fonts via Astro 6 Fonts API (self-hosted) — no Google CDN

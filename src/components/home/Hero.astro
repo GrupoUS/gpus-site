@@ -6,7 +6,7 @@ import { TextGenerateEffect } from "../ui/text-generate-effect";
 ---
 
 <section class="relative overflow-hidden">
-	<AuroraBackground client:load className="min-h-screen bg-navy">
+	<AuroraBackground client:idle className="min-h-screen bg-navy">
 		<Spotlight fill="#d4af37" className="-top-40 left-0 md:left-60 md:-top-20" />
 
 		<div class="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6">
@@ -20,7 +20,7 @@ import { TextGenerateEffect } from "../ui/text-generate-effect";
 			<!-- Headline with text generate effect -->
 			<div class="mt-8" data-reveal="up" data-reveal-delay="1">
 				<TextGenerateEffect
-					client:load
+					client:idle
 					words="Transformamos profissionais da saúde em referências na estética avançada"
 					className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary"
 				/>

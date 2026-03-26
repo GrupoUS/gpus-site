@@ -62,6 +62,8 @@ const organizationSchema = {
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" sizes="32x32" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<meta name="generator" content={Astro.generator} />
 
 		<!-- SEO -->
@@ -165,11 +167,7 @@ const organizationSchema = {
 				}
 			}
 
-			// Run on initial load
 			initReveal();
-
-			// Re-run after Astro page transitions (if ever added)
-			document.addEventListener("astro:after-swap", initReveal);
 		</script>
 	</body>
 </html>

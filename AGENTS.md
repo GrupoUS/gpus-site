@@ -352,7 +352,7 @@ Each product landing page follows this flow (all components in `src/components/l
 - **Lighthouse:** ≥ 95 on Performance, Accessibility, Best Practices, SEO
 - **LCP < 2.5s:** Preload hero image, use Astro `<Image />` with `loading="eager"` + `fetchpriority="high"`
 - **CLS = 0:** ALL images must have explicit `width` and `height` via Astro Image
-- **INP < 100ms:** Defer non-critical JS with `client:visible`
+- **INP < 100ms:** Defer non-critical JS with `client:visible` or `client:idle`; ilhas só visuais no Hero (`AuroraBackground`, `TextGenerateEffect`) usam `client:idle` em vez de `client:load` quando o SSR já exibe texto/layout legível.
 - **Initial JS bundle:** < 50KB (Astro zero-JS default for static sections)
 - **Font loading:** `display=swap` to prevent FOIT
 
@@ -399,6 +399,16 @@ Each product landing page follows this flow (all components in `src/components/l
 ---
 
 ## Learnings log (evolve)
+
+### [2026-03-26] Lote 10× performance: debug off, idle hydration, preconnect, prioridades de imagem
+
+> Registro: `evals/site/performance-batch-2026-03-26/runs/2026-03-26-10x-perf/run.md`.
+
+**Problema:** `fetch` para `127.0.0.1:7777` em `astro.config`, `productsNav`, `text-generate-effect`, `lamp`; Hero com `client:load` em ilhas só visuais; listeners `astro:after-swap` sem `ClientRouter`; candidatos a LCP sem `fetchpriority`.
+
+**Solução:** Remover instrumentação; `AuroraBackground` e `TextGenerateEffect` com `client:idle`; `preconnect` Google Fonts; remover `astro:after-swap` em Layout e Header; logo com `fetchpriority="high"`; `NeonStory` imagem `eager`+`high`; avatares/about preview com `fetchpriority="low"`.
+
+**Validação:** `bun run lint && bunx astro check && bun run build`.
 
 ### [2026-03-26] Lote 10× evolve: home institucional, CTA, meta de produtos e 404
 

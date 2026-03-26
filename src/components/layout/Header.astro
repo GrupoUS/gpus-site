@@ -347,7 +347,5 @@ const navLinks = [
 		window.addEventListener("scroll", onScroll, { passive: true });
 	}
 
-	// Run on initial load and on Astro page transitions
 	initHeader();
-	document.addEventListener("astro:after-swap", initHeader);
 </script>

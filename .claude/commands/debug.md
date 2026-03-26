@@ -121,7 +121,7 @@ CONTEXT: $ARGUMENTS
 SKILLS: Load Skill("astro") → islands-architecture reference
 MISSION:
 1. Check client:* directives — only on React/Vue/Svelte, NEVER on .astro components
-   - client:load = immediate (Hero visual effects: AuroraBackground, Spotlight, TextGenerateEffect)
+   - client:idle = deferred hydration (Hero visual effects: AuroraBackground, TextGenerateEffect — reduz TBT; SSR mantém layout/texto legível)
    - client:visible = viewport (CTA effects: LampBackdrop, BackgroundBeams)
    - Only Aceternity UI visual effects in src/components/ui/ — no interactive React islands
 2. Verify props serialization — map CollectionEntry to .data before passing

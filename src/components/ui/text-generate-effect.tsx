@@ -22,28 +22,6 @@ export const TextGenerateEffect = ({
 		setRunMotion(true);
 	}, []);
 
-	// #region agent log
-	useEffect(() => {
-		if (!runMotion) return;
-		fetch("http://127.0.0.1:7777/ingest/0a9ce74c-a29a-4996-bf5d-a24a8b2822f7", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"X-Debug-Session-Id": "651d29",
-			},
-			body: JSON.stringify({
-				sessionId: "651d29",
-				location: "text-generate-effect.tsx:runMotion",
-				message: "motion headline phase active",
-				data: { wordCount: wordsArray.length },
-				timestamp: Date.now(),
-				hypothesisId: "C",
-				runId: "verify",
-			}),
-		}).catch(() => {});
-	}, [runMotion, wordsArray.length]);
-	// #endregion
-
 	// biome-ignore lint/correctness/useExhaustiveDependencies: new spans mount when `wordsArray` changes; `animate("span")` must run again for those nodes
 	useEffect(() => {
 		if (!runMotion) return;
