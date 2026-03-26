@@ -3,19 +3,19 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-03-26T19:04:51.036Z"
+last_updated: "2026-03-26T19:13:40.164Z"
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 8
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
 
 **Project:** Portal Grupo US — Enhancement Milestone v2
 **Initialized:** 2026-03-25
-**Status:** Executing Phase 04
+**Status:** Phase 04 complete
 
 ## Project Reference
 
@@ -23,7 +23,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 
 **Core value:** Excelência percebida em segundos — design, copy e jornada claros; conversão via WhatsApp **Laura (+55 62 9470-5081)** quando aplicável.
 
-**Current focus:** Phase 04 — react-islands-premium-interactions
+**Current focus:** Phase 04 complete; Phase 05 (SEO Technical Layer) next
 
 ## Active Milestone
 
@@ -36,7 +36,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 | 1 | Technical Debt & Foundation | **Parcial** — debug removido; 404 OK; fonts API OK (Google provider); **sem** ClientRouter por decisão MPA |
 | 2 | Content & Copy Overhaul | **Completo (02-01 a 02-03)** — accents, product copy, SEO meta descriptions (all 8 pages ≥120 chars), team bios enriched |
 | 3 | Visual Uplift & Animations | **In progress** — All 3 plans complete (CSS foundation + micro-interactions + Motion reveals); human-verify checkpoint pending |
-| 4 | React Islands | **In progress** — Plan 01 complete (JourneyTimeline.tsx + TestimonialCarousel.tsx); Plan 02 (WhatsAppFloatingButton) pending |
+| 4 | React Islands | **Complete (04-01 + 04-02)** — JourneyTimeline.tsx, TestimonialCarousel.tsx, WhatsAppFloatingButton.tsx (all 3 islands built and wired) |
 | 5 | SEO Technical Layer | Parcial — JSON-LD org/breadcrumb; falta Course/Product per page etc. |
 | 6 | QA & Ship | Recorrente a cada release |
 
@@ -83,6 +83,8 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 - Removed separate CTA buttons from timeline nodes -- clickable node card replaces secondary CTAs (per RESEARCH.md discretion)
 - Static Lucide icon map with 5 imports (Ear, Users, GraduationCap, Rocket, Globe) -- no dynamic import
 - canonicalJourney data prepared in index.astro frontmatter, not in React -- getCollection unavailable in islands
+- Used biome-ignore for m.a anchor content rule -- Biome cannot resolve Motion m.a as standard anchor with aria-label
+- client:load for WhatsApp button (not client:visible) -- fixed-position elements never trigger IntersectionObserver until footer
 
 ---
-*Last updated: 2026-03-26 (Phase 04 Plan 01 complete -- JourneyTimeline + TestimonialCarousel)*
+*Last updated: 2026-03-26 (Phase 04 complete -- all 3 islands: JourneyTimeline, TestimonialCarousel, WhatsAppFloatingButton)*
