@@ -54,11 +54,13 @@ Exceptions:
 | Role | Size | Weight | Line Height | Font Family | Usage |
 |------|------|--------|-------------|-------------|-------|
 | Body | 16px (`text-base`) | 400 (regular) | 1.625 (`leading-relaxed`) | Inter (`font-sans`) | Paragraphs, descriptions, subheadlines |
-| Label | 14px (`text-sm`) | 600 (semibold) | 1.5 | Inter (`font-sans`) | Badges, stat labels, nav links, `text-text-muted` captions |
+| Label | 14px (`text-sm`) | 400 (regular) | 1.5 | Inter (`font-sans`) | Badges, stat labels, nav links, `text-text-muted` captions |
 | Heading | 30px (`text-3xl`) / 36px (`text-4xl`) | 700 (bold) | 1.2 (`leading-tight`) | Playfair Display (`font-serif`) | Section headings (`h2`), CTA headings |
 | Display | 48px (`text-5xl`) / 60px (`text-6xl`) | 700 (bold) | 1.1 (`leading-tight`) | Playfair Display (`font-serif`) | Hero `h1`, stat numbers (`text-4xl` / `text-5xl` on desktop) |
 
-Weight constraint: Only two weights used across the entire site -- 400 (regular) for body and 700 (bold) for headings. 600 (semibold) used exclusively for badges, buttons, and nav CTA labels.
+Weight constraint: Two weights govern the design contract -- 400 (regular) for all body and label text in Inter, and 700 (bold) for all headings and display text in Playfair Display.
+
+**Exception -- weight 600 (semibold):** The existing codebase uses `font-semibold` (600) across 19 files (40 occurrences) for interactive UI elements: buttons (`Button.astro`), nav CTA labels (`Header.astro`), footer section headings (`Footer.astro`), hero badges, and card subheadings in components like `PainPoints`, `Values`, `Culture`, and `TeamGrid`. Semibold provides optical distinction between interactive/emphasised labels (600, Inter) and heading text (700, Playfair Display) without the heaviness that bold Inter would impose on small-sized elements. Replacing 600 with 700 across these elements would over-emphasise UI chrome relative to actual content headings. This weight is inherited from the existing design and is not introduced by Phase 3. New Phase 3 components must use only 400 or 700; the 600 usage is frozen at its current footprint and must not expand.
 
 ---
 
