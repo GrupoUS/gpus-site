@@ -41,9 +41,9 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 
 **Technical Foundation**
 
-- [ ] **TECH-03 (revisão de produto):** View Transitions / `ClientRouter` — **hoje fora de escopo** por decisão explícita em `AGENTS.md` (anti-SPA). Reabrir só com mudança de requisito.
-- [ ] **TECH-02 (opcional):** Self-host completo de fontes (hoje Google provider via Fonts API; há preconnect no layout)
-- [ ] **TECH-05:** Auditar favicon final de marca vs placeholder (verificar `public/`)
+- [x] **TECH-03 (superseded):** View Transitions / `ClientRouter` — fora de escopo por decisão explícita em `AGENTS.md` (anti-SPA). Não implementar.
+- [x] **TECH-02:** Fonts self-hosted via Astro Fonts API com `fontProviders.google()` — sem CDN dependency. Preconnects removidos do Layout.astro. *Validated in Phase 1: Technical Debt & Foundation*
+- [x] **TECH-05:** Favicon usa brand gold `#d4af37` — 6 ocorrências corrigidas. *Validated in Phase 1: Technical Debt & Foundation*
 
 **Content & Copy**
 
@@ -96,4 +96,4 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 | View Transitions | Planejado na v2 doc original | ⏸ Supersedido até decisão contrária |
 
 ---
-*Last updated: 2026-03-26 — sync com código + WhatsApp SDR + rotas reais*
+*Last updated: 2026-03-26 — Phase 1 (Technical Debt & Foundation) complete. TECH-01/02/04/05 verified; TECH-03 superseded.*
