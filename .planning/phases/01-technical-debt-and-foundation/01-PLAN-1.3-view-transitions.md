@@ -32,6 +32,9 @@ must_haves:
       pattern: "grep 'astro:page-load' src/layouts/Layout.astro"
 ---
 
+> **STATUS 2026-03-26 — SUPERSEDED**  
+> O site institucional segue **MPA** com reload completo. `AGENTS.md` / `CLAUDE.md` proíbem abordagem SPA e `ClientRouter` para navegação global. **Não executar** este plano salvo decisão explícita de produto que reverta essa regra. TECH-03 em `REQUIREMENTS.md` está marcado como superseded.
+
 <objective>
 Add Astro View Transitions (`<ClientRouter />`) to Layout.astro and update the IntersectionObserver to re-run after each View Transition navigation.
 

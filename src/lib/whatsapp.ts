@@ -4,6 +4,16 @@
  */
 export const WHATSAPP_SDR_E164 = "556294705081";
 
+/** True when `url` already opens WhatsApp (evita CTA primário + botão verde redundantes). */
+export function isWhatsAppDestination(url: string): boolean {
+	const u = url.trim().toLowerCase();
+	return (
+		u.includes("wa.me/") ||
+		u.includes("api.whatsapp.com") ||
+		u.includes("wa.link/")
+	);
+}
+
 export function whatsappUrlWithText(message: string): string {
 	return `https://wa.me/${WHATSAPP_SDR_E164}?text=${encodeURIComponent(message)}`;
 }

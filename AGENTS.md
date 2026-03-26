@@ -400,6 +400,26 @@ Each product landing page follows this flow (all components in `src/components/l
 
 ## Learnings log (evolve)
 
+### [2026-03-26] Landings: um único CTA quando `cta.url` já é WhatsApp
+
+> Registro: `evals/site/cta-whatsapp-dedup/runs/2026-03-26-dedup/run.md`.
+
+**Problema:** `LandingHero` e `LandingCTA` mostravam botão primário (ouro) e botão verde “Falar com a Laura” mesmo quando ambos apontavam para WhatsApp — redundante e confuso (ex.: Mentoria Black NEON).
+
+**Solução:** `isWhatsAppDestination()` em `src/lib/whatsapp.ts` (`wa.me`, `api.whatsapp.com`, `wa.link`); se verdadeiro, o botão verde secundário não renderiza. `LandingCTA` ajusta o subtítulo quando só há um botão. Produtos com `cta.url` externa (HubSpot, site) mantêm os dois CTAs.
+
+**Validação:** `bun run lint && bunx astro check && bun run build`.
+
+### [2026-03-26] `.planning/` e roadmap sincronizados com o repo
+
+> Registro: `evals/site/planning-docs-sync/runs/2026-03-26-planning-sync/run.md` e `compound.md`.
+
+**Problema:** `PROJECT.md` / `ROADMAP` / `REQUIREMENTS` citavam 11 páginas, View Transitions obrigatório, WhatsApp antigo em roadmap, e planos de fase sem refletir MPA + 8 páginas + 5 redirects + Laura.
+
+**Solução:** Atualizar estado validado (TECH-01/04 feitos; TECH-03 superseded); corrigir contagens de rotas; nota em `01-PLAN-1.3` **SUPERSEDED**; `STACK`/`STRUCTURE`/`CONVENTIONS` com `whatsapp.ts` e redirects; `gpus-company-info.md` com canal institucional vs legado.
+
+**Validação:** revisão textual; sem regressão de build (nenhuma alteração em `src/` neste commit de docs).
+
 ### [2026-03-25] WhatsApp institucional: SDR Laura (+55 62 9470-5081)
 
 > Registro: `evals/site/sdr-laura-whatsapp/runs/2026-03-25-sdr-whatsapp/run.md` e `compound.md`.

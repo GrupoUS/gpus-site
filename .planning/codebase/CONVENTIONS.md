@@ -1,6 +1,6 @@
 # Coding Conventions
 
-**Analysis Date:** 2026-03-25
+**Analysis Date:** 2026-03-25 — **sync:** 2026-03-26
 
 ## Naming Patterns
 
@@ -8,7 +8,7 @@
 - Astro components: PascalCase with `.astro` extension — `LandingHero.astro`, `SectionHeading.astro`, `MobileCTABar.astro`
 - React Island components: PascalCase with `.tsx` extension — `aurora-background.tsx`, `spotlight.tsx` (kebab-case exceptions for Aceternity UI components in `src/components/ui/`)
 - Pages: kebab-case with `.astro` extension — `curso-auriculo.astro`, `mentoria-black-neon.astro`
-- Lib utilities: camelCase with `.ts` extension — `utils.ts`, `productsNav.ts`
+- Lib utilities: camelCase with `.ts` extension — `utils.ts`, `productsNav.ts`, `whatsapp.ts`
 - Content collections config: `content.config.ts` (dot-separated, not camelCase)
 - Style entry: `global.css`
 
@@ -34,6 +34,7 @@
 ```astro
 ---
 // 1. Imports
+import { whatsappUrlWithText } from "../../lib/whatsapp";
 import Button from "../shared/Button.astro";
 
 // 2. Props interface
@@ -49,7 +50,7 @@ interface Props {
 const { name, hero, type, cta } = Astro.props;
 
 // 4. Local computations
-const whatsappUrl = `https://wa.me/...`;
+const whatsappUrl = whatsappUrlWithText(cta.whatsappMessage);
 ---
 
 <!-- 5. Template -->
@@ -235,4 +236,4 @@ These constraints are non-negotiable and enforced via code review and AGENTS.md:
 
 ---
 
-*Convention analysis: 2026-03-25*
+*Convention analysis: 2026-03-25; synced 2026-03-26*

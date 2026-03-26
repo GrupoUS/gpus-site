@@ -46,6 +46,9 @@ must_haves:
       pattern: "grep -c '127\\.0\\.0\\.1' src/lib/productsNav.ts returns 0"
 ---
 
+> **STATUS 2026-03-26 — DONE (código)**  
+> `grep` em `src/` e `astro.config.mjs` não encontra `127.0.0.1`. Plano permanece como evidência de escopo TECH-01.
+
 <objective>
 Remove all 5 `// #region agent log` debug instrumentation blocks that make fetch calls to `http://127.0.0.1:7777` in production code.
 

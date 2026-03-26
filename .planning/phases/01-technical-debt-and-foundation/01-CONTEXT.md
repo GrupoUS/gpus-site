@@ -1,12 +1,12 @@
 # Phase 1: Technical Debt & Foundation - Context
 
-**Gathered:** 2026-03-25
-**Status:** Ready for planning
+**Gathered:** 2026-03-25  
+**Status:** Historical — parcialmente obsoleto em 2026-03-26 (debug removido; **sem** ClientRouter por decisão MPA em `AGENTS.md`)
 
 <domain>
 ## Phase Boundary
 
-Remove active debug instrumentation from 5 production files, validate and fix pre-existing font/404/favicon implementations, and add View Transitions (`<ClientRouter />`) to Layout.astro. This phase delivers a clean technical foundation — no CDN dependencies, no debug code in production, SPA-like navigation, consistent branding assets.
+Remove active debug instrumentation from production files, validate font/404/favicon implementations. ~~Add View Transitions (`<ClientRouter />`)~~ — **não aplicável** ao roadmap atual do repo (MPA). Fase entrega base limpa: sem debug em produção, fonts via Astro Fonts API, branding consistente.
 
 </domain>
 
@@ -76,7 +76,7 @@ Remove active debug instrumentation from 5 production files, validate and fix pr
 ## Existing Code Insights
 
 ### Reusable Assets
-- `src/layouts/Layout.astro` — All pages use this layout; one change to `<head>` propagates to all 11 pages automatically
+- `src/layouts/Layout.astro` — Todas as páginas de conteúdo; hoje **8** rotas em `src/pages/` + redirects separados
 - `public/favicon.svg` — Custom US monogram already exists; only color update needed
 
 ### Established Patterns
@@ -85,7 +85,7 @@ Remove active debug instrumentation from 5 production files, validate and fix pr
 - Build gates: `bun run lint` → `bunx astro check` → `bun run build` must all pass after Phase 1 changes.
 
 ### Integration Points
-- `<ClientRouter />` goes inside `<head>` in `Layout.astro` — affects all 11 pages automatically
+- ~~`<ClientRouter />`~~ — não implementado (MPA)
 - Debug blocks are self-contained fetch calls wrapped in `void` — can be deleted without touching surrounding code
 
 </code_context>

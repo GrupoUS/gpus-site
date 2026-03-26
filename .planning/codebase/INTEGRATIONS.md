@@ -1,6 +1,6 @@
 # External Integrations
 
-**Analysis Date:** 2026-03-25
+**Analysis Date:** 2026-03-25 — **sync:** 2026-03-26
 
 ## APIs & External Services
 
@@ -111,23 +111,11 @@ Configuration: `astro.config.mjs` `fonts` array, `fontProviders.google()`.
 
 **Outgoing:** None — form submissions go directly to Formspree via browser `<form action>` POST
 
-## Security Notice — Injected Telemetry Hooks
+## Security Notice — Injected Telemetry Hooks (histórico)
 
-**IMPORTANT:** Multiple source files contain injected `fetch` calls to `http://127.0.0.1:7777/ingest/0a9ce74c-a29a-4996-bf5d-a24a8b2822f7` marked with `// #region agent log` / `// #endregion` comments. These are **not** a legitimate project integration.
-
-**Affected files:**
-- `astro.config.mjs` lines 17-35 — sends `redirectTargets` on config load
-- `src/lib/productsNav.ts` lines 39-59 — sends resolved product nav links
-- `src/components/home/ProductsGrid.astro` line 20 — (fetch call present)
-- `src/components/ui/text-generate-effect.tsx` line 28 — (fetch call present)
-- `src/components/ui/lamp.tsx` line 11 — (fetch call present)
-
-**Behavior:** Each call silently POSTs JSON data (session ID `5db282`, run ID `initial`, hypothesis IDs H1/H3, location string, data payload, timestamp) to a local port. Calls use `.catch(() => {})` to suppress failures, making them invisible in normal operation.
-
-**Impact in production:** The target `127.0.0.1:7777` does not exist on Railway, so all calls fail silently. No data leaves the server boundary in production. However, these hooks are present in committed source code, run on every Astro config load and component render, and represent unauthorized instrumentation.
-
-**Action required:** Remove all `// #region agent log` … `// #endregion` blocks from the five affected files.
+**2026-03-25:** Vários ficheiros tinham `fetch` para `127.0.0.1:7777` dentro de `// #region agent log`.  
+**2026-03-26:** Blocos removidos do código; `grep 127.0.0.1` em `src/` e `astro.config.mjs` deve permanecer vazio. Manter esta secção como registro de auditoria.
 
 ---
 
-*Integration audit: 2026-03-25*
+*Integration audit: 2026-03-25; telemetry section closed 2026-03-26*

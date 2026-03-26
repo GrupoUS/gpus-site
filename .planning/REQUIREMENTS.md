@@ -7,17 +7,17 @@
 
 ### Technical Debt & Foundation
 
-- [ ] **TECH-01**: Blocos `// #region agent log` removidos de todos os 5 arquivos de produção (astro.config.mjs, productsNav.ts, ProductsGrid.astro, text-generate-effect.tsx, lamp.tsx)
-- [ ] **TECH-02**: Astro 6 Fonts API configurada — Playfair Display e Inter self-hosted via `fontProviders.google()` sem CDN externo
-- [ ] **TECH-03**: `<ClientRouter />` adicionado ao Layout.astro para View Transitions entre páginas
-- [ ] **TECH-04**: Página 404.astro customizada com branding Navy/Gold e link para a home
-- [ ] **TECH-05**: Favicon real do Grupo US substituindo o genérico do Astro
+- [x] **TECH-01**: Blocos `// #region agent log` removidos — *verificado 2026-03-26 (sem ocorrências no src)*
+- [ ] **TECH-02**: Fonts API ativa com `fontProviders.google()` em `astro.config.mjs` — *opcional evoluir para self-host completo sem Google CDN*
+- [ ] **TECH-03**: ~~`<ClientRouter />` / View Transitions~~ — **superseded:** `AGENTS.md` exige MPA sem router client-side; não implementar sem decisão de produto
+- [x] **TECH-04**: Página `404.astro` com branding Navy/Gold — *presente*
+- [ ] **TECH-05**: Favicon final de marca (auditar `public/favicon.*`)
 
 ### Content & Copy
 
 - [ ] **COPY-01**: Acentuação corrigida em todos os arquivos JSON de produtos (mínimo 7 arquivos) e nos componentes Astro com texto hardcoded
 - [ ] **COPY-02**: Copy de todos os 7 produtos reescrita com headlines e frases de impacto baseados em drasacha.com.br e no Manual de Inteligência
-- [ ] **COPY-03**: Meta descriptions únicas e otimizadas para SEO em todas as 11 páginas (não mais genéricas)
+- [ ] **COPY-03**: Meta descriptions únicas em todas as **8** páginas de conteúdo em `src/pages/` (e revisão contínua nas landings/redirects conforme necessidade)
 - [ ] **COPY-04**: Textos da equipe (Dra. Sacha, Maurício, Raquel) revisados e enriquecidos
 
 ### Visual & Animations
@@ -31,13 +31,13 @@
 
 ### React Islands
 
-- [ ] **ISLAND-01**: `JourneyTimeline.tsx` na Home — representa os 5 estágios da jornada do aluno com animação de progresso, ícones e CTAs por estágio
+- [ ] **ISLAND-01**: Jornada na home — **hoje:** `JourneyTimeline.astro` (estático). *Upgrade opcional:* `JourneyTimeline.tsx` com Framer Motion se justificado
 - [ ] **ISLAND-02**: `TestimonialCarousel.tsx` — carrossel Framer Motion com swipe, autoplay (4s), indicadores, usado em todas as landing pages substituindo `Testimonials.astro` estático
-- [ ] **ISLAND-03**: `WhatsAppFloatingButton.tsx` — botão flutuante `client:load`, número dinâmico por página via prop, animação de entrada suave
+- [ ] **ISLAND-03**: `WhatsAppFloatingButton.tsx` — botão flutuante `client:load`; **número e URL** devem usar `src/lib/whatsapp.ts` (Laura +55 62 9470-5081)
 
 ### SEO Técnico
 
-- [ ] **SEO-01**: JSON-LD `Course` schema em cada landing page de produto (trintae3, mentoria-black-neon, comunidade-us, curso-auriculo, neon-dash)
+- [ ] **SEO-01**: JSON-LD `Course`/`Product` onde há `.astro` local (**curso-auriculo**, **mentoria-black-neon**); redirects externos fora do escopo deste repo salvo nova página
 - [ ] **SEO-02**: JSON-LD `Event` schema na página OTB e `Product` na página OTB
 - [ ] **SEO-03**: OG images estáticas (1200×630) por página, criadas como SVG ou PNG e referenciadas no meta
 - [ ] **SEO-04**: BreadcrumbList JSON-LD em todas as páginas internas (além do existente no layout global)
@@ -63,7 +63,7 @@
 ### Infrastructure
 
 - **INFRA-01**: HTTP 301 no Caddy/Railway para `/otb` e `/na-mesa-certa` (em vez de meta refresh HTML)
-- **INFRA-02**: Script `bun run check:external-urls` para validar drift entre JSON, astro.config e URLs reais
+- **INFRA-02**: Script `bun run check:external-urls` — *presente* (`scripts/check-external-urls.mjs`); manter ao mudar redirects ou `externalSiteUrl`
 - **INFRA-03**: Domínio produção definitivo grupous.com.br (atualmente Railway subdomain)
 
 ## Out of Scope
@@ -75,16 +75,16 @@
 | SSR / Server Islands | SSG é suficiente — sem dados dinâmicos por usuário |
 | PWA / Service Worker | Nenhum caso de uso offline identificado |
 | Multi-idioma (PT/EN/ES) | Foco no mercado brasileiro; internacionalização é v3+ |
-| React Router / SPA | View Transitions do Astro resolve percepção de velocidade sem complexidade |
+| React Router / SPA | **MPA institucional** — sem `ClientRouter`; percepção de velocidade via SSG + assets, não SPA |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TECH-01 | Phase 1 | Pending |
-| TECH-02 | Phase 1 | Pending |
-| TECH-03 | Phase 1 | Pending |
-| TECH-04 | Phase 1 | Pending |
+| TECH-01 | Phase 1 | Done |
+| TECH-02 | Phase 1 | Partial |
+| TECH-03 | Phase 1 | Superseded (MPA) |
+| TECH-04 | Phase 1 | Done |
 | TECH-05 | Phase 1 | Pending |
 | COPY-01 | Phase 2 | Pending |
 | COPY-02 | Phase 2 | Pending |
@@ -112,5 +112,5 @@
 - Unmapped: 0 ✓
 
 ---
-*Requirements defined: 2026-03-25*
-*Last updated: 2026-03-25 after initial definition*
+*Requirements defined: 2026-03-25*  
+*Last updated: 2026-03-26 — sync rotas, WhatsApp Laura, TECH-03 superseded, TECH-01/04 done*

@@ -1,6 +1,6 @@
 # Codebase Structure
 
-**Analysis Date:** 2026-03-25
+**Analysis Date:** 2026-03-25 — **sync:** 2026-03-26
 
 ## Directory Layout
 
@@ -16,10 +16,11 @@ gpus/                              # Project root
 │   │   └── ui/                    # React Islands: Aceternity UI visual effects
 │   ├── content/
 │   │   ├── products/              # 7 product JSON files (Content Collection)
-│   │   └── team/                  # 13 team member JSON files (Content Collection)
+│   │   └── team/                  # 13 team member JSON files (Content Collection — expandido)
 │   ├── layouts/
 │   │   └── Layout.astro           # Single root layout for all pages
 │   ├── lib/
+│   │   ├── whatsapp.ts            # SDR Laura — wa.me URLs + mensagens padrão
 │   │   ├── productsNav.ts         # Nav link builder from product collection
 │   │   └── utils.ts               # cn() helper (clsx + tailwind-merge)
 │   ├── pages/
@@ -43,21 +44,23 @@ gpus/                              # Project root
 
 ## Pages / Routes
 
+**Resumo:** 8 ficheiros `.astro` em `src/pages/` (conteúdo próprio) + 5 redirects só em `astro.config.mjs`. Landings “completas” no repo: **curso-auriculo** e **mentoria-black-neon**; os outros produtos resolvem para URLs externas via redirect ou `externalSiteUrl` na navegação.
+
 | File | Route | Purpose |
 |------|--------|---------|
-| `src/pages/index.astro` | `/` | Home: Hero, ProductsGrid, JourneyTimeline, Testimonials, StatsSection, AboutPreview, CTASection |
+| `src/pages/index.astro` | `/` | Home: Hero, ProductsGrid, JourneyTimeline, StatsSection, AboutPreview, CTASection |
 | `src/pages/sobre.astro` | `/sobre` | About: Founders, Mission, Values, Culture, TeamGrid |
-| `src/pages/contato.astro` | `/contato` | Contact form, WhatsApp link, channels |
+| `src/pages/contato.astro` | `/contato` | Contact form, WhatsApp Laura (`src/lib/whatsapp.ts`), channels |
 | `src/pages/curso-auriculo.astro` | `/curso-auriculo` | Product landing — Curso Técnico |
-| `src/pages/mentoria-black-neon.astro` | `/mentoria-black-neon` | Product landing — Mentoria de Negócios (extended template with NeonStory/Bonus/Bio) |
-| `src/pages/termos.astro` | `/termos` | Terms of use (static legal page) |
-| `src/pages/politica-de-privacidade.astro` | `/politica-de-privacidade` | Privacy policy — LGPD compliance |
-| `src/pages/404.astro` | `/404` | Custom 404 page (navy/gold branded) |
-| `astro.config.mjs` redirects | `/na-mesa-certa` | HTTP 301 → `https://namesa.gpus.com.br/` |
-| `astro.config.mjs` redirects | `/otb` | HTTP 301 → `https://otb.gpus.com.br/` |
-| `astro.config.mjs` redirects | `/trintae3` | HTTP 301 → `https://trintae3.drasacha.com.br/` |
-| `astro.config.mjs` redirects | `/comunidade-us` | HTTP 301 → `https://drasacha.com.br/pagina-de-inscricao-comu-us/` |
-| `astro.config.mjs` redirects | `/neon-dash` | HTTP 301 → `https://neondash.com.br/` |
+| `src/pages/mentoria-black-neon.astro` | `/mentoria-black-neon` | Product landing — Mentoria (NeonStory, Bonus, Bio, etc.) |
+| `src/pages/termos.astro` | `/termos` | Terms of use |
+| `src/pages/politica-de-privacidade.astro` | `/politica-de-privacidade` | Privacy — LGPD |
+| `src/pages/404.astro` | `/404` | Custom 404 |
+| `astro.config.mjs` | `/na-mesa-certa` | → `https://namesa.gpus.com.br/` |
+| `astro.config.mjs` | `/otb` | → `https://otb.gpus.com.br/` |
+| `astro.config.mjs` | `/trintae3` | → `https://trintae3.drasacha.com.br/` |
+| `astro.config.mjs` | `/comunidade-us` | → inscrição COMU (drasacha) |
+| `astro.config.mjs` | `/neon-dash` | → `https://neondash.com.br/` |
 
 ## Component Organization
 
@@ -70,7 +73,7 @@ Global chrome — present on every page.
 Sections exclusive to the home page (`/`).
 - `Hero.astro` — Full-viewport hero with aurora background React island
 - `ProductsGrid.astro` — Fetches all products, renders 3-column card grid sorted by `order`
-- `JourneyTimeline.astro` — 5-stage customer journey (curso-auriculo → comunidade-us → trintae3 → mentoria-black-neon → otb)
+- `JourneyTimeline.astro` — 5-stage customer journey (Astro estático; CTAs respeitam `externalSiteUrl` / rotas)
 - `StatsSection.astro` — Numbers/statistics section
 - `AboutPreview.astro` — Teaser section linking to `/sobre`
 - `CTASection.astro` — Final call-to-action with React island effect
@@ -240,4 +243,4 @@ Layout.astro                        ← All pages wrap in this
 
 ---
 
-*Structure analysis: 2026-03-25*
+*Structure analysis: 2026-03-25; synced 2026-03-26*

@@ -97,7 +97,7 @@ To add a new product: create JSON in `src/content/products/` + create page in `s
 - `neon-dash` and `na-mesa-certa` are complementary experiences and should not be injected into that 5-stage sequence.
 - Navigation and informational cards should resolve the product destination from `externalSiteUrl ?? /slug`.
 - `cta.url` is intentionally heterogeneous across the Dra. Sacha ecosystem: some products go to `drasacha.com.br`, some to HubSpot, and external products (`na-mesa-certa`, `otb`) must stay aligned across `externalSiteUrl`, `cta.url`, and `astro.config.mjs` redirects.
-- **WhatsApp (site):** número SDR Laura `+55 62 9470-5081` — fonte única `src/lib/whatsapp.ts` (`whatsappUrlWithText`, `whatsappUrlBase`, `WHATSAPP_DEFAULT_SITE_MESSAGE`). Botões “Falar com a Laura” nas landings usam `cta.whatsappMessage` + esse número; não espalhar `wa.me/55…` hardcoded.
+- **WhatsApp (site):** número SDR Laura `+55 62 9470-5081` — fonte única `src/lib/whatsapp.ts` (`whatsappUrlWithText`, `whatsappUrlBase`, `isWhatsAppDestination`, `WHATSAPP_DEFAULT_SITE_MESSAGE`). Em `LandingHero` / `LandingCTA`, o botão verde secundário só aparece se `cta.url` **não** for já WhatsApp (`isWhatsAppDestination`), para evitar dois botões para o mesmo canal.
 - Do not "normalize" CTA domains blindly. If you change a CTA or external product URL, validate whether you are changing a conversion funnel or only the navigational page destination.
 
 ### Styling

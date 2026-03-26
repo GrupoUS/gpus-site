@@ -1,25 +1,28 @@
 # Roadmap: Portal Grupo US v2
 
-**Milestone:** Enhancement — Visual Premium + SEO + React Islands
-**Stack:** Astro 6 + Tailwind v4 + React 19 + Framer Motion + Bun
-**Gates por fase:** `bun run lint` + `bunx astro check` + `bun run build`
+**Milestone:** Enhancement — Visual Premium + SEO + React Islands  
+**Stack:** Astro 6 + Tailwind v4 + React 19 + Framer Motion + Bun  
+**Gates por fase:** `bun run lint` + `bunx astro check` + `bun run build`  
+**Sync código (2026-03-26):** 8 páginas em `src/pages/` + 5 redirects; WhatsApp SDR **+55 62 9470-5081** (`src/lib/whatsapp.ts`); **MPA sem `ClientRouter`** (ver `AGENTS.md`).
 
 ---
 
 ## Phase 1 — Technical Debt & Foundation
 
-**Goal:** Limpar dívida técnica acumulada e migrar para APIs modernas do Astro 6 antes de qualquer trabalho visual.
+**Goal:** Limpar dívida técnica e consolidar fundamentos Astro 6 antes de trabalho visual pesado.
 
-**Why first:** Debug instrumentation no código e dependência de CDN externo são riscos ativos. View Transitions e Fonts API são pré-requisitos para o visual das fases seguintes.
+**Why first:** Instrumentação de debug e inconsistências de rota/CTA bloqueiam confiança no deploy.
 
-**Plans:** 3 plans
+**Status (2026-03-26):** TECH-01 feito (sem `agent log`). TECH-04 feito (404). Fonts API ativa com provider Google em `astro.config.mjs`. **TECH-03 não implementar** sem revisão de produto — o site institucional permanece **MPA** (reload completo), não SPA-like.
+
+**Plans:** 3 plans (ajustar expectativas)
 
 Plans:
-- [ ] 01-PLAN-1.1-remove-debug.md — Remove 5 debug instrumentation blocks (TECH-01)
-- [ ] 01-PLAN-1.2-favicon-and-verify.md — Fix favicon color + verify Fonts API + verify 404 page (TECH-02, TECH-04, TECH-05)
-- [ ] 01-PLAN-1.3-view-transitions.md — Add ClientRouter + fix IntersectionObserver lifecycle (TECH-03)
+- [x] 01-PLAN-1.1-remove-debug.md — Remoção de blocos de debug (TECH-01) — **feito no código**
+- [ ] 01-PLAN-1.2-favicon-and-verify.md — Favicon de marca + auditar Fonts (TECH-02 parcial, TECH-05)
+- [ ] 01-PLAN-1.3-view-transitions.md — **Superseded:** ClientRouter conflita com `AGENTS.md`; manter como referência histórica apenas
 
-**Requirements:** TECH-01, TECH-02, TECH-03, TECH-04, TECH-05
+**Requirements:** TECH-01, TECH-02, TECH-03 (superseded), TECH-04, TECH-05
 
 ---
 
@@ -38,7 +41,7 @@ Corrigir todos os arquivos JSON em `src/content/products/*.json` e `src/content/
 - Verificar componentes Astro com texto hardcoded (Header, Footer, páginas)
 
 **2.2 — Product Copy Rewrite**
-Reescrever campos `name`, `tagline`, `description`, `hero.headline`, `hero.subheadline`, `painPoints`, `pillars`, `benefits`, `differentials`, `faqs` para todos os 7 produtos usando:
+Reescrever / iterar campos `name`, `tagline`, `description`, `hero.headline`, `hero.subheadline`, `painPoints`, `pillars`, `benefits`, `differentials`, `faqs` para os **7** produtos em `src/content/products/` usando:
 - Fonte: `docs/plans/aprimoramento/gpus-company-info.md` (Manual de Inteligência)
 - Fonte: `.planning/research/drasacha-content.md` (pesquisa do drasacha.com.br — quando disponível)
 - Tom: profissional, acolhedor, inspirador, firme. Fala como "Nós".
@@ -93,7 +96,8 @@ Atualizar `src/styles/global.css`:
 ### Plans
 
 **4.1 — Journey Timeline**
-`src/components/home/JourneyTimeline.tsx` (`client:visible`):
+**Implementado hoje:** `src/components/home/JourneyTimeline.astro` (Astro estático + CSS).  
+**Plano original (opcional upgrade):** `JourneyTimeline.tsx` (`client:visible`):
 - 5 nós animados: Auriculoterapia → Comunidade US → TRINTAE3 → Mentoria Black Neon → OTB
 - Linha de progresso animada com Framer Motion
 - Cada nó: ícone Lucide + nome do produto + ticket de entrada + CTA
@@ -109,13 +113,13 @@ Atualizar `src/styles/global.css`:
 - Recebe `testimonials[]` como prop (mesmo schema atual)
 
 **4.3 — WhatsApp Floating Button**
-`src/components/shared/WhatsAppFloatingButton.tsx` (`client:load`):
+`src/components/shared/WhatsAppFloatingButton.tsx` (`client:load`) — *não implementado; backlog*:
 - Posição: `fixed bottom-6 right-6 z-50`
 - Ícone: `MessageCircle` Lucide ou SVG WhatsApp
 - Animação de entrada: `scale` spring após 2s
 - Prop `message` por página (passado via `Layout.astro`)
-- Cor: `#25d366` (token `whatsapp` já existente no design system)
-- Número: +55 11 92047-4028 (do gpus-company-info.md)
+- Cor: token Tailwind `whatsapp` / `whatsapp-hover` (não hex solto)
+- **Número / URL:** importar de `src/lib/whatsapp.ts` — SDR **Laura +55 62 9470-5081** (`556294705081`)
 
 **Requirements:** ISLAND-01, ISLAND-02, ISLAND-03
 
@@ -130,8 +134,10 @@ Atualizar `src/styles/global.css`:
 ### Plans
 
 **5.1 — JSON-LD Per Product**
-Adicionar em cada landing page (`trintae3.astro`, `mentoria-black-neon.astro`, `comunidade-us.astro`, `curso-auriculo.astro`, `neon-dash.astro`):
-- Schema `Course` para formações (TRINTAE3, Curso Auriculo, Comunidade US)
+Adicionar schema rico nas rotas que **geram HTML no repo** (`curso-auriculo.astro`, `mentoria-black-neon.astro`) e, se no futuro voltarem páginas Astro para outros produtos, repetir o padrão.  
+Rotas que hoje são **apenas redirect** (`/trintae3`, `/comunidade-us`, `/neon-dash`, etc.) não têm `.astro` local — schema ficaria no destino externo ou exigiria página intermediária (decisão de produto).
+
+- Schema `Course` para formações (ex.: Curso Auriculo; TRINTAE3/COMU se houver página própria no futuro)
 - Schema `Product` + `Offer` para Mentoria Black Neon e NeonDash
 - Campos: `name`, `description`, `provider` (Grupo US), `offers.price`, `educationalCredentialAwarded`
 
@@ -181,7 +187,7 @@ Adicionar em cada landing page (`trintae3.astro`, `mentoria-black-neon.astro`, `
 - `bunx astro check` ✓
 - `bun run build` ✓
 - Deploy Railway via push main
-- Smoke test nas 11 páginas em produção
+- Smoke test: 8 rotas de conteúdo + 5 redirects + assets críticos (WhatsApp, formulário)
 
 **Requirements:** Todos os requisitos v1 verificados
 
@@ -203,5 +209,6 @@ Adicionar em cada landing page (`trintae3.astro`, `mentoria-black-neon.astro`, `
 **Granularity:** Standard (3–5 plans per phase)
 
 ---
-*Roadmap created: 2026-03-25*
+*Roadmap created: 2026-03-25*  
+*Last synced with codebase: 2026-03-26 (rotas, MPA, WhatsApp Laura, Phase 1 status)*  
 *Milestone: v2 Enhancement — Visual Premium + SEO + React Islands*

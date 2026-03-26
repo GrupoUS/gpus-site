@@ -1,6 +1,6 @@
 # Technology Stack
 
-**Analysis Date:** 2026-03-25
+**Analysis Date:** 2026-03-25 — **sync:** 2026-03-26
 
 ## Languages
 
@@ -24,7 +24,7 @@
 ## Frameworks
 
 **Core:**
-- Astro 6.x (`astro@^6.0.8`) — static site generator, MPA, 11 pages + 2 redirect routes
+- Astro 6.x (`astro@^6.0.8`) — static site generator, **MPA** (sem `ClientRouter`), **8** páginas em `src/pages/` + **5** redirect routes em `astro.config.mjs`
 
 **UI / Islands:**
 - React 19.x (`react@^19.2.4`, `react-dom@^19.2.4`) — React Islands via `@astrojs/react@^5.0.1`
@@ -72,6 +72,12 @@
 - `@biomejs/biome@^2.4.9` — formatter + linter for `src/**` and `astro.config.mjs`
 - `oxlint@^1.57.0` — additional JS/TS/JSX linter for `src/` (excludes `src/layouts/*`)
 - `lefthook@^2.1.4` — git hooks manager; pre-commit runs `bun run lint`
+
+## Site utilities (`src/lib/`)
+
+- `whatsapp.ts` — número SDR Laura (`556294705081`), `whatsappUrlWithText()`, `whatsappUrlBase`, `isWhatsAppDestination()` (evita CTA duplo quando `cta.url` já é WhatsApp), mensagem padrão institucional
+- `productsNav.ts` — links de produto a partir da collection
+- `utils.ts` — `cn()` (clsx + tailwind-merge)
 
 ## Configuration
 
@@ -146,4 +152,4 @@ bun run build         # Full build validation
 
 ---
 
-*Stack analysis: 2026-03-25*
+*Stack analysis: 2026-03-25; synced 2026-03-26*

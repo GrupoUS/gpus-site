@@ -98,8 +98,10 @@
 
 ## 6. Dados de Suporte
 - Site Oficial: https://drasacha.com.br/
+- Site Institucional Grupo US: https://grupous.com.br/
 - Suporte (E-mail): suporte@drasacha.com.br
-- WhatsApp Principal: +55 11 92047-4028
+- **WhatsApp (site institucional grupous.com.br — SDR Laura):** +55 62 9470-5081 — implementação: `src/lib/whatsapp.ts`
+- **WhatsApp (materiais legados / vitrine drasacha — confirmar com time se ainda ativo):** +55 11 92047-4028
 - Instagram: @drasachagualberto
 
 ## Análise do Site Atual (drasacha.com.br)
