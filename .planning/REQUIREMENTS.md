@@ -41,8 +41,8 @@
 - [x] **SEO-02**: JSON-LD `Event` schema na página OTB (local landing page criada) — *Verified Phase 5 Plan 01*
 - [x] **SEO-03**: OG images estáticas (1200×630) por página, criadas como SVG ou PNG e referenciadas no meta — *Verified Phase 5 Plan 02*
 - [x] **SEO-04**: BreadcrumbList JSON-LD em 7/9 páginas internas (all except index and 404) — *Verified Phase 5 Plan 01*
-- [ ] **SEO-05**: `sitemap.xml` com prioridades — home (1.0), landings (0.9), sobre/contato (0.7), legais (0.3)
-- [ ] **SEO-06**: `robots.txt` explícito com Disallow para `/404` e Allow para o restante
+- [x] **SEO-05**: `sitemap.xml` com prioridades — home (1.0), landings (0.9), sobre/contato (0.7), legais (0.3) — *Verified Phase 5 Plan 03*
+- [x] **SEO-06**: `robots.txt` explícito com Disallow para `/404` e Allow para o restante — *Verified Phase 5 Plan 03*
 
 ## v2 Requirements (Deferred)
 
@@ -103,16 +103,16 @@
 | SEO-02 | Phase 5 | Complete |
 | SEO-03 | Phase 5 | Complete |
 | SEO-04 | Phase 5 | Complete |
-| SEO-05 | Phase 5 | Pending |
-| SEO-06 | Phase 5 | Pending |
+| SEO-05 | Phase 5 | Complete |
+| SEO-06 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 24 total (1 superseded)
-- Complete: 22
-- Pending: 2 (SEO-05, SEO-06 — Phase 5 Plan 03)
+- Complete: 24
+- Pending: 0
 - Mapped to phases: 24
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-25*
-*Last updated: 2026-03-26 — Phase 5 Plan 01: SEO-01, SEO-02, SEO-04 complete; SEO-03, SEO-05, SEO-06 pending Plans 02+03*
+*Last updated: 2026-03-26 — Phase 5 complete: all SEO requirements (SEO-01 through SEO-06) verified*
