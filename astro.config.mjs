@@ -7,7 +7,6 @@ import { defineConfig, fontProviders } from "astro/config";
 
 const redirectTargets = {
 	"/na-mesa-certa": "https://namesa.gpus.com.br/",
-	"/otb": "https://otb.gpus.com.br/",
 	"/trintae3": "https://trintae3.drasacha.com.br/",
 	"/comunidade-us": "https://drasacha.com.br/pagina-de-inscricao-comu-us/",
 	"/neon-dash": "https://neondash.com.br/",
@@ -42,7 +41,6 @@ export default defineConfig({
 					const pathname = new URL(page).pathname.replace(/\/$/, "") || "/";
 					if (
 						pathname === "/na-mesa-certa" ||
-						pathname === "/otb" ||
 						pathname === "/trintae3" ||
 						pathname === "/comunidade-us" ||
 						pathname === "/neon-dash"

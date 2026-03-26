@@ -19,6 +19,19 @@ const products = await getCollection("products");
 const product = products.find((p) => p.data.slug === "mentoria-black-neon");
 if (!product) throw new Error("Product mentoria-black-neon not found");
 const d = product.data;
+
+const productSchema = {
+	"@context": "https://schema.org",
+	"@type": "Product",
+	name: d.name,
+	description: d.description,
+	brand: {
+		"@type": "Organization",
+		name: "Grupo US",
+		url: "https://grupous.com.br",
+	},
+	image: `https://grupous.com.br${d.image}`,
+};
 ---
 
 <Layout
@@ -32,6 +45,7 @@ const d = product.data;
 		{ name: "Início", url: "https://grupous.com.br/" },
 		{ name: d.name, url: `https://grupous.com.br/${d.slug}` }
 	]}
+	jsonLd={productSchema}
 >
 	<div class="pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
 		{/* S1: Hero — dark navy */}
