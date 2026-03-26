@@ -335,6 +335,34 @@ body {
 	transform: translateY(-4px);
 }
 
+/* ===== Mousemove Glow Card ===== */
+
+[data-glow-card] {
+	--mouse-x: 50%;
+	--mouse-y: 50%;
+	position: relative;
+}
+
+[data-glow-card]::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: radial-gradient(
+		300px circle at var(--mouse-x) var(--mouse-y),
+		color-mix(in srgb, var(--color-gold) 12%, transparent),
+		transparent 60%
+	);
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	pointer-events: none;
+	z-index: 1;
+}
+
+[data-glow-card]:hover::before {
+	opacity: 1;
+}
+
 /* ===== Text Shimmer ===== */
 
 @keyframes shimmer {

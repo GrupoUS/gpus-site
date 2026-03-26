@@ -44,9 +44,9 @@ const typeColors: Record<string, string> = {
 			subtitle="Da entrada técnica à mentoria de escala — cada card abre o destino oficial do programa (site institucional ou página do produto)."
 		/>
 
-		<div class="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+		<div class="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-glow-grid>
 			{products.map((product, index) => (
-				<div data-reveal="up" data-reveal-delay={String(index + 1)}>
+				<div data-reveal="up" data-reveal-delay={String(index + 1)} data-glow-card>
 					<Card
 						href={
 							product.data.externalSiteUrl ?? `/${product.data.slug}`
@@ -118,3 +118,27 @@ const typeColors: Record<string, string> = {
 		</div>
 	</div>
 </section>
+
+<script>
+	function initGlowGrid() {
+		const grid = document.querySelector("[data-glow-grid]");
+		if (!grid || window.matchMedia("(pointer: coarse)").matches) return;
+
+		grid.addEventListener("mousemove", (e) => {
+			const cards = grid.querySelectorAll("[data-glow-card]");
+			for (const card of cards) {
+				const rect = card.getBoundingClientRect();
+				(card as HTMLElement).style.setProperty(
+					"--mouse-x",
+					`${e.clientX - rect.left}px`,
+				);
+				(card as HTMLElement).style.setProperty(
+					"--mouse-y",
+					`${e.clientY - rect.top}px`,
+				);
+			}
+		});
+	}
+
+	initGlowGrid();
+</script>
