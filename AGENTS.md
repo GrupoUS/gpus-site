@@ -400,6 +400,26 @@ Each product landing page follows this flow (all components in `src/components/l
 
 ## Learnings log (evolve)
 
+### [2026-03-25] Curso de Aurículo: checkout-first com Kiwify + FAQ de compra
+
+> Registro: `evals/site/curso-auriculo-conversion/runs/2026-03-25-checkout-cta/run.md`.
+
+**Problema:** A landing de `curso-auriculo` ainda levava para HubSpot, com CTA genérico e copy menos alinhada à oferta visível no checkout da Kiwify; title da página também seguia genérico (`name — Grupo US`).
+
+**Solução:** `src/content/products/curso-auriculo.json` passou a vender explicitamente o **Curso de Aurículo com Técnica de Perfuração Auricular**, com `cta.url` para `https://pay.kiwify.com.br/kMXdriO`, label de compra direta, mensagem de WhatsApp para dúvidas pré-inscrição, FAQ orientada a objeção de compra e hero/meta mais próximos da intenção comercial. `src/pages/curso-auriculo.astro` ganhou title dedicado; `LandingCTA` ajusta a microcopy quando o primário é checkout externo, deixando WhatsApp como suporte.
+
+**Validação:** `bun run lint && bunx astro check && bun run build`.
+
+### [2026-03-25] Curso de Aurículo: batch 10x de copy, narrativa e CTA
+
+> Registro: `evals/site/curso-auriculo-conversion/runs/2026-03-25-10x-copy-loop/run.md`.
+
+**Problema:** Mesmo após alinhar o checkout, a página ainda podia ganhar clareza em transformação, qualificação do visitante, linguagem do botão e ordem de objeções. A promessa seguia parcialmente feature-first e faltava contexto operacional perto do CTA.
+
+**Solução:** Batch de 10 loops com base em boas práticas de landing pages de curso: `LandingHero` agora mostra a `tagline`; `cta.helperText` opcional em `src/content.config.ts` permite colocar contexto operacional perto do botão; `curso-auriculo.json` recebeu headline com prazo, CTA “Garantir minha inscrição”, helper text, benefícios mais orientados a resultado e FAQ em ordem de decisão (fit, inclusão da técnica, formato, comparação com `TRINTAE3`, condições comerciais e suporte no WhatsApp). Title da rota também foi refinado.
+
+**Validação:** `bun run lint && bunx astro check && bun run build`.
+
 ### [2026-03-26] Landings: um único CTA quando `cta.url` já é WhatsApp
 
 > Registro: `evals/site/cta-whatsapp-dedup/runs/2026-03-26-dedup/run.md`.

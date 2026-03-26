@@ -9,6 +9,7 @@ interface Props {
 		label: string;
 		url: string;
 		whatsappMessage: string;
+		helperText?: string;
 	};
 }
 
@@ -26,8 +27,10 @@ const showWhatsappSecondary = !isWhatsAppDestination(cta.url);
 			Pronto para começar sua jornada no {name}?
 		</h2>
 		<p class="mx-auto mt-4 max-w-xl text-lg text-text-muted">
-			{showWhatsappSecondary
-				? "A Laura, nossa SDR no WhatsApp, direciona seu próximo passo com o programa certo"
+			{cta.helperText
+				? cta.helperText
+				: showWhatsappSecondary
+				? "Use o botão principal para seguir para a página de vendas. Se quiser esclarecer algo antes da inscrição, fale com a Laura no WhatsApp."
 				: "Toque no botão abaixo e fale com a Laura no WhatsApp — ela alinha o próximo passo com o programa certo"}
 		</p>
 

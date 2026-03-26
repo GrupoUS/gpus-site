@@ -89,6 +89,7 @@ const products = defineCollection({
 			label: z.string(),
 			url: z.string().url(),
 			whatsappMessage: z.string(),
+			helperText: z.string().optional(),
 			type: z.literal("primary"),
 		}),
 		testimonials: z

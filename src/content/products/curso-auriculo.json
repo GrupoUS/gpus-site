@@ -1,86 +1,107 @@
 {
 	"name": "Curso de Aurículo",
 	"slug": "curso-auriculo",
-	"tagline": "Porta de entrada para a Saúde Integrativa. Domine a Auriculoterapia e amplie seu portfólio com baixo investimento e alta percepção de valor.",
-	"description": "Curso presencial de auriculoterapia para estética e saúde integrativa: amplie o portfólio da clínica com técnica de alta percepção de valor e baixa barreira de entrada.",
+	"tagline": "Para profissionais da saúde e estética que querem adicionar uma nova técnica ao portfólio sem depender de formação longa, equipamentos caros ou aposta no escuro.",
+	"description": "Curso presencial de Aurículo com Técnica de Perfuração Auricular: 3 dias de imersão prática para profissionais da saúde e estética ampliarem o portfólio com uma técnica integrativa aplicável na rotina clínica. Veja investimento e formas de pagamento na página de vendas.",
 	"type": "Curso Técnico",
 	"audience": "Profissionais da saúde e estética",
 	"icon": "Ear",
 	"image": "/images/products/curso-auriculo.svg",
 	"order": 5,
 	"hero": {
-		"headline": "Amplie seu portfólio com a técnica integrativa que mais cresce no Brasil",
-		"subheadline": "Formação presencial intensiva em Auriculoterapia: 3 dias, prática real e protocolos prontos para aplicar na sua clínica no dia seguinte"
+		"headline": "Adicione auriculoterapia e perfuração auricular ao seu portfólio em 3 dias com o Curso de Aurículo",
+		"subheadline": "Uma imersão presencial para profissionais da saúde e estética que querem começar com segurança, diversificar a clínica e sair com uma técnica aplicável já nos próximos atendimentos."
 	},
 	"painPoints": [
 		{
 			"icon": "Pill",
-			"title": "Dependência de procedimentos invasivos",
-			"description": "Sua clínica depende exclusivamente de injetáveis e procedimentos invasivos. Você não oferece alternativas integrativas que fidelizam e ampliam seu público."
+			"title": "Você quer ampliar o portfólio com algo aplicável",
+			"description": "Sua clínica já entrega resultado, mas ainda depende de poucos procedimentos principais. Falta uma técnica complementar que faça sentido na rotina e aumente as possibilidades de atendimento."
 		},
 		{
 			"icon": "Search",
-			"title": "Pacientes buscam abordagens complementares",
-			"description": "Cada vez mais pacientes procuram tratamentos complementares e menos invasivos. Se você não oferece, eles procuram em outro lugar."
+			"title": "Existe demanda por abordagens integrativas e menos invasivas",
+			"description": "Cada vez mais pacientes valorizam recursos complementares que reforçam cuidado, bem-estar e continuidade do tratamento. Quando você não oferece essa alternativa, perde espaço e percepção de valor."
 		},
 		{
 			"icon": "CircleDollarSign",
-			"title": "Ticket médio limitado",
-			"description": "Você atende bem, mas seu menu de serviços é restrito. Faltam opções complementares que aumentem o valor por paciente e a recorrência na clínica."
+			"title": "Você não quer crescer apostando em custo alto e baixa clareza",
+			"description": "Nem toda expansão precisa começar com novos equipamentos, estrutura cara ou uma formação longa. O desafio é escolher uma técnica viável, com aprendizado direto e potencial real de uso na clínica."
 		}
 	],
 	"pillars": [
 		{
 			"icon": "Stethoscope",
-			"title": "Fundamentos Científicos",
-			"description": "Base teórica sólida em neurofisiologia auricular, mapeamento de pontos e protocolos baseados em evidências para aplicação segura e eficaz."
+			"title": "Fundamentos e raciocínio clínico",
+			"description": "Entenda mapa auricular, seleção de pontos e lógica de aplicação para conduzir atendimentos com mais segurança, clareza e consistência."
 		},
 		{
 			"icon": "Hand",
-			"title": "Prática Supervisionada",
-			"description": "Aulas práticas com pacientes reais sob supervisão direta. Você sai do curso pronto para aplicar com segurança e confiança na sua clínica."
+			"title": "Prática supervisionada",
+			"description": "Aprenda fazendo, com acompanhamento próximo durante a imersão, para transformar teoria em execução segura e confiante."
 		},
 		{
 			"icon": "Sparkles",
-			"title": "Protocolos Estéticos Integrativos",
-			"description": "Aprenda a combinar auriculoterapia com seus protocolos estéticos atuais — potencializando resultados em emagrecimento, ansiedade, dor e rejuvenescimento."
+			"title": "Aurículo + perfuração auricular",
+			"description": "Domine a aplicação integrativa da auriculoterapia e entenda como incorporar a técnica de perfuração auricular ao seu repertório de atendimento."
 		}
 	],
 	"benefits": [
-		"Certificado de formação em auriculoterapia reconhecido",
-		"Protocolos prontos para aplicar na clínica no dia seguinte",
-		"Aumento do menu de serviços sem investimento em equipamentos",
-		"Fidelização de pacientes com sessões de recorrência mensal",
-		"Material didático completo com mapas auriculares e guias"
+		"Sair da imersão com uma técnica que você entende quando e como aplicar",
+		"Adicionar auriculoterapia e perfuração auricular ao seu repertório clínico",
+		"Abrir uma nova possibilidade de atendimento sem depender de estrutura cara",
+		"Ganhar mais repertório para aumentar percepção de valor e recorrência",
+		"Levar material de apoio para revisar a aplicação depois da formação"
 	],
 	"differentials": [
 		{
-			"title": "Foco exclusivo na aplicação estética",
-			"description": "Diferente dos cursos tradicionais de auriculoterapia, nosso programa foca especificamente na integração com protocolos estéticos — emagrecimento, rejuvenescimento e bem-estar."
+			"title": "Formação curta, prática e orientada à aplicação",
+			"description": "O curso foi organizado para reduzir distância entre aprender e usar. Você não entra para acumular teoria: entra para entender, praticar e levar a técnica para a rotina clínica."
 		},
 		{
-			"title": "Formato intensivo e prático",
-			"description": "Curso presencial de imersão com carga prática superior a 70%. Você aprende fazendo, não assistindo slides."
+			"title": "Próximo passo comercial sem ruído",
+			"description": "A landing prepara a decisão e o CTA principal leva direto para a página de vendas, onde você vê as condições atualizadas. O WhatsApp fica como apoio para dúvidas antes da inscrição."
+		},
+		{
+			"title": "Entrada estratégica no ecossistema Grupo US",
+			"description": "Para muitos profissionais, este curso é um primeiro passo claro para ampliar repertório, ganhar segurança prática e depois decidir com mais maturidade sobre formações mais longas do ecossistema."
 		}
 	],
 	"faqs": [
 		{
-			"question": "Preciso ter experiência prévia em auriculoterapia?",
-			"answer": "Não. O curso foi desenhado para profissionais da saúde que estão iniciando na auriculoterapia. Partimos do básico e avançamos até protocolos complexos de integração estética."
+			"question": "Preciso ter experiência prévia em auriculoterapia para participar?",
+			"answer": "Não. O curso foi estruturado para profissionais da saúde e estética que querem começar com segurança e também para quem já atende e deseja adicionar uma técnica integrativa ao portfólio."
 		},
 		{
-			"question": "Qual a duração do curso?",
-			"answer": "O curso tem formato de imersão presencial de 3 dias intensivos, com carga horária total de 24 horas entre teoria e prática supervisionada."
+			"question": "O curso inclui a Técnica de Perfuração Auricular?",
+			"answer": "Sim. A proposta desta imersão é unir o Curso de Aurículo à Técnica de Perfuração Auricular para ampliar o seu repertório em uma mesma formação presencial."
 		},
 		{
-			"question": "Quais materiais estão inclusos?",
-			"answer": "O investimento inclui todo o material didático: apostila completa, mapas auriculares impressos, kit inicial de sementes e agulhas, e acesso à plataforma online com conteúdo complementar."
+			"question": "Qual a duração e o formato da formação?",
+			"answer": "A formação acontece em formato presencial intensivo, em 3 dias de imersão, combinando base técnica, prática supervisionada e aplicação voltada à rotina clínica. É um formato pensado para quem precisa aprender com foco e clareza, sem depender de uma formação longa para começar."
+		},
+		{
+			"question": "Esse curso é indicado para quem quer ampliar o portfólio da clínica?",
+			"answer": "Sim. Ele foi pensado para quem busca uma técnica de entrada acessível, com boa percepção de valor e possibilidade de complementar atendimentos já existentes."
+		},
+		{
+			"question": "Esse curso substitui o TRINTAE3 ou é outro tipo de próximo passo?",
+			"answer": "É outro tipo de próximo passo. O Curso de Aurículo é uma imersão curta e aplicada para ampliar repertório com rapidez. O TRINTAE3 é uma formação mais longa, com outra profundidade e outra proposta dentro do ecossistema Grupo US."
+		},
+		{
+			"question": "Onde vejo investimento, lote e formas de pagamento?",
+			"answer": "As condições atualizadas ficam na página de vendas acessada pelo botão principal. Assim, você consulta investimento, lote e formas de pagamento no ambiente correto, sem correr risco de ler informação desatualizada nesta landing."
+		},
+		{
+			"question": "Como faço para me inscrever ou tirar dúvidas antes da compra?",
+			"answer": "O botão principal desta página leva direto para a página de vendas. Se você quiser validar se este curso é o próximo passo certo para você antes de concluir a inscrição, pode usar o botão de WhatsApp para falar com a Laura."
 		}
 	],
 	"cta": {
-		"label": "Quero aprender Auriculoterapia",
-		"url": "https://hub.la/g/IfV7kpxqUkTzlufg4Tx9",
-		"whatsappMessage": "Olá, Laura! Quero saber mais sobre o Curso de Auriculoterapia",
+		"label": "Garantir minha inscrição",
+		"url": "https://pay.kiwify.com.br/kMXdriO",
+		"whatsappMessage": "Olá, Laura! Quero tirar uma dúvida antes de me inscrever no Curso de Aurículo com Técnica de Perfuração Auricular.",
+		"helperText": "No botão principal você acessa a página de vendas com investimento, lote e formas de pagamento atualizadas. Se quiser validar seu fit antes de concluir, fale com a Laura no WhatsApp.",
 		"type": "primary"
 	},
 	"testimonials": [
