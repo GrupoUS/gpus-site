@@ -27,3 +27,6 @@ pnpm-debug.log*
 __pycache__/
 *.pyc
 *.pyo
+
+# Lighthouse cache (created by chrome-launcher on WSL)
+C\:*
