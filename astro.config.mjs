@@ -70,7 +70,7 @@ export default defineConfig({
 				const entry = config[pathname];
 				if (entry) {
 					item.priority = entry.priority;
-					item.changefreq = entry.changefreq;
+					item.changefreq = /** @type {any} */ (entry.changefreq);
 				}
 
 				return item;
