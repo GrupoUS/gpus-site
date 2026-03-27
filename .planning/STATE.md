@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-03-27T00:50:51.244Z"
+last_updated: "2026-03-27T01:02:27.141Z"
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 14
-  completed_plans: 13
+  completed_plans: 14
 ---
 
 # Project State
@@ -38,7 +38,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 | 3 | Visual Uplift & Animations | **In progress** — All 3 plans complete (CSS foundation + micro-interactions + Motion reveals); human-verify checkpoint pending |
 | 4 | React Islands | **Complete (04-01 + 04-02)** — JourneyTimeline.tsx, TestimonialCarousel.tsx, WhatsAppFloatingButton.tsx (all 3 islands built and wired) |
 | 5 | SEO Technical Layer | **In progress (05-01 complete)** — JSON-LD Course/Product/Event per page; OTB local landing; breadcrumbs 7/9; Plans 5.2+5.3 pending |
-| 6 | QA & Ship | **In progress (06-01 complete)** — Tech debt cleanup, useReducedMotion guards, unused deps removed |
+| 6 | QA & Ship | **In progress (06-01, 06-03 complete)** — Tech debt cleanup, useReducedMotion guards, unused deps removed; smoke test script |
 
 ## Key Context for Future Sessions
 
@@ -101,6 +101,9 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 - text-generate-effect.tsx uses instant animate() with duration:0 for reduced motion instead of early return
 - framer-motion package removed -- all imports already use motion/react from the motion package
 - simplex-noise removed with wavy-background.tsx deletion (zero importers)
+- Smoke test handles Astro SSG meta-refresh redirect pages alongside real 301/302 -- dual detection for local preview and production
+- Cross-browser audit confirmed safe: backdrop-filter, details/summary, Framer Motion 12.x -- no code changes needed
+- D-10 .env.example skipped -- contact form has graceful fallback for missing PUBLIC_FORMSPREE_ACTION
 
 ---
-*Last updated: 2026-03-27 (Phase 06 Plan 01 complete -- tech debt cleanup, useReducedMotion guards, unused deps removed)*
+*Last updated: 2026-03-27 (Phase 06 Plan 03 complete -- smoke test script, cross-browser audit documented)*
