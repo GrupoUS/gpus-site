@@ -1,4 +1,3 @@
-"use client";
 import { Ear, Globe, GraduationCap, Rocket, Users } from "lucide-react";
 import {
 	domAnimation,

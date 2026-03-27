@@ -1,4 +1,3 @@
-"use client";
 import {
 	animate,
 	domAnimation,

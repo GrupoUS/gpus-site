@@ -1,5 +1,4 @@
-"use client";
-import { motion, stagger, useAnimate } from "motion/react";
+import { motion, stagger, useAnimate, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +15,7 @@ export const TextGenerateEffect = ({
 }) => {
 	const [scope, animate] = useAnimate();
 	const [runMotion, setRunMotion] = useState(false);
+	const shouldReduce = useReducedMotion();
 	const wordsArray = useMemo(() => words.split(" "), [words]);
 
 	useEffect(() => {
@@ -25,6 +25,10 @@ export const TextGenerateEffect = ({
 	// biome-ignore lint/correctness/useExhaustiveDependencies: new spans mount when `wordsArray` changes; `animate("span")` must run again for those nodes
 	useEffect(() => {
 		if (!runMotion) return;
+		if (shouldReduce) {
+			animate("span", { opacity: 1, filter: "none" }, { duration: 0 });
+			return;
+		}
 		animate(
 			"span",
 			{
@@ -36,7 +40,7 @@ export const TextGenerateEffect = ({
 				delay: stagger(0.2),
 			},
 		);
-	}, [wordsArray, filter, duration, animate, runMotion]);
+	}, [wordsArray, filter, duration, animate, runMotion, shouldReduce]);
 
 	if (!runMotion) {
 		return (

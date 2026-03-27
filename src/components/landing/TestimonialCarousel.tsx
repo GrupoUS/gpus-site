@@ -1,4 +1,3 @@
-"use client";
 import { domAnimation, LazyMotion, useReducedMotion } from "motion/react";
 import * as m from "motion/react-m";
 import { useCallback, useEffect, useRef, useState } from "react";

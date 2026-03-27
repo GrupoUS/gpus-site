@@ -1,10 +1,10 @@
-"use client";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import React from "react";
 import { cn } from "@/lib/utils";
 
 export const BackgroundBeams = React.memo(
 	({ className }: { className?: string }) => {
+		const shouldReduce = useReducedMotion();
 		const paths = [
 			"M-380 -189C-380 -189 -312 216 152 343C616 470 684 875 684 875",
 			"M-373 -197C-373 -197 -305 208 159 335C623 462 691 867 691 867",
@@ -100,18 +100,26 @@ export const BackgroundBeams = React.memo(
 									y1: "0%",
 									y2: "0%",
 								}}
-								animate={{
-									x1: ["0%", "100%"],
-									x2: ["0%", "95%"],
-									y1: ["0%", "100%"],
-									y2: ["0%", `${93 + Math.random() * 8}%`],
-								}}
-								transition={{
-									duration: Math.random() * 10 + 10,
-									ease: "easeInOut",
-									repeat: Infinity,
-									delay: Math.random() * 10,
-								}}
+								animate={
+									shouldReduce
+										? { x1: "100%", x2: "95%", y1: "100%", y2: "100%" }
+										: {
+												x1: ["0%", "100%"],
+												x2: ["0%", "95%"],
+												y1: ["0%", "100%"],
+												y2: ["0%", `${93 + Math.random() * 8}%`],
+											}
+								}
+								transition={
+									shouldReduce
+										? { duration: 0 }
+										: {
+												duration: Math.random() * 10 + 10,
+												ease: "easeInOut",
+												repeat: Infinity,
+												delay: Math.random() * 10,
+											}
+								}
 							>
 								<stop stopColor="#d4af37" stopOpacity="0"></stop>
 								<stop stopColor="#d4af37"></stop>

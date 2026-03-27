@@ -110,11 +110,10 @@ gpus/
 │   │   │   ├── FAQ.astro             # Pure Astro — details/summary
 │   │   │   ├── LandingCTA.astro
 │   │   │   └── MobileCTABar.astro
-│   │   ├── shared/         # SectionHeading, Card, Button
-│   │   └── contact/        # ContactForm (if extracted)
+│   │   └── shared/         # SectionHeading, Card, Button
 │   ├── content/            # Content Collections (JSON data)
 │   │   ├── products/       # 7 product JSON files (rich schema); opcional `externalSiteUrl`
-│   │   └── team/           # 3 team member JSON files
+│   │   └── team/           # 13 team member JSON files
 │   ├── content.config.ts   # Zod schemas + glob loaders
 │   ├── layouts/
 │   │   └── Layout.astro    # Base layout (SEO, JSON-LD, fonts, skip link, reveal)
@@ -149,7 +148,7 @@ gpus/
 | Framework      | Astro                     | 6.x     |
 | Styling        | Tailwind CSS              | v4.x    |
 | Interactivity  | React (Islands only)      | 19.x    |
-| Animations     | Framer Motion             | 11.x    |
+| Animations     | motion (Framer Motion)    | 12.x    |
 | Icons          | Lucide React              | latest  |
 | Build Tool     | Vite (integrated in Astro)| 6.x     |
 | Deploy         | Railway                   | —       |
@@ -310,7 +309,7 @@ React Islands (0%): None currently exist. All interactivity uses:
 All dynamic content uses Astro Content Collections (`src/content/`) with Zod schemas in `src/content.config.ts`:
 
 - **products/** — 6 JSON files, one per product. Rich schema: name, slug, tagline, description, type, audience, icon (Lucide name), image, order, hero, painPoints[], pillars[], benefits[], differentials[], faqs[], cta, testimonials[].
-- **team/** — 3 JSON files (Sacha, Mauricio, Raquel). Schema: name, role, bio, photo, order, social.
+- **team/** — 13 JSON files. Schema: name, role, bio, photo, order, social.
 
 To add a new product: create JSON in `src/content/products/` + create `.astro` page in `src/pages/` following the landing template pattern (getCollection → find by slug → pass data to landing components). Se a experiencia canônica for um site externo, defina `externalSiteUrl` no JSON e adicione o mesmo destino em `redirects` em `astro.config.mjs` (e exclua a rota no `filter` do sitemap, se aplicável).
 
