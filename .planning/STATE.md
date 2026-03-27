@@ -2,20 +2,20 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-last_updated: "2026-03-26T23:43:38.900Z"
+status: executing
+last_updated: "2026-03-27T00:50:51.244Z"
 progress:
-  total_phases: 5
+  total_phases: 6
   completed_phases: 4
-  total_plans: 11
-  completed_plans: 12
+  total_plans: 14
+  completed_plans: 13
 ---
 
 # Project State
 
 **Project:** Portal Grupo US — Enhancement Milestone v2
 **Initialized:** 2026-03-25
-**Status:** Milestone complete
+**Status:** Executing Phase 06
 
 ## Project Reference
 
@@ -23,7 +23,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 
 **Core value:** Excelência percebida em segundos — design, copy e jornada claros; conversão via WhatsApp **Laura (+55 62 9470-5081)** quando aplicável.
 
-**Current focus:** Phase 05 in progress; Plan 05-01 (JSON-LD + OTB landing + breadcrumbs) complete
+**Current focus:** Phase 06 — qa-performance-and-ship
 
 ## Active Milestone
 
@@ -38,7 +38,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 | 3 | Visual Uplift & Animations | **In progress** — All 3 plans complete (CSS foundation + micro-interactions + Motion reveals); human-verify checkpoint pending |
 | 4 | React Islands | **Complete (04-01 + 04-02)** — JourneyTimeline.tsx, TestimonialCarousel.tsx, WhatsAppFloatingButton.tsx (all 3 islands built and wired) |
 | 5 | SEO Technical Layer | **In progress (05-01 complete)** — JSON-LD Course/Product/Event per page; OTB local landing; breadcrumbs 7/9; Plans 5.2+5.3 pending |
-| 6 | QA & Ship | Recorrente a cada release |
+| 6 | QA & Ship | **In progress (06-01 complete)** — Tech debt cleanup, useReducedMotion guards, unused deps removed |
 
 ## Key Context for Future Sessions
 
@@ -94,5 +94,13 @@ See: `.planning/PROJECT.md` (updated 2026-03-26)
 - Event JSON-LD uses MixedEventAttendanceMode (online modules + Dubai immersion)
 - No pricing fields in JSON-LD per D-04 (external checkout via Kiwify/WhatsApp)
 
+## Decisions (Phase 06)
+
+- scaleX+transformOrigin pattern replaces width animation in lamp.tsx -- GPU-composited transform, no layout reflow
+- background-beams.tsx conditional animate/transition props (not early return) to keep static beam paths visible with reduced motion
+- text-generate-effect.tsx uses instant animate() with duration:0 for reduced motion instead of early return
+- framer-motion package removed -- all imports already use motion/react from the motion package
+- simplex-noise removed with wavy-background.tsx deletion (zero importers)
+
 ---
-*Last updated: 2026-03-26 (Phase 05 Plan 01 complete -- JSON-LD Course/Product/Event, OTB landing page, breadcrumbs 7/9)*
+*Last updated: 2026-03-27 (Phase 06 Plan 01 complete -- tech debt cleanup, useReducedMotion guards, unused deps removed)*
