@@ -128,7 +128,7 @@ Plans:
 
 Plans:
 - [x] 06-01-PLAN.md — Technical debt cleanup: lamp.tsx scaleX refactor, unused deps removal, "use client" cleanup, hex fixes, useReducedMotion for 3 Aceternity islands, AGENTS.md update (D-05, D-06, D-07, D-08, D-09, D-15, D-17)
-- [ ] 06-02-PLAN.md — Lighthouse CI audit script with >= 95 threshold enforcement on all 9 pages + pre-deploy gate chain (D-01, D-02, D-03, D-04, D-12)
+- [x] 06-02-PLAN.md — Lighthouse CI audit script with >= 95 threshold enforcement on all 9 pages + pre-deploy gate chain (D-01, D-02, D-03, D-04, D-12)
 - [x] 06-03-PLAN.md — Smoke test script for routes/redirects/assets/OG images + cross-browser audit documentation (D-10, D-11, D-13, D-14, D-16)
 
 **Requirements:** All v1 requirements verified (D-01 through D-17)
