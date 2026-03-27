@@ -63,7 +63,7 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 - [x] **VIS-05:** Spring reveals em 4 seções (hero, CTA, landing hero, stats) com LazyMotion+m. *Validated in Phase 3*
 - [x] **VIS-06:** Hover glow em todos os 4 variantes de botão. *Validated in Phase 3*
 - [x] **ADV-05:** Count-up animado nos stats com formato brasileiro (+5.000, 26, 10+, 7). *Validated in Phase 3*
-- [ ] Onde couber, preferir Astro + CSS antes de novas ilhas React (`AGENTS.md`)
+- [x] Onde couber, preferir Astro + CSS antes de novas ilhas React (`AGENTS.md`) — confirmed in Phase 6 audit
 
 **React Islands (só com justificativa)**
 
@@ -88,7 +88,7 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 - **Stack:** Astro 6 + Tailwind v4 (Vite plugin) + React 19 + Framer Motion + Lucide + **Bun**
 - **Codebase:** `.planning/codebase/` (atualizado em 2026-03-26)
 - **Deploy:** Railway; `bun run build` → `dist/`
-- **Gates:** `bun run lint` + `bunx astro check` + `bun run build`
+- **Gates:** `bun run lint` + `bunx astro check` + `bun run build` + `bun run lighthouse:audit` + `bun run smoke-test`
 - **Conteúdo / voz:** `docs/plans/aprimoramento/gpus-company-info.md`, skill `grupo-us`, Manual Google Doc
 - **Jornada canônica (cards):** curso-auriculo → comunidade-us → trintae3 → mentoria-black-neon → otb
 
@@ -109,4 +109,20 @@ Cada visitante deve sentir o nível de excelência do Grupo US em poucos segundo
 | View Transitions | Planejado na v2 doc original | ⏸ Supersedido até decisão contrária |
 
 ---
-*Last updated: 2026-03-26 — Phase 5 (SEO Technical Layer + Cleanup) complete. SEO-01 through SEO-06 verified (12/12 must-haves). All v1.0 milestone phases (1-5) complete. 24/24 requirements satisfied.*
+**QA & Ship (Phase 6)**
+
+- [x] **D-05:** lamp.tsx width→scaleX animation refactor (transform/opacity only). *Validated in Phase 6*
+- [x] **D-06:** Dead deps removed (framer-motion, simplex-noise), dead files deleted (wavy-background, moving-border). *Validated in Phase 6*
+- [x] **D-07:** Hardcoded hex replaced with tokens (NeonBio bg-text-primary, Hero var(--color-gold)). *Validated in Phase 6*
+- [x] **D-08:** All "use client" directives removed from 11 React islands. *Validated in Phase 6*
+- [x] **D-09:** AGENTS.md corrected (13 team members, motion 12.x, no contact/). *Validated in Phase 6*
+- [x] **D-15:** aurora-background background-attachment:fixed removed. *Validated in Phase 6*
+- [x] **D-17:** useReducedMotion guards on lamp, text-generate-effect, background-beams. *Validated in Phase 6*
+- [x] **D-01/D-02/D-03/D-04:** Lighthouse CI script (9 pages, 95+ threshold, retry logic). *Validated in Phase 6*
+- [x] **D-11/D-13:** Smoke test script (24 endpoints, routes/redirects/assets/OG). *Validated in Phase 6*
+- [x] **D-12:** predeploy gate chain (lint + check + build). *Validated in Phase 6*
+- [x] **D-14/D-16:** Cross-browser audit — backdrop-filter, details/summary, motion 12.x all safe. *Validated in Phase 6*
+- [x] **D-10:** .env.example skipped per user decision (Formspree fallback sufficient). *Validated in Phase 6*
+
+---
+*Last updated: 2026-03-27 — Phase 6 (QA, Performance & Ship) complete. All 17 D-requirements verified (18/18 must-haves). All v1.0 milestone phases (1-6) complete. Lighthouse CI + smoke test scripts added as gates.*
