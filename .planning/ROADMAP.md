@@ -120,32 +120,18 @@ Plans:
 
 ## Phase 6 — QA, Performance & Ship
 
-**Goal:** Lighthouse >= 95, acessibilidade, cross-browser, deploy limpo no Railway.
+**Goal:** Codebase limpo, Lighthouse >= 95 em todas as 4 categorias, scripts CI reutilizaveis, deploy pronto no Railway.
 
 **Why last:** So faz sentido auditar apos tudo implementado.
 
-### Plans
+**Plans:** 3 plans
 
-**6.1 — Lighthouse & Performance Audit**
-- Rodar Lighthouse em home, 2 landings e contato
-- Otimizar imagens pesadas (WebP, lazy loading)
-- Verificar CLS (Cumulative Layout Shift) em islands
-- Ajustar `client:load` vs `client:visible` conforme resultado
+Plans:
+- [ ] 06-01-PLAN.md — Technical debt cleanup: lamp.tsx scaleX refactor, unused deps removal, "use client" cleanup, hex fixes, useReducedMotion for 3 Aceternity islands, AGENTS.md update (D-05, D-06, D-07, D-08, D-09, D-15, D-17)
+- [ ] 06-02-PLAN.md — Lighthouse CI audit script with >= 95 threshold enforcement on all 9 pages + pre-deploy gate chain (D-01, D-02, D-03, D-04, D-12)
+- [ ] 06-03-PLAN.md — Smoke test script for routes/redirects/assets/OG images + cross-browser audit documentation (D-10, D-11, D-13, D-14, D-16)
 
-**6.2 — Accessibility & Cross-browser**
-- `alt` em todas as imagens
-- Contraste minimo 4.5:1 (especialmente Liquid Glass sobre navy)
-- Focus visible em todos os elementos interativos
-- Testar em Firefox, Safari, Chrome mobile
-
-**6.3 — Final Build & Deploy**
-- `bun run lint`
-- `bunx astro check`
-- `bun run build`
-- Deploy Railway via push main
-- Smoke test: 8 rotas de conteudo + 5 redirects + assets criticos (WhatsApp, formulario)
-
-**Requirements:** Todos os requisitos v1 verificados
+**Requirements:** All v1 requirements verified (D-01 through D-17)
 
 ---
 
@@ -170,4 +156,5 @@ Plans:
 *Phase 2 plans created: 2026-03-26*
 *Phase 4 plans created: 2026-03-26*
 *Phase 5 plans created: 2026-03-26*
+*Phase 6 plans created: 2026-03-26*
 *Milestone: v2 Enhancement — Visual Premium + SEO + React Islands*
