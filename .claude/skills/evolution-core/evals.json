@@ -1,10 +1,10 @@
 {
   "skill": "evolution-core",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "assertions": [
     {
       "id": "A01",
-      "description": "Output references memory_manager.py as the CLI tool",
+      "description": "Output references memory_manager.py as the CLI tool when memory intent",
       "type": "structural",
       "check": "contains: \"memory_manager.py\"",
       "critical": true
@@ -46,16 +46,58 @@
     },
     {
       "id": "A07",
-      "description": "Output references hooks for automatic capture (evolution-load.sh, evolution-error.sh)",
+      "description": "Output references hooks for automatic capture",
       "type": "behavioral",
-      "check": "contains_one_of: [\"hook\", \"evolution-load\", \"evolution-error\", \"evolution-end\", \"PostToolUseFailure\", \"SessionStart\"]",
+      "check": "contains_one_of: [\"hook\", \"session_context\", \"task_completed\", \"subagent_log\", \"PostToolUse\", \"SessionStart\"]",
       "critical": false
     },
     {
       "id": "A08",
-      "description": "Output length is under 500 words for focused responses",
+      "description": "Routing surface (SKILL.md main body) is concise — pushes detail to references/",
       "type": "format",
-      "check": "word_count_max: 500",
+      "check": "word_count_max: 600",
+      "critical": false
+    },
+    {
+      "id": "A09",
+      "description": "Optimizer intent: output references frozen harness + fixed grading budget rule",
+      "type": "behavioral",
+      "check": "contains_one_of: [\"frozen harness\", \"fixed grading budget\", \"samples_per_iteration\", \"harness.json\"]",
+      "critical": true
+    },
+    {
+      "id": "A10",
+      "description": "Optimizer intent: references append-only experiments.tsv / keep|discard|crash decisions",
+      "type": "behavioral",
+      "check": "contains_one_of: [\"experiments.tsv\", \"append-only\", \"keep | discard\", \"keep|discard\", \"crash\"]",
+      "critical": true
+    },
+    {
+      "id": "A11",
+      "description": "Optimizer intent: cites Karpathy autoresearch single-mutable-artifact rule",
+      "type": "structural",
+      "check": "contains_one_of: [\"karpathy/autoresearch\", \"single mutable artifact\", \"target_skill_prompt\", \"program.md\"]",
+      "critical": false
+    },
+    {
+      "id": "A12",
+      "description": "GPUS site intent: cites cardinal rule (Lucide / SSG / getCollection / no layout-prop animation)",
+      "type": "behavioral",
+      "check": "contains_one_of: [\"Lucide\", \"getCollection\", \"SSG\", \"transform/opacity\", \"Astro static\", \"MPA\"]",
+      "critical": true
+    },
+    {
+      "id": "A13",
+      "description": "GPUS site intent: routes to commercial-first heuristic (copy / SEO / CTA / funnel) before perf",
+      "type": "behavioral",
+      "check": "contains_one_of: [\"copy and offer clarity\", \"commercial\", \"CTA\", \"funnel\", \"SEO\"]",
+      "critical": true
+    },
+    {
+      "id": "A14",
+      "description": "GPUS site intent: produces <answer> XML shape with baseline / experiment / validation / log_entry",
+      "type": "structural",
+      "check": "contains_one_of: [\"<answer>\", \"<baseline>\", \"<experiment>\", \"<validation>\", \"<log_entry>\"]",
       "critical": false
     }
   ],
@@ -77,8 +119,18 @@
     },
     {
       "id": "T04",
-      "input": "Full overview: explain the evolution-core architecture, storage, CLI, hooks, and integration with /evolve.",
-      "expected_assertions": ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08"]
+      "input": "Full overview: explain evolution-core architecture (memory + optimizer + GPUS profile), storage, CLI, hooks, and integration with /evolve.",
+      "expected_assertions": ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A09", "A10", "A11"]
+    },
+    {
+      "id": "T05",
+      "input": "Run a Karpathy-style optimize loop over the `debugger` skill prompt. What scripts and rules apply?",
+      "expected_assertions": ["A09", "A10", "A11"]
+    },
+    {
+      "id": "T06",
+      "input": "Run an autoresearch experiment on the GPUS Astro site to improve the home hero CTA. What is the priority order and output shape?",
+      "expected_assertions": ["A12", "A13", "A14"]
     }
   ]
 }

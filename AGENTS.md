@@ -399,6 +399,18 @@ Each product landing page follows this flow (all components in `src/components/l
 
 ## Learnings log (evolve)
 
+### [2026-05-01] evolution-core absorbs auto-research-gpus + evolve-autoresearch (skill consolidation)
+
+> Registro: plano `docs/plans/2026-05-01-consolidar-evolution-core.md` (a criar) + execução desta sessão.
+
+**Problema:** Três skills sobrepostos (`evolution-core` para memória, `evolve-autoresearch` para Karpathy loop, `auto-research-gpus` para autoresearch comercial do site) duplicavam descrição de gatilho, dispersavam scripts em dois diretórios e obrigavam o agente a saber qual carregar para cada sub-task de `/evolve`.
+
+**Solução:** Consolidar em `evolution-core` com três `references/*.md` (memory / optimizer / gpus-profile) + scripts unificados em `.claude/skills/evolution-core/scripts/`. `SKILL.md` raiz vira router conciso (≤600 palavras). `/evolve` ganha modo `optimize <target>` com sub-arg `site:<area>`; um único `Skill("evolution-core")` cobre todos os caminhos. `evals.json` estendido para A09–A14 (frozen harness, append-only TSV, Karpathy mapping, cardinal rules do site, output `<answer>`). `evals/README.md` atualizado para os novos caminhos. Diretórios antigos `auto-research-gpus/` e `evolve-autoresearch/` removidos.
+
+**Pattern:** Skills com gatilhos sobrepostos viram router + `references/` em vez de N skills paralelos. Mantém uma única superfície de descoberta para o LLM e preserva detalhe técnico atrás de carga sob demanda. Histórico imutável em `evals/<...>/runs/` permanece intocado — apenas referências forward-going migram.
+
+**Validation:** `python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_harness.py --help` smoke + `bun run lint && bunx astro check && bun run build`.
+
 ### [2026-03-26] Mentoria Black NEON: copy de-duplication — echo reduction + dead data cleanup
 
 > Registro: `evals/site/mentoria-black-neon-evolve/runs/2026-03-26-copy-dedup/run.md`.

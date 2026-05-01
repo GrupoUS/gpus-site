@@ -30,7 +30,7 @@ Use one `runs/<run-id>/` folder per optimization session so history stays diff-f
 From the repo root:
 
 ```bash
-python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py init \
+python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_log.py init \
   --evals-root evals \
   --skill-slug <target_skill_name_slug> \
   --target-skill-name "Human name" \
@@ -39,19 +39,19 @@ python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py in
 
 Then `import-response` with `--merge-backlog` to append gaps from the XML into `backlog.md`.
 
-See `.claude/commands/evolve.md` (Fase 1) and `.claude/skills/evolve-autoresearch/SKILL.md`.
+See `.claude/commands/evolve.md` (`optimize` mode) and `.claude/skills/evolution-core/references/optimizer.md`.
 
 Alternative bootstrap flow:
 
 ```bash
-python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_harness.py init-run \
+python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_harness.py init-run \
   --file /tmp/evolve-request.xml
-python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_mutate.py seed-candidates \
+python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_mutate.py seed-candidates \
   --run-dir evals/<slug>/runs/<run-id>
-python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_score.py score-candidate \
+python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_score.py score-candidate \
   --run-dir evals/<slug>/runs/<run-id> \
   --grade-file evals/<slug>/runs/<run-id>/grades/baseline.json
-python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_report.py build-response \
+python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_report.py build-response \
   --run-dir evals/<slug>/runs/<run-id> \
   --append-backlog
 ```
@@ -90,4 +90,4 @@ Performance-focused site batches may live under `evals/site/performance-batch-<d
 
 Primary human-readable log still remains **`AGENTS.md`** → `## Learnings log (evolve)`, but `compound.md` is the area-level memory for future autoresearch.
 
-Skill: `.claude/skills/auto-research-gpus/SKILL.md`.
+Sub-skill: `.claude/skills/evolution-core/references/gpus-profile.md` (loaded by `/evolve optimize site:<area>` or whenever `<input><area>` appears).
