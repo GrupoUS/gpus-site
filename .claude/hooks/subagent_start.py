@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""subagent_start.py - Inject context when subagents start.
+"""subagent_start.py - Inject short context tag when subagents start.
+
+Strings are intentionally short — they are injected as additionalContext into
+the subagent's system prompt. Keys must match agent_type values surfaced by
+the runtime AND match the SubagentStart matcher in .claude/settings.json.
+
 Trigger: SubagentStart
 """
 import json
@@ -8,36 +13,16 @@ import typing
 
 
 AGENT_CONTEXT = {
-    "frontend-specialist": (
-        "Bun | semantic colors | AGENTS.md | BG: end with ## Context Handoff (Status+Artifacts+Gates+Next)"
-    ),
-    "debugger": (
-        "Debug: systematic | check+test | logs in .claude/logs/ | end with ## Context Handoff"
-    ),
-    "performance-optimizer": (
-        "Perf/Sec/SEO: measure-first | OWASP+CWV+meta | BG: end with ## Context Handoff (Status+Artifacts+Gates+Next)"
-    ),
-    "explorer-agent": (
-        "Codebase-only | Grep+Glob+Read | paths+evidence | Librarian Requests | end with ## Context Handoff"
-    ),
-    "explorer": (
-        "Codebase-only | Grep+Glob+Read | paths+evidence | Librarian Requests | end with ## Context Handoff"
-    ),
-    "project-planner": (
-        "D.R.P.I.V plan | atomic tasks | dependencies | end with ## Context Handoff"
-    ),
-    "mobile-developer": (
-        "Mobile-first | touch+perf+offline | BG: end with ## Context Handoff (Status+Artifacts+Gates+Next)"
-    ),
-    "orchestrator": (
-        "Orchestrate: classify → delegate → verify → close | end with ## Context Handoff"
-    ),
-    "evaluator": (
-        "Adversarial review | Mode1: Plan ambiguity+edges+contracts | Mode2: Sprint bugs+scores | Mode3: Architecture analysis (no file writes) | file:line required | end with ## Context Handoff"
-    ),
-    "librarian": (
-        "External docs only | Tavily+Context7 | never touch filesystem | <2000 tokens | end with ## Context Handoff"
-    ),
+    "frontend-specialist": "Bun | semantic tokens | Lucide only | Astro static | end with ## Context Handoff",
+    "debugger":            "Systematic RCA | check+lint+build | logs in .claude/logs/ | end with ## Context Handoff",
+    "performance-optimizer": "Measure-first | OWASP+CWV+SEO | <50KB JS | end with ## Context Handoff",
+    "explorer-agent":      "Codebase only | Grep+Glob+Read | paths+evidence | end with ## Context Handoff",
+    "explorer":            "Codebase only | Grep+Glob+Read | paths+evidence | end with ## Context Handoff",
+    "project-planner":     "D.R.P.I.V | atomic tasks | dependencies | end with ## Context Handoff",
+    "mobile-developer":    "Mobile-first | touch+perf+offline | end with ## Context Handoff",
+    "evaluator":           "Adversarial | Mode1 plan / Mode2 sprint / Mode3 architecture | file:line evidence | end with ## Context Handoff",
+    "librarian":           "External docs only | Tavily+Context7 | <2000 tokens | never touch FS | end with ## Context Handoff",
+    "verification":        "Verify UI flows | Playwright MCP | screenshots+console+network evidence | end with ## Context Handoff",
 }
 
 

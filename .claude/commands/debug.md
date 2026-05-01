@@ -60,7 +60,7 @@ Modes share the **§ 0.1 Setup** preamble.
 Skill("debugger"); // Iron Law + 4-phase methodology
 ```
 
-Read `.claude/config.json` (paths, tooling, gates, overlay). If overlay path exists, also load `${overlay}/anti-patterns.md` for project-specific anti-patterns.
+Read `.claude/config.json` (paths, tooling, gates). Project anti-patterns + bug catalog live in `.claude/rules/stability.md § Anti-patterns + Debug triage`.
 
 Run baseline quality gates from `_shared.md` § 1 using `${tooling.typeChecker}` / `${tooling.linter}` / `${tooling.testRunner}`.
 
@@ -91,9 +91,8 @@ Detect error category in <10s:
 | `connection timeout` / `ECONNREFUSED` | Infra/DB | Check connection string + pool |
 
 **Known-pattern shortcut.** Before investigating, check:
-- `.claude/rules/stability.md` (Checklist A-L)
+- `.claude/rules/stability.md` (Checklist A-L + Anti-patterns + Debug triage)
 - Tier 2 domain rules (auto-loaded via routing matrix)
-- `${overlay}/anti-patterns.md` (project anti-patterns)
 - Recent breaking changes in dependencies (Tavily search if needed)
 
 If error matches a known pattern → apply documented fix directly (L1-L2), no agents.
@@ -119,7 +118,7 @@ code-archaeologist (explorer, background):
 
 regression-hunter (explorer, background):
   - Read .claude/skills/debugger/references/methodology.md (or pack-guides.md)
-  - Cross-check stability rules + ${overlay}/anti-patterns.md
+  - Cross-check `.claude/rules/stability.md` (anti-patterns + debug triage)
   - If MATCH: return pattern + root cause + fix guidance
   - If NO MATCH: top-3 hypotheses with evidence for/against. DO NOT FIX.
 ```
@@ -411,7 +410,7 @@ Run § 0.1, then default flow (§ 1) with focus on:
 
 Spawn `code-archaeologist` + `regression-hunter` (background).
 
-Loaded rules: `.claude/rules/backend.md` + `.claude/rules/integrations.md` + `.claude/rules/stability.md`. Plus `${overlay}/routing-supplements.md` if present.
+Loaded rules: `.claude/rules/frontend.md` + `.claude/rules/stability.md` (this project has no API/backend; use frontend rules + stability for any handler-shaped task).
 
 ---
 
@@ -425,7 +424,7 @@ Run § 0.1, then default flow (§ 1) with focus on:
 
 Spawn `code-archaeologist` + `regression-hunter` + `db-state-inspector` (background).
 
-Loaded rules: `.claude/rules/database.md` + `.claude/rules/backend.md` + `.claude/rules/stability.md`. Plus `${overlay}/anti-patterns.md` (RLS specifics) if present.
+Loaded rules: `.claude/rules/stability.md` (this project has no DB/auth; mode mostly N/A — fall back to stability checklist).
 
 ---
 

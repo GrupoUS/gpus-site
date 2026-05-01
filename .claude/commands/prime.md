@@ -23,16 +23,14 @@ Load **minimum-viable** project context for the current task. Never eager-load e
 
 Tier model:
 - **Tier 1** (always loaded by harness): root `AGENTS.md` + `.claude/CLAUDE.md`
-- **Tier 2** (load on demand): `.claude/rules/*.md` (`backend.md`, `database.md`, `frontend.md`, `integrations.md`, `stability.md`, `DESIGN.md`)
+- **Tier 2** (load on demand): `.claude/rules/*.md` (`frontend.md`, `DESIGN.md`, `stability.md`, `seo.md`)
 - **Tier 3** (load only when justified): `docs/`, ADRs, learnings, design specs, spec docs
-
-Plus optional **overlay** at `${overlay}` (project-specific routing supplements, anti-patterns, layer maps).
 
 ---
 
 ## 0. Setup (every mode)
 
-Read `.claude/config.json`. Note `${paths.*}`, `${overlay}`, and `${rulesDir}` for later loading.
+Read `.claude/config.json`. Note `${paths.*}` and `${rulesDir}` for later loading.
 
 Run:
 ```bash
@@ -40,7 +38,7 @@ git status --short
 git log --oneline -10
 ```
 
-If `${overlay}/routing-supplements.md` exists, note it for stage 2 deep loading.
+Project routing matrix is in `.claude/CLAUDE.md § Routing matrix (project-specific)` — consult for stage 2 deep loading.
 
 ---
 
@@ -114,7 +112,7 @@ If the task is unclear → ask one short clarifying question rather than load mo
 
 ### 3.3 Stage 2 — Targeted deep loading
 
-Load **only** the files justified by Stage 1. If `${overlay}/routing-supplements.md` exists, also consult it for project-specific bindings (e.g., where the donation flow lives, where Pix providers live).
+Load **only** the files justified by Stage 1. Consult `.claude/CLAUDE.md § Routing matrix (project-specific)` for project bindings (e.g., where Content Collections live, where WhatsApp SSOT lives).
 
 ### 3.4 Loading rules
 
@@ -225,7 +223,6 @@ Project: ${project.name} | Mode: {auto|backend|frontend|fullstack} | Stage: {1-4
 Branch: {branch} | Recent: {summary of git log -5}
 Loaded:
   - {exact files actually loaded}
-Overlay applied: {yes/no — if ${overlay}/* loaded list them}
 Next on demand: {only the most relevant additional files}
 Ready for: {task description or "awaiting task"}
 ```

@@ -1,80 +1,153 @@
-# Agentic System Design
+# Agentic System Design (Claude Code)
 
-## Overview
+> Subagent vs. agent team, skill preload vs. body-level invocation, isolation modes, model selection.
+> Anthropic-anchored. Project-scoped to `.claude/agents/` and `.claude/skills/`.
 
-World-class agentic system design for senior prompt engineer.
+References:
+- Subagents: https://code.claude.com/docs/en/sub-agents
+- Skills: https://code.claude.com/docs/en/skills
+- Agent teams: https://code.claude.com/docs/en/agent-teams
 
-## Core Principles
+---
 
-### Production-First Design
+## 1. Subagent vs. Agent Team
 
-Always design with production in mind:
-- Scalability: Handle 10x current load
-- Reliability: 99.9% uptime target
-- Maintainability: Clear, documented code
-- Observability: Monitor everything
+| Construct | When to use | Coordination | Lifetime |
+|---|---|---|---|
+| **Subagent** (`.claude/agents/*.md`) | Single-session task that floods main context with research/logs you won't reference again. | Parent ↔ child via tool result. | One spawn per Agent() call. |
+| **Agent Team** (`TeamCreate` + `TaskCreate`) | Multi-agent coordination across separate sessions, with task dependencies. L6+ work. | Coordinator + workers via `SendMessage` and `TaskUpdate`. | Persists until `TeamDelete`. |
 
-### Performance by Design
+> **Anthropic doc:** "Subagents work within a single session; agent teams coordinate across separate sessions."
 
-Optimize from the start:
-- Efficient algorithms
-- Resource awareness
-- Strategic caching
-- Batch processing
+**Choosing:**
+- L1-L5 → subagents.
+- L6+ with parallel sprints + dependencies → agent team.
+- Single specialist with no dependencies → always subagent (cheaper).
 
-### Security & Privacy
+---
 
-Build security in:
-- Input validation
-- Data encryption
-- Access control
-- Audit logging
+## 2. Subagent file contract
 
-## Advanced Patterns
+Required per Anthropic spec:
 
-### Pattern 1: Distributed Processing
+```markdown
+---
+name: <unique-lowercase-hyphens>
+description: <when Claude should delegate — front-load use case>
+tools: <allowlist OR omit to inherit all>          # OR disallowedTools
+model: opus | sonnet | haiku | inherit             # default: inherit
+skills: [<skill-name>, …]                          # optional preload
+permissionMode: default | acceptEdits | plan | …   # optional
+maxTurns: <int>                                    # optional cap
+isolation: worktree                                # optional sandbox
+---
 
-Enterprise-scale data processing with fault tolerance.
+# <Agent Name>
 
-### Pattern 2: Real-Time Systems
+[System prompt — 50-300 lines. Sections: Role · Iron Laws · Phases · Handoff · Stopping]
+```
 
-Low-latency, high-throughput systems.
+**Body conventions in this repo:**
 
-### Pattern 3: ML at Scale
+1. **Role** — one paragraph: who the agent is, what it owns.
+2. **Iron Laws** — non-negotiable invariants (e.g., "never write outside `src/`", "always finish with quality gate").
+3. **Phases** — numbered execution flow.
+4. **Handoff Format** — link to `agent-handoff-contracts.md` (do NOT redeclare schema).
+5. **Stopping Conditions** — explicit triggers for `BLOCKED` / escalation.
 
-Production ML with monitoring and automation.
+**Forbidden:** repeating context that the `senior-prompt-engineer` skill already preloads.
 
-## Best Practices
+---
 
-### Code Quality
-- Comprehensive testing
-- Clear documentation
-- Code reviews
-- Type hints
+## 3. Skill preload (`skills:` frontmatter) vs. body-level `Skill()`
 
-### Performance
-- Profile before optimizing
-- Monitor continuously
-- Cache strategically
-- Batch operations
+> **Anthropic doc:** "Subagents don't inherit skills from the parent conversation; you must list them explicitly. The full content of each skill is injected into the subagent's context, not just made available for invocation."
 
-### Reliability
-- Design for failure
-- Implement retries
-- Use circuit breakers
-- Monitor health
+| Pattern | When | Cost | Precedent in this repo |
+|---|---|---|---|
+| **Preload** (`skills: [<name>]` in frontmatter) | The agent **always** needs the skill — every invocation. Process skills (`planning`, `debugger`, `evolution-core`, `senior-prompt-engineer`). | Skill body injected at startup; counts against subagent context budget once. | After Sprint 2 of this rewire: `orchestrator`, `project-planner`, `evaluator`, `debugger`. |
+| **Body-level `Skill()` call** | The agent **conditionally** needs the skill (depends on routing). Domain skills (`gpus-theme`, `ui-ux-pro-max`, `astro`). | Skill body loaded only when invoked; cheaper if skill is unused. | `frontend-specialist` calling `Skill("ui-ux-pro-max")` only on UI tasks. |
 
-## Tools & Technologies
+**Rule of thumb:** if removing the skill would break >50% of the agent's invocations, preload it. Otherwise body-level.
 
-Essential tools for this domain:
-- Development frameworks
-- Testing libraries
-- Deployment platforms
-- Monitoring solutions
+**Precondition for preloading:** target skill must NOT set `disable-model-invocation: true` (Anthropic constraint).
 
-## Further Reading
+---
 
-- Research papers
-- Industry blogs
-- Conference talks
-- Open source projects
+## 4. Tool restriction patterns
+
+| Pattern | Frontmatter | Use case |
+|---|---|---|
+| **Inherit all** | omit `tools` and `disallowedTools` | General-purpose agent |
+| **Allowlist** | `tools: Read, Glob, Grep` | Read-only researcher (`explorer`, `librarian`) |
+| **Denylist** | `disallowedTools: Write, Edit` | Inherits all minus writes |
+| **Restricted Agent spawn** | `tools: Agent(worker, researcher), Read` | Coordinator can only spawn specific agents |
+
+**Project rules:**
+- `explorer` allowlists Read/Grep/Glob/Bash; forbids WebFetch/Tavily.
+- `librarian` allowlists WebFetch/Tavily/Context7; forbids local filesystem read.
+- `oracle` allowlists Read/Grep/Glob (read-only consultant).
+- All write-capable agents inherit all tools (e.g., `frontend-specialist`, `debugger` in fix mode).
+
+---
+
+## 5. Model selection
+
+| Model | When | Examples in this repo |
+|---|---|---|
+| `opus` | Architecture, ambiguous reasoning, multi-lens evaluation | `orchestrator`, `evaluator`, `oracle`, `debugger`, `frontend-specialist`, `performance-optimizer`, `project-planner`, `mobile-developer`, `verification` |
+| `sonnet` | Code review, structured analysis with clear rubric | `code-reviewer` |
+| `haiku` | Fast read-only search, low-stakes lookups | `explorer-agent`, `librarian` |
+| `inherit` | When agent should match parent's capability tier | rare in this repo |
+
+**Cost guidance:** prefer `haiku` for read-only research agents; tokens add up across parallel batches.
+
+---
+
+## 6. Isolation (`isolation: worktree`)
+
+> Use when the subagent might leave the repo in a bad state (parallel experiments, destructive refactors).
+
+```yaml
+isolation: worktree
+```
+
+Anthropic doc: "Run the subagent in a temporary git worktree, giving it an isolated copy of the repository. The worktree is automatically cleaned up if the subagent makes no changes."
+
+**Use case in this repo:** `/perf fix` mode spawns `performance-optimizer` per cluster with `isolation: "worktree"` so multiple optimization experiments can run in parallel without merge conflicts.
+
+---
+
+## 7. Subagent ↔ Skill bidirectional pattern
+
+| Approach | System prompt | Task | Context source |
+|---|---|---|---|
+| **Subagent invokes skill in body** | Subagent's markdown body | User-provided | `Skill()` tool call at runtime |
+| **Subagent preloads skill (`skills:` field)** | Subagent's markdown body | User-provided | Skill content injected at startup |
+| **Skill runs in forked subagent (`context: fork` in skill frontmatter)** | Subagent type's body (e.g., `Explore`) | The skill's own content | The skill drives the agent |
+
+The third pattern is **not used** in this repo — we keep skills as content (loaded by agents) and use built-in `Explore`/`Plan` for ad-hoc forking.
+
+---
+
+## 8. Anti-patterns
+
+| Anti-pattern | Symptom | Fix |
+|---|---|---|
+| **Vague description** | Skill/agent never auto-triggers | Front-load use case in description; include trigger phrases ("Use when…") |
+| **Body bloat** | SKILL.md > 500 lines | Move detail to `references/<topic>.md`; SKILL.md is the index |
+| **Re-declared schemas** | Three agents define their own "Context Handoff" block | Single SSOT in this skill; agents link only |
+| **Auto-trigger on `disable-model-invocation: true`** | Skill listed in `skills:` preload silently skipped | Remove the flag; or invoke manually only |
+| **Subagent spawning subagent** | Doesn't work — Anthropic spec | Use coordinator + agent team for nested orchestration |
+| **`client:load` parallel for subagent reasoning** | Wasted parallelism (mixed metaphor for this repo's hydration rules — but the principle applies: don't pay startup cost when you don't need immediate output) | Use `run_in_background: true` for read-only agents per `_shared.md § 7` |
+
+---
+
+## 9. Cross-references
+
+- Spawn template + Context Handoff schema: `agent-handoff-contracts.md`
+- Parallel batch return contract: `parallel-batch-contracts.md`
+- Application-level prompt patterns (RAG, few-shot, CoT): `prompt_engineering_patterns.md`
+- LLM eval harness: `llm_evaluation_frameworks.md`
+
+Last updated: 2026-05-01. Owner: `senior-prompt-engineer` skill.

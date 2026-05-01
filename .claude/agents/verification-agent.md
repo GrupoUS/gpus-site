@@ -16,7 +16,7 @@ Post-implementation verification for any UI or user-flow change. Runs after code
 
 Read `.claude/config.json::project.stagingUrl`. Use `localhost` ONLY when the user explicitly requests it (e.g., "verify on localhost:3000"). Never silently fall back to localhost if staging is unreachable.
 
-If `${overlay}/verify-supplements.md` exists, also load project-specific smoke tests it lists.
+Project-specific smoke tests live in `.claude/rules/stability.md § Smoke tests`.
 
 ---
 
@@ -57,7 +57,7 @@ For each user flow to verify:
 - [ ] Loading states render before data arrives (skeleton / spinner visible at first paint)
 - [ ] Empty states render when collections are empty
 
-Project-specific mandatory checks live in `${overlay}/verify-supplements.md` when present (e.g., webhook idempotency curl, RLS anon deny, public-list privacy).
+Project-specific mandatory checks live in `.claude/rules/stability.md § Smoke tests` (Lucide grep, no-hex grep, redirect tri-sync, WhatsApp URL leak, Lighthouse routes, accessibility).
 
 ---
 

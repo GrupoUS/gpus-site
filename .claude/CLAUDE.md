@@ -1,15 +1,19 @@
 # Claude Code Behavioral Config
 
-> Tier 1 — always loaded. Generic across projects. Combined with root `AGENTS.md` + `${overlay}/CLAUDE-overlay.md` (if present) must stay **< 500 lines total**.
+> Tier 1 — always loaded. Project-specific. Combined with root `AGENTS.md` must stay **< 500 lines total**.
 > Read root `AGENTS.md` first: @../AGENTS.md
-> Then if `.claude/config.json::overlay` is set and `${overlay}/CLAUDE-overlay.md` exists, read that next.
 > Subdirectory `AGENTS.md` files are read **only when editing files in that subdirectory**.
 
 ---
 
 ## Project identity
 
-Project metadata lives in `.claude/config.json` (`project.name`, `project.stack`, `project.locale`, etc.) and the project overlay at `${overlay}/CLAUDE-overlay.md` (if present). Read both before acting on project-specific tasks.
+**Name:** Grupo US
+**Purpose:** Static marketing site for Grupo US.
+
+Stack: Astro 6 (static-only) · Bun · Tailwind CSS v4 · React 19 (islands; minimal) · Railway · Lucide React · Playfair Display + Inter · pt-BR.
+
+Project metadata in `.claude/config.json`. Architecture map / commands / pre-delivery checklist in root `AGENTS.md`. Brand voice + products: `gpus-theme` skill + `grupo-us` skill.
 
 ---
 
@@ -18,12 +22,9 @@ Project metadata lives in `.claude/config.json` (`project.name`, `project.stack`
 These are non-default behaviors. Standard coding conventions are not listed because Claude already applies them.
 
 - **Implement directly, don't just suggest.** Code-first responses.
-- **Run terminal commands directly in the provided shell.** Never wrap in `wsl`, `cmd /c`, or any OS-specific launcher. The shell is bash regardless of OS.
-- **Always use POSIX shell syntax and forward slashes** in paths, even on Windows.
-- **Always run commands with a timeout** to avoid hanging on stuck processes.
-- **Prefer non-interactive, self-terminating commands.** Don't wait for further output after a shell command.
-- **One package manager per project.** Read `${tooling.packageManager}` from `.claude/config.json` and stick to it. Never mix.
-- **Reference applied rules** when relevant (e.g., "per `.claude/rules/database.md` every FK needs an index").
+- **Minimal explanation.** Assume I know the language.
+- **Bun only.** `bun install`, `bun run`, `bunx`. Never `npm` / `yarn` / `pnpm`.
+- **Reference applied rules** when relevant (e.g., "per `.claude/rules/frontend.md` redirect tri-sync").
 
 ---
 
@@ -37,8 +38,6 @@ These are non-default behaviors. Standard coding conventions are not listed beca
 
 ## Intent classification
 
-Classify the request before acting:
-
 | Type | Indicators | Action |
 |---|---|---|
 | **Trivial** (L1-L2) | Single file, known pattern | Direct fix — no planning |
@@ -51,27 +50,42 @@ Classify the request before acting:
 **Ask first only for:**
 - Destructive operations (file deletion, branch deletion, hard reset)
 - Shared-system or production-impacting config changes
-- Schema changes with irreversible consequences (drops, type narrowing on populated columns)
-- Auth, payment, or PII-sensitive changes
 - External actions visible to other people (commits, pushes, PRs, messages, deploys)
 
 ---
 
-## Routing matrix (generic)
+## Cardinal rules (project-specific, non-negotiable)
 
-| Task touches | Load these | Then implement in |
+1. **Never assume correctness.** Verify against official docs, runtime build, or `bun run check:external-urls` before applying changes.
+2. **Always debug after changes.** Every modification ends with `bun run lint && bunx astro check && bun run build`.
+3. **NEVER use emojis as UI icons.** Lucide React SVG only.
+4. **NEVER use SPA.** Astro static MPA only — no `ClientRouter`, no `prerender = false`, no SSR adapter.
+5. **NEVER hardcode product / team / landing copy** in `.astro` or `.tsx`. Always `getCollection()` from `src/content/`.
+6. **NEVER inline `wa.me/...` URLs.** Always go through `src/lib/whatsapp.ts`.
+7. **NEVER hardcode hex** outside `src/styles/global.css` `@theme` block. Semantic tokens or named navy/gold utilities only.
+8. **NEVER animate layout properties** (`width`, `height`, `top`, `left`, `padding`, `margin`). FAQ uses CSS grid `grid-template-rows: 0fr ↔ 1fr`. Other animations: `transform` + `opacity` only.
+
+---
+
+## Routing matrix (project-specific)
+
+| Task touches | Load these | Implement in |
 |---|---|---|
-| New API endpoint | `.claude/rules/backend.md` | `${paths.backendRoot}/...` |
-| Schema / migration | `.claude/rules/database.md` | `${paths.schemaRoot}/...` + RLS in same or next migration |
-| New page / component | `.claude/rules/frontend.md` | `${paths.frontendRoot}/...`, `${paths.componentsRoot}/...`, semantic tokens |
-| External provider | `.claude/rules/integrations.md` | `${paths.libRoot}/<provider>/...` |
-| Webhook | backend + integrations | `${paths.backendRoot}/webhooks/...` (idempotency mandatory) |
-| Pure styling | frontend + DESIGN | `${paths.stylesRoot}/global.css` token block — no hardcoded hex |
+| New page / product landing | `.claude/rules/frontend.md` + `.claude/rules/DESIGN.md` | `src/pages/<slug>.astro` (mirror `mentoria-black-neon.astro`) + `src/content/products/<slug>.json` |
+| New external product redirect | `.claude/rules/frontend.md § External redirect tri-sync` | `src/content/products/<slug>.json::externalSiteUrl` + `astro.config.mjs::redirects` + `astro.config.mjs::sitemap.filter()` (3-way sync) |
+| Edit landing copy / CTA / FAQ / testimonial | `.claude/rules/frontend.md § Content Collections` + `grupo-us` skill | `src/content/products/<slug>.json` only — never component file |
+| Update home journey order | `.claude/rules/frontend.md § Home journey order` + `grupo-us` skill | `src/content/products/<slug>.json::order` |
+| WhatsApp message / CTA | `.claude/rules/frontend.md § WhatsApp SDR Laura` | `cta.whatsappMessage` in product JSON (always prefixed `Olá, Laura!`) — `src/lib/whatsapp.ts` is SSOT for URL building |
+| WhatsApp number / E.164 | `.claude/rules/frontend.md § WhatsApp SDR Laura` | `src/lib/whatsapp.ts::WHATSAPP_SDR_E164` — single source |
+| Theme token / new utility | `.claude/rules/DESIGN.md` | `src/styles/global.css` `@theme` block + `@layer utilities` |
+| New landing section component | `.claude/rules/frontend.md` + `.claude/rules/DESIGN.md` | `src/components/landing/*.astro` (pure Astro by default; promote to `.tsx` only when interactivity required) |
+| Hero island animation | `.claude/rules/frontend.md § Hydration directives` | `src/components/landing/<island>.tsx` with `client:idle` (never `client:load`) |
+| FAQ behavior | `.claude/rules/frontend.md § Accessibility` | `src/components/landing/FAQ.astro` — native `<details>` or CSS grid `0fr/1fr`; never Framer height tween |
+| SEO meta / JSON-LD | `.claude/rules/seo.md` | `src/layouts/Layout.astro` (Organization + BreadcrumbList) + per-page frontmatter (`title`, `description`, `ogImage`) |
+| A11y plumbing | `.claude/rules/frontend.md § Accessibility` | `src/layouts/Layout.astro` (skip link, `<main id="conteudo-principal">`, `<noscript>` reveal) + `src/styles/global.css` |
+| Performance budget | `.claude/rules/stability.md § Performance gates` | `Layout.astro` (preconnect Google Fonts) + Astro `<Image>` discipline + hydration audits |
+| Smoke tests / anti-patterns / debug | `.claude/rules/stability.md` | filesystem (greps + Lighthouse + `bun run check:external-urls`) |
 | Anywhere | `.claude/rules/stability.md` | universal checklist |
-
-If `${overlay}/routing-supplements.md` exists, also load project-specific routing rows (e.g., domain flows, payment providers, custom paths).
-
-> **Rule resolution.** When the routing matrix points at `.claude/rules/<file>.md`, the agent MUST resolve overlay-first: check `${overlay}/rules/<file>.md` and read it instead if present. The generic `.claude/rules/<file>.md` is a fallback scaffold. **Never read both** — pick one. See `_shared.md § 0` for the resolution recipe.
 
 ---
 
@@ -81,11 +95,11 @@ Invoke `mcp__sequential-thinking__sequentialthinking` **before** acting (not aft
 
 | Trigger | Example |
 |---|---|
-| Request is L4+ (multi-domain, cross-layer) | Feature touching schema + API + UI |
+| Request is L4+ (multi-domain, cross-layer) | Feature touching schema + UI + SEO |
 | Ambiguous requirements with 2+ valid approaches | "improve performance" with no metric |
 | Error spans 3+ files or services | Cascade failure after deploy |
-| Architecture decision with irreversible consequences | New table, new dependency, auth model change |
-| Plan has 3+ sequential phases with dependencies | Sprint with schema → API → UI gates |
+| Architecture decision with irreversible consequences | New dependency, render-mode change |
+| Plan has 3+ sequential phases with dependencies | Sprint with content → component → style gates |
 | Confidence < 4 on root cause after initial investigation | Bug with no clear reproduction path |
 
 **Never invoke for:** L1-L2 fixes, known patterns, direct style/lint/type changes.
@@ -119,27 +133,18 @@ Codebase search (`Grep` / `Read` / `Glob`) is the **fallback for internal questi
 | Action | Authority |
 |---|---|
 | L1-L2 fixes, style/lint/type fixes | Autonomous |
-| Schema additions, new dependencies, file deletion, auth changes | **Confirm first** |
-| Payments, PII, production config, destructive DB operations, deploy to prod | **Always ask** |
-
----
-
-## Project-specific guards
-
-Project-specific guards (cardinal rules unique to this codebase — render mode, icon library, donation flow rules, idempotency contracts, etc.) live in `${overlay}/CLAUDE-overlay.md`. Read it before any task that touches those domains.
-
-If no overlay file exists, fall back to the universal stability checklist (`.claude/rules/stability.md`) only.
+| Schema additions, new dependencies, file deletion | **Confirm first** |
+| Production config, destructive operations, deploy to prod | **Always ask** |
 
 ---
 
 ## Pointers (Tier 3 — read on demand)
 
-- `.claude/rules/{backend, database, frontend, integrations, stability, DESIGN}.md` — domain-scoped Tier 2 rules (generic templates)
-- `${overlay}/rules/*.md` — project-specific authoritative versions (when present)
-- `${overlay}/CLAUDE-overlay.md` — project identity + project-specific guards
-- `${overlay}/anti-patterns.md` — project-specific bug catalog (loaded by `/debug` and `debugger` skill)
-- `${overlay}/routing-supplements.md` — extra routing matrix rows
-- `${overlay}/verify-supplements.md` — extra smoke tests for `/verify`
-- `${overlay}/layer-map.md` — project layer stack (loaded by `planning` skill)
-- `${overlay}/seo-supplement.md` — project SEO/locale specifics (loaded by `performance-optimization` skill)
-- `docs/` — product specs, design canon, implementation plans (project-dependent)
+- `.claude/rules/frontend.md` — pages, components, hydration, Content Collections, WhatsApp SSOT, redirects, fonts, a11y, performance.
+- `.claude/rules/DESIGN.md` — Navy/Gold tokens, typography, components spec, motion, custom utilities.
+- `.claude/rules/stability.md` — universal checklist + smoke tests + anti-patterns + debug triage.
+- `.claude/rules/seo.md` — pt-BR locale, JSON-LD Organization, sitemap filter rule.
+- `.claude/skills/gpus-theme/` — Navy/Gold tokens canon (HSL).
+- `.claude/skills/grupo-us/` — products / journey / brand voice (`manual-resumo.md`, `produtos-e-rotas.md`, `cultura-activa.md`, `conflitos-fontes.md`).
+- root `AGENTS.md` — cardinal rules + architecture map + commands + pre-delivery checklist + chronological learnings log.
+- `docs/` — product specs, design canon, implementation plans.

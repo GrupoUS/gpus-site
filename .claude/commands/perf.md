@@ -32,7 +32,7 @@ Read `.claude/config.json`:
 - `${tooling.typeChecker}` / `${tooling.testRunner}` / `${tooling.packageManager}`
 - `${gates.lighthouse}` / `${gates.lcp}` / `${gates.cls}` / `${gates.inp}` / `${gates.initialJsKb}` → pass thresholds
 
-If `${overlay}` exists, also load `${overlay}/seo-supplement.md` (project-specific SEO/route specifics).
+Project SEO specifics: `.claude/rules/seo.md` (locale, JSON-LD, sitemap filter, CWV thresholds).
 
 ---
 

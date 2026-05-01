@@ -26,7 +26,7 @@ ls docs/plans/*.md 2>/dev/null
 
 Parse from plan: **Complexity**, **Layers**, phase markers (`[SEQUENTIAL]` / `[PARALLEL]`), task list (`- [ ]`), verify commands, sprint contracts, `[ASSUMED]` items to validate before starting.
 
-Read `.claude/config.json` for tooling + paths. If `${overlay}/routing-supplements.md` exists, also read it for project-specific layer/agent routing.
+Read `.claude/config.json` for tooling + paths. Project-specific layer/agent routing lives in `.claude/CLAUDE.md § Routing matrix (project-specific)`.
 
 **Flags:**
 
@@ -68,7 +68,7 @@ If plan doesn't specify `**Agent:**`, assign by file-path detection:
 | Cross-domain (3+ layers) | `project-planner` as coordinator |
 | Any failing task | `debugger` |
 
-If `${overlay}/routing-supplements.md` extends this table → respect those bindings.
+Project-specific bindings in `.claude/CLAUDE.md § Routing matrix`.
 
 Background read-only agents (always `run_in_background: true`):
 

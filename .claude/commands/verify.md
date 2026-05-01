@@ -308,7 +308,7 @@ SET DRIFT_RISK =
 
 `DRIFT_RISK ≠ none` feeds Phase 6 (focus) and Phase 7 (gating). Surface drift in report regardless. If drift includes any of: schema, auth, payment, env, CI → escalate (confirm with user before VERIFIED).
 
-If `${overlay}/verify-supplements.md` exists, also run the project-specific smoke tests it lists (e.g., webhook idempotency, RLS anon deny).
+Also run the project-specific smoke tests in `.claude/rules/stability.md § Smoke tests` (Lucide grep, no-hex grep, redirect tri-sync, WhatsApp URL leak, Lighthouse routes).
 
 ---
 

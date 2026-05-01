@@ -1,171 +1,343 @@
-# Design Rules (Tier 2 — Generic Template)
+# DESIGN — Grupo US · Site Institucional (Tier 2 — project authority)
 
-> Replace placeholders with project specifics, or override entirely via `${overlay}/rules/DESIGN.md`.
-
-## Purpose
-
-Design tokens, component specs, typography, color, accessibility constraints. Single source of truth for visual decisions.
+> Tokens canon: `src/styles/global.css` `@theme` block + `gpus-theme` skill (`references/css-variables.md`, `assets/theme-tokens.css`).
+> Identidade visual: GPUS Theme — Navy/Gold em dark mode único (per `AGENTS.md`).
 
 ---
 
-## North star
+## 1. Theme & anti-traps
 
-Every product has a creative north star — a one-sentence description of the visual atmosphere. Examples:
-- "Stripe minimalism with human warmth"
-- "Linear precision, calm authority"
-- "Vercel sharpness, honest typography"
+**North Star:** "Avant-garde institutional minimalism — Navy autoridade, Gold sinal, Playfair gravidade, Inter clareza, glassmorphism whisper, gold-glow accent." Sem sales-loud, sem stock-clinical, sem template-genérico.
 
-**The project's north star lives in `${overlay}/rules/DESIGN.md`.** It anchors every design decision: tokens, type, spacing, components.
+**Marca anchors:**
+- Navy `#1a1a2e` — page bg, autoridade
+- Gold `#d4af37` — actions, headlines, KPI hero (signal-only)
+- Playfair Display + Inter (single pair)
+- Dark mode único (sem light variant)
+- 8px grid
+- WCAG AA mínimo
+- Glass borders gold/20 @ 0.3
 
----
-
-## Brand anchors
-
-Every project picks a small set of mode-invariant anchors:
-- Primary color (signal-only, used sparingly)
-- Secondary color (CTAs, links, focus rings)
-- Single typography family (or 1 + wordmark exception)
-- Spacing grid (8px or 4px strict)
-- Page background (rarely pure white — usually warm or cool tinted)
-- Border treatment (ghost borders @ 0.3 opacity / solid 1px / none)
-
----
-
-## Anti-traps (rejection gates)
+**Anti-traps:**
 
 | Trap | Trigger | Fix |
 |---|---|---|
-| Sales-loud | "BUY NOW!", red CTAs everywhere, urgency timers piscando | Calm authority — single primary CTA per section |
-| Stock-clinical | `#fff` everywhere + tech-stock images | Warm neutrals + real photography |
-| Token-drift | Inline `#hex` in components | Semantic token only |
-| Icon-mix | Material Symbols + Lucide + emoji co-existing | One library only |
-| Mode-bleed | `bg-stone-900` in light mode, light tokens in dark mode | Strict mode contract — `dark:` variant; never cross-mode |
+| Sales-loud | "COMPRE AGORA!", reds piscando, CTAs múltiplos | Calm authority, single primary CTA + WhatsApp dedup |
+| Stock-clinical | brancos genéricos + tech-stock photography | Navy/Gold + foto real Dra. Sacha |
+| Token-drift | `bg-[#d4af37]` inline | `bg-gold` ou `bg-primary` |
+| Icon-mix | Material Symbols / emoji / Font Awesome | Lucide React only |
+| Mode-bleed | importar light variant do `theme-tokens.css` portátil | Dark único — não ativar light |
+| Emoji-as-icon | decorative emoji no UI | Lucide React SVG (cardinal #3) |
+| Layout-property animation | Framer `m.div` height/width tween | CSS grid `0fr/1fr` ou `transform`/`opacity` |
+| Bento-marketing | grid genérico de 6 boxes | Narrativa editorial, asymmetry, glass cards com gold glow |
 
-**Template test:** "Could this be a Vercel/Stripe template?" → YES = FAIL.
-
----
-
-## Color system (Material 3 reference)
-
-When using Material 3 design tokens, the contract is:
-
-- **Primary family:** primary / on-primary / primary-container / on-primary-container + fixed variants
-- **Secondary family:** secondary / on-secondary / secondary-container / on-secondary-container + fixed
-- **Tertiary family:** tertiary / on-tertiary / tertiary-container / on-tertiary-container + fixed
-- **Surface hierarchy (7 tiers):** surface-bright / surface-dim / surface-container-{lowest, low, normal, high, highest}
-- **Outlines:** outline (strong) / outline-variant (subtle)
-- **Status:** error / on-error / error-container / on-error-container
-
-**Mode contract — golden rule:** never mix tokens between light and dark modes. Each mode has a complete, independent token set. The only mode-invariant tokens are the `*-fixed` family.
+**Template test:**
+- "Generic ed-tech template?" → **FAIL — restart**
+- "Stripe minimalism + Playfair authority + glassmorphism gold whisper?" → **SUCCESS**
+- "AI-generated slop?" → **FAIL — restart**
 
 ---
 
-## Typography
+## 2. Color system (dark mode only)
 
-- **Single family discipline.** One typeface for all UI. One exception only: the wordmark in the header.
-- **Tabular numerals** (`font-variant-numeric: tabular-nums`) on currency, counters, percentages.
-- **Headline-to-body ratio** ≥ 2× (h1 vs body).
-- **No size below 12px** (legibility).
-- **Sentence case** in headlines. UPPERCASE only in status pills (with `tracking: 0.04em`).
-- **Body text** never pure black or pure white — use warm near-black / warm near-white.
+> **Site é dark único.** `gpus-theme` skill expõe tokens light + dark portáteis para outros consumidores; aqui, apenas `.dark` está ativo. Não importar / ativar light theme.
+> Tailwind v4 `@theme` em `src/styles/global.css` define todos os tokens diretamente como dark values.
+> **Proibido:** `dark:bg-...` modifiers, `light:` variants, importar `theme-tokens.css` portátil sem ajustar.
 
-Reference scale (Tailwind v4 `--text-*` tokens):
-- Hero (h1): 48px / 1.2 / -0.02em / 700
-- Section (h2): 32px / 1.3 / -0.01em / 600
-- Card (h3): 24px / 1.4 / 600
-- Body large: 18px / 1.6 / 400
-- Body base: 16px / 1.6 / 400
-- Label small: 14px / 1.2 / 0.02em / 500
-- Caption: 12px / 1.2 / 400
-- Badge / status: 11–12px / 0.04em / 500 / UPPERCASE
+### 2.1 Semantic tokens (HSL — espelham `gpus-theme` dark column)
+
+| Token | HSL | Hex | Uso |
+|---|---|---|---|
+| `--background` | `211 49% 10%` | `#0d1b2a` | page bg |
+| `--foreground` | `39 44% 65%` | `#c9a66b` | default text (gold-toned) |
+| `--card` | `212 48% 13%` | ~`#112240` | card bg |
+| `--card-foreground` | `39 44% 65%` | `#c9a66b` | card text |
+| `--popover` | `211 49% 10%` | `#0d1b2a` | popover/dropdown bg |
+| `--popover-foreground` | `39 44% 65%` | `#c9a66b` | popover text |
+| `--primary` | `39 44% 65%` | `#c9a66b` | CTAs, gold accents |
+| `--primary-foreground` | `48 10% 80%` | ~`#d1ccc0` | text on primary |
+| `--secondary` | `211 49% 10%` | `#0d1b2a` | secondary surface |
+| `--secondary-foreground` | `39 44% 65%` | `#c9a66b` | text on secondary |
+| `--muted` | `39 29% 54%` | ~`#b09a6d` | muted bg |
+| `--muted-foreground` | `48 10% 80%` | ~`#d1ccc0` | muted text |
+| `--accent` | `26 5% 27%` | ~`#474340` | accent highlight |
+| `--accent-foreground` | `39 44% 65%` | `#c9a66b` | text on accent |
+| `--border` | `26 6% 21%` | ~`#383533` | borders |
+| `--input` | `26 6% 21%` | ~`#383533` | input borders |
+| `--ring` | `39 29% 54%` | ~`#b09a6d` | focus ring (semantic) |
+| `--destructive` | `0 84% 60%` | ~`#ef4444` | error states |
+| `--destructive-foreground` | `30 11% 11%` | ~`#1f1d1a` | text on destructive |
+| `--radius` | — | `0.625rem` | base radius (10px) |
+
+### 2.2 Extended brand tokens (Navy / Gold scale)
+
+| Tailwind | Hex | Uso |
+|---|---|---|
+| `bg-navy` / `text-navy` | `#1a1a2e` | hero/landing bg accent |
+| `bg-navy-light` | `#2a2a40` | glass card bg, alt section |
+| `bg-navy-lighter` | `#3d3d5c` | hover state on glass card |
+| `text-gold` / `bg-gold` | `#d4af37` | bright gold for CTAs, headlines |
+| `text-gold-light` / `bg-gold-light` | `#e8c96a` | gold hover state |
+| `text-gold-dark` / `bg-gold-dark` | `#b8960c` | gold active/pressed |
+| `text-text-primary` | `#fafaf9` | main readable body text on navy |
+| `text-text-muted` | `#94a3b8` | subtitles, metadata, captions |
+| `bg-whatsapp` / `hover:bg-whatsapp-hover` | `#25d366` / `#20bd5a` | secondary WhatsApp CTA — never `bg-[#25D366]` solto |
+
+### 2.3 Contrast validation
+
+| Foreground | Background | Ratio | WCAG | Uso |
+|---|---|---|---|---|
+| `#fafaf9` text-primary | `#1a1a2e` navy | ~17:1 | AAA | body text on dark hero |
+| `#fafaf9` text-primary | `#0d1b2a` background | ~17.5:1 | AAA | body on page bg |
+| `#94a3b8` text-muted | `#1a1a2e` navy | ~6.5:1 | AA | subtitles, metadata |
+| `#94a3b8` text-muted | `#0d1b2a` background | ~6.7:1 | AA | captions on page bg |
+| `#d4af37` gold | `#1a1a2e` navy | ~6.8:1 | AA | headlines, links, KPI |
+| `#d4af37` gold | `#0d1b2a` background | ~7:1 | AA | gold accents on page bg |
+| `#c9a66b` foreground (semantic) | `#0d1b2a` background | ~5.5:1 | AA | default text token |
+| `#1a1a2e` navy | `#d4af37` gold | ~6.8:1 | AA | text on gold CTA fill |
+| `#fafaf9` | `#25d366` whatsapp | ~3.4:1 | AA-large | large/icon only — not body text |
+
+Validate any new pair against WebAIM before commit.
+
+### 2.4 Token usage rules
+
+1. Body text minimum 4.5:1.
+2. Large text (18pt+ / 14pt+ bold) minimum 3:1.
+3. Non-text UI (icons, borders) minimum 3:1 quando informativo standalone.
+4. **Sempre semantic tokens** (`bg-background`, `text-foreground`) ou named utilities (`bg-navy-light`, `text-gold`).
+5. **Nunca hex inline** em componentes — apenas em `src/styles/global.css` `@theme`.
+6. Nunca importar light tokens — site é dark único.
+7. Color is never the sole status indicator (sempre color + icon + text).
+8. Mockups podem usar hex — **nunca copiar hex literal para código**.
 
 ---
 
-## Spacing
+## 3. Typography
 
-8px grid strict. Named scale: `xs 4 · sm 8 · md 16 · lg 24 · xl 32 · xxl 48 · huge 64`. Never 7px or 13px.
+- **Headings:** Playfair Display (`font-serif`) — peso 700 default, 400/600 disponíveis.
+- **Body / UI:** Inter (`font-sans`) — pesos 300/400/500/600/700.
+- **Sentence case** em headlines pt-BR. UPPERCASE apenas em badges/status pills com `tracking-[0.04em]`.
+- **`tabular-nums`** em currency, KPI counters, datas.
 
-Section vertical: `py-huge` (64px) between thematic sections; `py-xxl` (48px) on mobile.
-Card padding: `p-md` mobile / `p-lg` desktop. Never below `p-md`.
+| Role | Family | Size | Weight | Line | Letter | Casing |
+|---|---|---|---|---|---|---|
+| Hero h1 | Playfair Display | clamp(48–72px) | 700 | 1.1 | -0.02em | Sentence |
+| Section h2 | Playfair Display | clamp(32–48px) | 700 | 1.2 | -0.01em | Sentence |
+| Card h3 | Playfair Display ou Inter | 24px | 600 | 1.3 | 0 | Sentence |
+| Body Large | Inter | 18px | 400 | 1.6 | 0 | Sentence |
+| Body Base | Inter | 16px | 400 | 1.6 | 0 | Sentence |
+| Label | Inter | 14px | 500 | 1.2 | 0.02em | Sentence |
+| Caption | Inter | 12px | 400 | 1.4 | 0 | Sentence |
+| Badge | Inter | 11–12px | 500 | 1.2 | 0.04em | UPPERCASE |
+| KPI | Playfair Display | 36–60px | 700 | 1 | -0.02em | — |
 
----
-
-## Border radius
-
-Generic scale:
-- `sm` 4px — badges, micro-pills
-- `md` 6px — compact inputs
-- `lg` 8px — buttons, default inputs
-- `xl` 12px — standard cards
-- `2xl` 16px — large containers, modals
-- `3xl` 24px — media-prominent containers
-- `full` 9999px — pills, avatars, icon buttons
-
----
-
-## Depth & elevation
-
-- Light mode: shadows are primary; tonal layering supplements alt sections
-- Dark mode: tonal layering is primary; shadows only for overlays/modals
-
-Soft shadows: `0 4px 12px rgba(0,0,0,0.02-0.05)` for cards. Larger shadows for modals/toasts. Never aggressive `box-shadow: 0 0 50px` glows.
+**Regras:**
+- Font size < 12px proibido.
+- Headline-to-body ratio ≥ 2x.
+- Body text NEVER `#000` ou `#fff`. Use `text-text-primary` (`#fafaf9`).
+- Single typographic exception: brand names (TRINTAE3, OTB, NEON Dash) podem aparecer UPPERCASE inline.
 
 ---
 
-## Iconography
+## 4. Components
 
-- One library only (Lucide / Heroicons / Phosphor — pick one in `${overlay}/rules/DESIGN.md`).
-- Wrap in `<Icon name="…" />` component for consistency.
-- Sizes: 16 / 20 / 24 / 32 / 48.
-- `aria-label` mandatory on icon-only buttons.
-- No emoji as UI icons. No Material Symbols font. No Font Awesome.
+### 4.1 Buttons
+
+**Primary (gold)** — `bg-primary` (`#c9a66b`) ou `bg-gold` (`#d4af37`) brighter; text `text-primary-foreground` ou `text-navy`; hover `bg-primary/90` ou `bg-gold-light`; active `bg-gold-dark`; shadow `.gold-glow`; padding `px-6 py-3` (small) / `px-8 py-4` (CTA hero); `rounded-md`; Inter 14px 500.
+
+**Secondary (outlined)** — `border-border` + `text-foreground`, transparent bg, `hover:bg-accent`.
+
+**Ghost** — text `text-foreground`, transparent, `hover:bg-accent`.
+
+**WhatsApp (green secondary)** — `bg-whatsapp hover:bg-whatsapp-hover text-white`. **De-duped** automaticamente quando `cta.url` já é WhatsApp via `isWhatsAppDestination()`.
+
+**Icon Button** — 40×40 desktop / 44×44 mobile · `rounded-full` · `aria-label` mandatory.
+
+### 4.2 Cards
+
+**Standard** — `bg-card text-card-foreground border-border/30 rounded-lg` (or `rounded-xl` for landing) · `p-6` mobile / `p-8` desktop.
+
+**Glass** — utility `.glass-card` = navy-light/80 + backdrop-blur-md + 1px gold/20 border. `.glass-card-bright` para CTA sections.
+
+**Hover lift** — utility `.card-hover-lift` aplica `transform: translateY(-6px) scale(1.01)` em hover.
+
+### 4.3 Inputs
+
+`bg-input text-foreground border-border focus-visible:ring-2 ring-ring`. Padding `px-4 py-3` · `rounded-md` · placeholder `text-muted-foreground` @ 0.6 · disabled `opacity-50 cursor-not-allowed`.
+
+### 4.4 Badges / pills
+
+`rounded-full` · Inter 11–12px 500 · `tracking-[0.04em]` UPPERCASE · `px-3 py-1`.
+
+| Variant | bg / text |
+|---|---|
+| Gold (premium) | `bg-gold/20 text-gold` |
+| Success | `bg-emerald-500/20 text-emerald-400` |
+| Urgent | `bg-destructive/20 text-destructive` |
+| Neutral | `bg-accent text-accent-foreground` |
+
+### 4.5 Navigation
+
+**Header** — `bg-navy` (or transparent on hero) · 1px `border-border/30` bottom · wordmark Playfair 700 `text-gold` · inactive `text-text-muted` · active `text-foreground` + 2px gold underline · CTA "Conversar com a Laura" small primary button.
+
+**Footer** — `bg-navy` darker · `text-text-muted` body · links `text-foreground` · social icons Lucide 20px.
+
+### 4.6 FAQ accordion
+
+Native `<details>` / `<summary>` OR CSS grid `grid-template-rows: 0fr ↔ 1fr` (chevron `rotate`). **Forbidden:** Framer `m.div` height tween. Summary: Inter 16px 500. Body: Inter 16px 400 `text-text-muted`.
+
+### 4.7 Mobile CTA bar
+
+`MobileCTABar.astro` sticky bottom em landing pages (≤ 768px). `bg-navy/95 backdrop-blur` border-top gold/20 · primary CTA full-width · WhatsApp secondary aside (de-duped).
 
 ---
 
-## Motion
+## 5. Layout
 
-- `prefers-reduced-motion` respected in every animation.
-- Allowed properties: `transform`, `opacity` (GPU-only).
-- Forbidden: animating `width`, `height`, `top`, `left`, `padding`, `margin`.
-- Accordion: `grid-template-rows: 0fr ↔ 1fr` (not `height: auto`).
-- Default transitions: `150ms ease`. Reveals: `300ms ease-out`.
-- Focus ring: `outline 2px solid <secondary>` + `outline-offset 2px`.
+- Container: `max-w-7xl mx-auto px-6 lg:px-8`.
+- Spacing: Tailwind defaults (8px grid).
+- Section vertical: `py-24` desktop / `py-16` mobile.
+- Card padding: `p-6` mobile / `p-8` desktop.
+- Asymmetry: prefer 7/5 ou 8/4 splits em hero; nunca 50/50.
+
+| Pattern | Tailwind | Uso |
+|---|---|---|
+| Products grid (home) | `grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8` | `ProductsGrid` |
+| Stats KPI | `grid-cols-1 md:grid-cols-3 gap-6` | `StatsSection` |
+| Pillars | `grid-cols-1 md:grid-cols-3 gap-6` | landing |
+| Hero asymmetric | `grid-cols-1 lg:grid-cols-12` (texto `col-span-7`, media `col-span-5`) | landing hero |
+| Team grid | `grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8` | `/sobre` |
 
 ---
 
-## Imagery
+## 6. Border radius
 
-- Hero: framework `<Image>` with `loading="eager"` + `fetchpriority="high"`.
-- Below fold: `loading="lazy"` + `fetchpriority="low"`.
-- Aspect ratios: hero 16:9 or 21:9; card 4:3; avatar 1:1.
+| Token | CSS | Uso |
+|---|---|---|
+| `rounded-sm` | 0.375rem | badges, micro-pills |
+| `rounded-md` | 0.5rem | inputs, default buttons |
+| `rounded-lg` | 0.625rem | cards (semantic default) |
+| `rounded-xl` | 0.75rem | landing card hero |
+| `rounded-2xl` | 1rem | modals, large containers |
+| `rounded-full` | 9999px | pills, avatars, icon buttons |
+
+---
+
+## 7. Depth & elevation
+
+Site é dark único — **glass + gold-glow + tonal layering** carregam profundidade; shadows sutis em modais/CTAs.
+
+| Level | Surface | Effect |
+|---|---|---|
+| 0 — Base | `bg-background` (`#0d1b2a`) ou `bg-navy` (`#1a1a2e`) | none |
+| 1 — Section alt | `bg-navy-light` ou `bg-card` | none (tonal) |
+| 2 — Card | `bg-card` + `border-border/30` | optional `.gold-glow` em premium |
+| 3 — Glass | `.glass-card` (navy-light/80 + blur + gold/20 border) | none |
+| 4 — Hover lift | transform `translateY(-6px) scale(1.01)` | optional `0 20px 40px rgba(0,0,0,0.40)` |
+| 5 — CTA halo | `.gold-glow` | `0 0 20px hsl(var(--primary) / 0.3)` |
+| 6 — Modal | `bg-card` 2xl | `0 12px 24px rgba(0,0,0,0.5)` + overlay `bg-black/70` |
+
+**Borders:** ghost `border-border/30` standard · `border-gold/20` em glass · focus ring `outline 2px solid #d4af37 + offset 2px`.
+
+---
+
+## 8. Iconography
+
+- **Lucide React only.** Named imports: `import { ArrowRight, Heart, MessageCircle } from 'lucide-react'`.
+- Sizes: `size-4` / `size-5` / `size-6` / `size-8` / `size-12`.
+- Cor: hereda `currentColor` ou explicit `text-gold` / `text-text-muted`.
+- `aria-label` em icon-only buttons; `aria-hidden="true"` em decorative.
+- **Forbidden:** emoji as icons, Material Symbols font, Font Awesome, custom inline SVG (exceto logos).
+- Tree-shake: nunca `import * as`.
+
+---
+
+## 9. Motion & interaction
+
+- **`prefers-reduced-motion`** em TODA animação CSS (já em `global.css`).
+- Allowed: `transform`, `opacity`.
+- **Forbidden:** `width`, `height`, `top`, `left`, `padding`, `margin`. Sem `transition: all`.
+- Accordion: CSS grid `grid-template-rows: 0fr ↔ 1fr` (não `height: auto`).
+- Reveal: `[data-reveal]` IntersectionObserver → `opacity 0 → 1` + `translateY(8px → 0)`. `<noscript>` fallback força visível.
+- Hover: `transform: scale(0.98)` em `:active`; `.card-hover-lift` em cards.
+- Transitions: `150ms ease` standard; `300ms ease-out` reveals.
+- Focus ring: `outline 2px solid #d4af37 + outline-offset 2px` (`:focus-visible`).
+
+---
+
+## 10. Imagery
+
+- Hero / above-fold: Astro `<Image>` `loading="eager"` + `fetchpriority="high"`.
+- Below-fold: `loading="lazy"` + `fetchpriority="low"`.
+- Aspect: hero 16:9 ou 21:9 · landing card 4:3 · avatar / team 1:1 · `NeonStory` 4:5.
 - Always explicit `width` + `height` (CLS = 0).
 - Decorative: `alt=""` + `aria-hidden="true"`.
-- Meaningful: descriptive alt in project locale.
+- Meaningful: descriptive `alt` em pt-BR.
+- Tone: real Dra. Sacha + ecossistema — **never** stock-clinical.
 
 ---
 
-## Accessibility
+## 11. Custom utilities (`src/styles/global.css`)
 
-- WCAG AA contrast minimum on every text/background pair.
-- One `<h1>` per page; sectioning by `<section>` / `<article>` / `<nav>` / `<main>`.
-- Focus rings always visible.
-- Skip link is the first focusable element.
-- All form fields associated with `<label>`.
-- All icon-only buttons have `aria-label`.
-- Color is never the sole status indicator (always color + icon + text).
-- Keyboard navigation: full FAQ / modal / table / accordion.
+| Class | Effect |
+|---|---|
+| `.bg-mesh` | Radial gradient mesh (subtle gold/primary tint) |
+| `.glass-card` | linear-gradient(navy-light/80, navy/60) + backdrop-blur-md + 1px gold/20 border |
+| `.glass-card-bright` | brighter glass variant for CTA sections |
+| `.gold-glow` | `box-shadow: 0 0 20px hsl(var(--primary) / 0.3)` — premium CTAs, KPI |
+| `.skip-link` | first-focusable skip link, `transform: translateY(-200%)` hidden, `:focus-visible` reveals |
+| `.landing-mesh-bg` | animated radial mesh for hero |
+| `.text-shimmer` | animated gold gradient text (use sparingly) |
+| `.text-gradient-gold` | static gold gradient text |
+| `.card-hover-lift` | `transform: translateY(-6px) scale(1.01)` on hover |
 
----
-
-## Token usage rules
-
-- Always semantic tokens (`bg-surface`, `text-on-surface`).
-- Never hex inline in components — only in `@theme` / token file.
-- Never cross-mode tokens (no light tokens used in dark mode bodies).
-- Components reference tokens; mockups may use hex literals — never copy hex from mockups to code.
+Add new utilities **only** in `src/styles/global.css` after `@theme` block. Never inline custom CSS in components.
 
 ---
 
-## Project-specific authority
+## 12. Do's and Don'ts
 
-If `${overlay}/rules/DESIGN.md` exists, it carries the **authoritative** north star, palette, type pairing, component spec, and full contrast validation tables. This template is a scaffold only.
+| Do | Don't |
+|---|---|
+| Semantic tokens + named utilities (`bg-navy`, `text-gold`) | Hardcoded hex outside `@theme` |
+| Sentence case headlines pt-BR | UPPERCASE outside badges |
+| `tabular-nums` em currency / KPI / counters | Pure black `#000` ou white `#fff` em body |
+| Playfair headings + Inter body | Material Symbols / Font Awesome / emoji |
+| `prefers-reduced-motion` guard sempre | `href="#"` (use `<button>` ou real `<a>`) |
+| Lucide named imports | `import * as Icons from 'lucide-react'` |
+| 8px grid / Tailwind spacing | Inline custom CSS |
+| Soft shadows + `.gold-glow` + glass | Aggressive `box-shadow: 0 0 50px gold` glows |
+| Validar contraste antes de commit | Cross-mode bleed (light tokens em dark site) |
+| Test `prefers-reduced-motion` + JS-off | Animar `width`/`height`/`top`/`left`/`padding`/`margin` |
+| `<button>` actions / `<a>` nav | `client:load` em pure-visual islands |
+| Focus rings sempre visíveis | SPA / `ClientRouter` / `astro:after-swap` |
+| Content Collections SSOT | Hardcoded landing copy |
+| `src/lib/whatsapp.ts` SSOT | Inline `wa.me/...` URLs |
+
+---
+
+## 13. Responsive
+
+| Breakpoint | Width | Tailwind | Comportamento |
+|---|---|---|---|
+| Mobile | < 640 | (default) | single column, hamburger nav, sticky `MobileCTABar` |
+| Tablet | 640–1024 | `sm:` `md:` | 2-col grids, condensed nav |
+| Desktop | ≥ 1024 | `lg:` `xl:` | full layout, 3-col products grid, asymmetric hero 7/5 |
+| Wide | ≥ 1280 | `xl:` `2xl:` | edge-to-edge max-w-7xl, generous gutters |
+
+Touch targets ≥ 44×44px mobile · button height 40px mobile / 36px desktop · card padding ≥ `p-6`. Hero typography `clamp(48–72px)`.
+
+---
+
+## 14. Accessibility (sumário)
+
+Detalhe completo em `.claude/rules/frontend.md § Accessibility`. Quick:
+
+- WCAG AA contrast em todo par.
+- One `<h1>` per page · semantic `<section>/<article>/<nav>/<main id="conteudo-principal" tabindex="-1">`.
+- Focus rings 2px gold + 2px offset em `:focus-visible`.
+- Skip link `.skip-link` first focusable.
+- All icon-only buttons: `aria-label` (WhatsApp inclui "Laura").
+- FAQ: CSS grid `0fr/1fr` (never height tween).
+- `<noscript>` força `[data-reveal]` visível.
+- `prefers-reduced-motion` desliga reveal + island animations.
