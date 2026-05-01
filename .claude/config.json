@@ -1,17 +1,17 @@
 {
   "$schema": "./config.schema.json",
   "project": {
-    "name": "missao-amazonica",
-    "displayName": "Missão Amazônica — Sal da Terra",
-    "stack": "astro-hybrid-supabase",
+    "name": "gpus-site",
+    "displayName": "Grupo US — Site Institucional",
+    "stack": "astro-static-tailwindv4",
     "stagingUrl": "http://localhost:4321",
-    "productionUrl": "",
+    "productionUrl": "https://grupous.com.br",
     "locale": "pt-BR"
   },
   "paths": {
-    "backendRoot": "src/pages/api",
+    "backendRoot": "",
     "frontendRoot": "src",
-    "schemaRoot": "supabase/migrations",
+    "schemaRoot": "",
     "stylesRoot": "src/styles",
     "componentsRoot": "src/components",
     "libRoot": "src/lib"
@@ -22,10 +22,10 @@
     "typeChecker": "astro-check",
     "linter": "biome",
     "testRunner": "",
-    "deployer": "vercel",
+    "deployer": "railway",
     "frontendFramework": "astro+react-islands",
-    "database": "postgres",
-    "orm": "supabase-js"
+    "database": "",
+    "orm": ""
   },
   "gates": {
     "lighthouse": {
@@ -39,7 +39,7 @@
     "inp": 100,
     "initialJsKb": 50
   },
-  "overlay": ".claude/overlay/missao-amazonica",
+  "overlay": ".claude/overlay/gpus-site",
   "rulesDir": ".claude/rules",
   "templatesDir": ".claude/templates",
   "agentsFile": "AGENTS.md",

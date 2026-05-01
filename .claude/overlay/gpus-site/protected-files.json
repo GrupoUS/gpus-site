@@ -1,0 +1,16 @@
+{
+  "$comment": "Project-specific protected files for gpus-site. Loaded by .claude/hooks/protect-files.sh.",
+  "exact": [
+    "astro.config.mjs",
+    "src/lib/whatsapp.ts",
+    "src/content.config.ts",
+    "package.json",
+    "tsconfig.json",
+    "biome.json",
+    "lefthook.yml"
+  ],
+  "segments": [],
+  "contains": [
+    "bun.lockb"
+  ]
+}
