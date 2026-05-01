@@ -14,10 +14,10 @@ try:
     from packaging import version
     if version.parse(__version__) < version.parse(MIN_CRAWL4AI_VERSION):
         print(f"⚠️  Warning: Crawl4AI {MIN_CRAWL4AI_VERSION}+ recommended (you have {__version__})")
+    from crawl4ai import AsyncWebCrawler, BrowserConfig, CacheMode, CrawlerRunConfig
 except ImportError:
     print(f"ℹ️  Crawl4AI {MIN_CRAWL4AI_VERSION}+ required")
-
-from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig, CacheMode
+    sys.exit(1)
 
 async def crawl_basic(url: str):
     """Basic crawling with markdown output"""
@@ -51,7 +51,7 @@ async def crawl_basic(url: str):
             print(f"   Content length: {len(result.markdown)} chars")
 
             # Save markdown
-            with open("output.md", "w") as f:
+            with open("output.md", "w", encoding="utf-8") as f:
                 f.write(result.markdown)
             print("📄 Saved to output.md")
 

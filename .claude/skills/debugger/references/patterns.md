@@ -79,7 +79,7 @@ await new Promise((r) => setTimeout(r, 200)); // 2 ticks at 100ms intervals
 | Layer | Tool | Count | When to Use |
 |-------|------|-------|-------------|
 | **Unit** | Vitest | 70% | Pure functions, business logic |
-| **Integration** | Astro build validation | 20% | Content Collections, page generation |
+| **Integration** | Vitest + tRPC | 20% | API routes, DB queries, auth |
 | **E2E** | Playwright | 10% | Critical user journeys |
 
 ### Test Commands
@@ -125,18 +125,11 @@ if (item.userId !== identity.subject) throw new Error("Forbidden");
 ### Injection Prevention
 
 ```typescript
-// ✅ Content Collection schema validation (Zod)
-const eventSchema = defineCollection({
-  type: "content",
-  schema: z.object({
-    title: z.string(),
-    date: z.date(),
-    capacity: z.number().positive(),
-  }),
-});
+// ✅ Parameterized (Drizzle)
+db.select().from(users).where(eq(users.id, userId));
 
-// ❌ NEVER trust unvalidated JSON without schema
-const data = JSON.parse(rawInput); // No validation
+// ❌ NEVER string concat SQL
+db.execute(`SELECT * FROM users WHERE id = ${userId}`);
 ```
 
 ### Security Review Checklist

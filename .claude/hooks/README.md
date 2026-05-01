@@ -1,80 +1,74 @@
-# Claude Code Hooks - Na Mesa Certa
+# Claude Code Hooks
 
-## Visão Geral
+## Overview
 
-Este projeto usa hooks Claude Code para aumentar autonomia de agentes enquanto mantém guardrails de segurança.
+Hooks increase agent autonomy while keeping safety guardrails. All hooks are **Python 3** (`.py`) — shell scripts intentionally avoided for portability across Windows / macOS / Linux.
 
-## Hooks Configurados
+Project-specific values (project name, package manager, protected paths) come from `.claude/config.json` and `${overlay}/...`. Hooks read these at runtime — no per-project edits needed.
+
+## Configured hooks
 
 ### SessionStart
-
-- **session-context.sh**: Injeta contexto do projeto (branch, último commit, qualidade gates)
+- **session_context.py** — loads `AGENTS.md` via `additionalContext` (cross-platform standard) + project tag (from `config.json::project.name` + `tooling.packageManager`) + git branch.
 
 ### PreToolUse
-
-- **smart-bash-approver.sh**: Auto-aprova comandos seguros, bloqueia perigosos
-- **protect-files.sh**: Bloqueia modificação de arquivos sensíveis
-- **task-routing-guard.sh**: Bloqueia subagent inválido e reforça Task com roteamento correto
-
-### PermissionRequest
-
-- Auto-aprova Read/Grep/Glob/Serena tools
-- Usa smart-bash-approver para Bash
+- **smart_bash_approver.py** — auto-approves safe commands (read-only git, bun/npm/pnpm/yarn build/test/lint, version checks, common DB CLIs); blocks dangerous patterns (`rm -rf /`, `DROP DATABASE`, force-push to main); asks on cleanup operations.
+- **protect_files.py** — blocks edits to sensitive files. Generic defaults: `.env*`, lockfiles, `.git/`. Per-project additions read from `config.json::protectedFiles` + `${overlay}/protected-files.json`.
+- **task_routing_guard.py** — validates subagent name + enforces `run_in_background` when runtime exposes the field.
 
 ### PostToolUse
-
-- **ultracite-fix.sh**: Após `Write`/`Edit`, roda **Biome** `check --write` e **oxlint** `--fix` só em arquivos do escopo do projeto:
-  - Biome: `src/**` e `astro.config.mjs` (`*.ts`, `*.tsx`, `*.js`, `*.jsx`, `*.json`, `*.astro`, `*.css`, `*.mjs`)
-  - oxlint (Oxc): `src/**` com `*.ts`, `*.tsx`, `*.js`, `*.jsx`, `*.mjs`
-  - Arquivos fora desse escopo (ex.: `package.json` na raiz) são ignorados para não falhar com “nenhum arquivo processado”.
-- `file_path` é lido via `python3` + JSON (mesmo padrão que `protect-files.sh`). Falha de Biome/oxlint retorna exit code ≠ 0 (visível no transcript).
+- **ultracite_fix.py** — runs project formatter/linter after edit (Biome / Prettier / equivalent — read from config).
 
 ### Stop
+- **ultracite_check.py** — verifies lint before stopping; blocks on errors.
+- **background_cleanup.py** — logs stop event for observability.
 
-- **ultracite-check.sh**: Executa `bun run lint` (Biome + oxlint, sem `--write`) antes de encerrar a sessão. Se o lint falhar, o hook falha.
+### SubagentStart
+- **subagent_start.py** — injects context when subagents launch.
+
+### SubagentStop
+- **subagent_log.py** — logs subagent events to `.claude/logs/subagent-events.jsonl`.
+- **evaluator_escalation.py** — flags escalation to evaluator (Mode 3) on repeated failures.
+
+### TaskCompleted
+- **task_completed.py** — logs team task completions.
 
 ### Notification
-
-- **notify.sh**: Notificações desktop (WSL/Linux)
-
-### Não registrados em `settings.json`
-
-Hooks como `SubagentStop`, `TeammateIdle` ou `background-cleanup.sh` podem ser adicionados depois; não há scripts correspondentes no repositório neste momento.
+- **notify.py** — desktop notifications (WSL / Linux / macOS).
 
 ---
 
-## Git (Lefthook)
-
-- **`lefthook.yml`**: em commits que tocam `src/**` ou `astro.config.mjs`, o `pre-commit` roda `bun run lint`.
-- Instalação: `bun install` dispara `prepare` → `lefthook install`.
-
----
-
-## Comandos Seguros (Auto-aprovados)
+## Auto-approved commands (examples)
 
 ```bash
-# Git
-git status, git diff, git log, git branch, git fetch
+# Git read-only
+git status, git diff, git log, git branch, git fetch, git show
 
-# File system
-ls, cat, head, tail, grep, find, which, pwd, echo
+# Filesystem read
+ls, cat, head, tail, grep, rg, find, which, pwd, echo, tree, stat, wc
 
-# Bun/Node
-bun test, bun run check, bun run lint, bun install, bun x, bun run build
-bunx astro check, bunx astro build
-bunx oxlint, bunx biome, bunx ultracite
+# Package managers (any of: bun / npm / pnpm / yarn)
+<pm> install, <pm> run test, <pm> run lint, <pm> run build, <pm> run dev
+bunx / npx / pnpm dlx / yarn dlx
+
+# Type checkers
+tsc, tsgo
+
+# Database / cloud CLIs (read-only introspection)
+neonctl, supabase, fly, vercel, railway, wrangler
+psql, mysql, sqlite3
 
 # Version checks
-python3 --version, node --version, bun --version
+python --version, node --version, bun --version, etc.
 ```
 
 ---
 
-## Comandos Bloqueados (Sempre)
+## Always-blocked commands
 
 ```bash
 # Destructive
-rm -rf /, rm -rf ~, rm -rf *, rm -rf $HOME
+rm -rf /, rm -rf ~, rm -rf $HOME
 
 # Database
 DROP DATABASE, DROP TABLE, TRUNCATE
@@ -84,47 +78,55 @@ git push --force main, git push --force master, git reset --hard HEAD~
 
 # System
 chmod -R 777 /, dd if=... of=/dev/, :(){ :|:& };:
-sudo rm, truncate -s 0
+sudo rm, truncate -s 0, mkfs
 ```
 
 ---
 
-## Arquivos Protegidos
+## Protected files
 
-Estes arquivos não podem ser editados via hooks:
+Defaults (every project):
 
-| Pattern                              | Razão           |
-| ------------------------------------ | --------------- |
-| `.env*`                              | Credenciais     |
-| `credentials`, `secrets`, `api-keys` | Dados sensíveis |
-| `.git/`                              | Repositório     |
-| `package-lock.json`, `bun.lockb`     | Lockfiles       |
+| Pattern | Reason |
+|---|---|
+| `.env*` | Credentials |
+| `credentials/`, `secrets/`, `api-keys/` | Sensitive data |
+| `.git/` | Repository state |
+| `bun.lockb`, `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock` | Lockfiles |
+
+Add per-project entries via `.claude/config.json::protectedFiles` or `${overlay}/protected-files.json` (e.g., migration directories, infra config).
 
 ---
 
-## Testando Hooks
+## Testing hooks
 
 ```bash
-# Testar aprovação de comando seguro
-echo '{"tool_name":"Bash","tool_input":{"command":"bun test"}}' | .claude/hooks/smart-bash-approver.sh
+# Test safe command approval
+echo '{"tool_input":{"command":"bun test"}}' | python3 .claude/hooks/smart_bash_approver.py
 # Expected: {"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"allow"}}
 
-# Testar bloqueio de comando perigoso
-echo '{"tool_name":"Bash","tool_input":{"command":"rm -rf /"}}' | .claude/hooks/smart-bash-approver.sh
-# Expected: {"hookSpecificOutput":{"...permissionDecision":"deny"...}}
+# Test dangerous command block
+echo '{"tool_input":{"command":"rm -rf /"}}' | python3 .claude/hooks/smart_bash_approver.py
+# Expected: deny
 
-# Testar proteção de arquivo
-echo '{"tool_name":"Edit","tool_input":{"file_path":"./.env"}}' | .claude/hooks/protect-files.sh
-echo $?
-# Expected: Exit code 2, error message on stderr
+# Test file protection
+echo '{"tool_input":{"file_path":"./.env"}}' | python3 .claude/hooks/protect_files.py
+# Expected: deny
+```
 
-# PostToolUse: arquivo no escopo Biome/oxlint
-echo '{"tool_name":"Write","tool_input":{"file_path":"src/components/CountdownTimer.tsx"}}' | .claude/hooks/ultracite-fix.sh
-# Expected: biome + oxlint rodam; exit 0 se limpo
+---
 
-# Stop: lint completo
-.claude/hooks/ultracite-check.sh
-# Expected: exit 0 se bun run lint passar
+## Logs
+
+```
+.claude/logs/subagent-events.jsonl
+.claude/logs/evaluator-escalation.jsonl
+.claude/logs/evaluator-failure-count.txt
+```
+
+Format example:
+```json
+{"timestamp": "2026-04-30T12:00:00Z", "agent": "debugger", "status": "completed", "duration_ms": 5000}
 ```
 
 ---
@@ -132,68 +134,56 @@ echo '{"tool_name":"Write","tool_input":{"file_path":"src/components/CountdownTi
 ## Debug
 
 ```bash
-# Ver hooks ativos no Claude Code
-/hooks
-
-# Debug mode (ver execução de hooks)
-claude --debug
-
-# Verbose mode (output de hooks no transcript)
-Ctrl+O
+/hooks                # show active hooks in Claude Code
+claude --debug        # debug mode (hook execution trace)
+Ctrl+O                # verbose mode in transcript
 ```
 
 ---
 
-## Arquitetura
+## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    HOOK FLOW                                 │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  SessionStart ──► session-context.sh ──► Prime contexto     │
-│                                                              │
-│  PreToolUse ────► smart-bash-approver.sh                    │
-│               └─► protect-files.sh                          │
-│                       │                                      │
-│                       ▼                                      │
-│              ┌─────────────────┐                             │
-│              │ ALLOW / DENY /  │                             │
-│              │     ASK         │                             │
-│              └─────────────────┘                             │
-│                                                              │
-│  PermissionRequest ──► Auto-approve read tools              │
-│                       └─► smart-bash-approver for Bash      │
-│                                                              │
-│  PostToolUse ───► ultracite-fix.sh (biome --write + oxlint --fix)│
-│                                                              │
-│  Stop ──────────► ultracite-check.sh (bun run lint)         │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                      HOOK FLOW                                │
+├──────────────────────────────────────────────────────────────┤
+│                                                                │
+│  SessionStart ───► session_context.py ──► AGENTS.md + tag     │
+│                                                                │
+│  PreToolUse ─────► smart_bash_approver.py (Bash)              │
+│               ├──► protect_files.py (Edit / Write)            │
+│               └──► task_routing_guard.py (Agent)              │
+│                        │                                       │
+│                        ▼                                       │
+│               ┌─────────────────┐                              │
+│               │ ALLOW / DENY /  │                              │
+│               │ ASK             │                              │
+│               └─────────────────┘                              │
+│                                                                │
+│  PostToolUse ────► ultracite_fix.py (formatter + lint fix)    │
+│                                                                │
+│  SubagentStart ──► subagent_start.py (context injection)      │
+│  SubagentStop ───► evaluator_escalation.py + subagent_log.py  │
+│                                                                │
+│  TaskCompleted ──► task_completed.py (team event log)         │
+│                                                                │
+│  Stop ───────────► ultracite_check.py + background_cleanup.py │
+│                                                                │
+│  Notification ───► notify.py (desktop toast)                  │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## Rollback
 
-Se hooks causarem problemas:
+If hooks cause problems:
 
 ```bash
-# Quick disable: remover hooks section do settings.json
+# Quick disable: remove "hooks" section from settings.json
 
-# Full rollback (exemplo — preferir git checkout dos arquivos):
+# Full rollback:
 git checkout .claude/settings.json
-git checkout .claude/hooks/
+rm .claude/hooks/*.py
 rm -rf .claude/logs
 ```
-
----
-
-## Impacto
-
-| Métrica                       | Antes   | Depois         |
-| ----------------------------- | ------- | -------------- |
-| Aprovações manuais/dia        | ~50     | ~10            |
-| Tempo em permissões           | ~15min  | ~3min          |
-| Risco de comandos perigosos   | Médio   | Baixo          |
-| Lint no commit (Lefthook)     | Não     | `bun run lint` |

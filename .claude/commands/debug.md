@@ -1,363 +1,481 @@
 ---
-description: Debug workflow com investigacao paralela, auditoria de landing page e frontend debug com browser automation
+description: Unified debug command. Modes (positional arg) — default: triage + fix · audit: full-stack 9-dimension audit · frontend: static React/UI + E2E browser · backend: API/service · auth-db: auth/permissions/RLS · recover: failure recovery after 2+ failed attempts.
+workflow_type: routing
 ---
 
-# /debug - Grupo US Debug Workflow
+# /debug — Intelligent Debugging
 
 **ARGUMENTS**: $ARGUMENTS
 
----
-
-## 0. MODE SELECTION
-
-Parse `$ARGUMENTS` for mode:
-
-- `mode=debug` (default) — Bug investigation with root cause analysis
-- `mode=audit` — Full landing page quality audit (build, a11y, perf, responsive)
-- `mode=frontend-debug` — React Islands / Astro component debugging with Playwright browser automation
-
-Aliases accepted:
-
-| Mode             | Aliases                                              |
-| ---------------- | ---------------------------------------------------- |
-| `audit`          | `audit`, `full-audit`, `quality`, `lighthouse`       |
-| `frontend-debug` | `frontend-debug`, `ui-debug`, `react-debug`, `e2e`, `playwright` |
+> First positional arg = mode. Examples:
+> ```
+> /debug                    # default — triage + investigate + fix
+> /debug audit              # full-stack audit (9 dimensions, 4 parallel agents)
+> /debug frontend           # static + Playwright E2E
+> /debug backend            # API/service/handler/middleware
+> /debug auth-db            # auth, permissions, tenant isolation, RLS
+> /debug recover            # failure recovery (after 2+ failed attempts)
+> ```
+> Anything after the mode token is forwarded as scope (e.g., `/debug audit scope=payments`).
 
 ---
 
-## 0.1 IRON LAW (NEVER VIOLATE)
+## Stopping Conditions (apply to ALL modes)
+
+- STOP proposing fixes before root cause investigation
+- STOP after 3 failed fix attempts → switch to `/debug recover`
+- ASK if error affects production data or requires schema migration
+- ASK if fix scope expands beyond originally reported error
+
+---
+
+## Iron Law
 
 ```
 NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST.
 ```
 
-If you have not completed Phase 1, you CANNOT propose fixes.
+If investigation isn't complete, you cannot propose corrections.
 
 ---
 
-## 1. PHASE 0: Collect Errors (ALWAYS FIRST)
+## 0. Mode dispatch
 
-### Quality Gates (canonical reference)
+Parse first positional token from `$ARGUMENTS`:
+
+| Token | Section to execute |
+|---|---|
+| (none) / `debug` / `auto` | § 1 (default flow) |
+| `audit` / `full` | § 2 (audit mode) |
+| `frontend` / `ui` / `react` | § 3 (frontend mode) |
+| `backend` / `api` | § 4 (backend mode) |
+| `auth-db` / `auth` / `db` / `permissions` | § 5 (auth-db mode) |
+| `recover` | § 6 (recovery mode) |
+
+Modes share the **§ 0.1 Setup** preamble.
+
+### 0.1 Setup (every mode)
+
+```typescript
+Skill("debugger"); // Iron Law + 4-phase methodology
+```
+
+Read `.claude/config.json` (paths, tooling, gates, overlay). If overlay path exists, also load `${overlay}/anti-patterns.md` for project-specific anti-patterns.
+
+Run baseline quality gates from `_shared.md` § 1 using `${tooling.typeChecker}` / `${tooling.linter}` / `${tooling.testRunner}`.
+
+Context load via `_shared.md` § 4 (WISC):
+- Bug in frontend area → `/prime frontend`
+- Bug in backend area → `/prime backend`
+- Multi-layer → `/prime fullstack`
+
+---
+
+## 1. Default mode — Triage + investigate + fix
+
+### 1.1 Quick triage (classify before investigating)
+
+Detect error category in <10s:
+
+| Signature | Category | Quick action |
+|---|---|---|
+| Generic server / `INTERNAL_SERVER_ERROR` | Backend handler | Read cited route/router |
+| `TypeError: Cannot read properties of undefined` | Unguarded access | Find unguarded `[0]` / `.x` |
+| Type-checker error (`TS2769`, `TS2345`, etc.) | Type mismatch | Compare schema vs DB column type |
+| `415 Unsupported Media Type` | Content-Type / framework | Verify request headers |
+| `CORS error` / preflight | Middleware ordering | CORS before auth |
+| `hydration mismatch` | SSR/CSR divergence | Check effects vs render |
+| Cache stale / stale-while-revalidate | Client query config | staleTime = refetchInterval |
+| `ERR_MODULE_NOT_FOUND` | Import/export | Check barrel `index.ts` |
+| `FORBIDDEN` / `401` / `403` | Auth/role | Check procedure level / RLS |
+| `connection timeout` / `ECONNREFUSED` | Infra/DB | Check connection string + pool |
+
+**Known-pattern shortcut.** Before investigating, check:
+- `.claude/rules/stability.md` (Checklist A-L)
+- Tier 2 domain rules (auto-loaded via routing matrix)
+- `${overlay}/anti-patterns.md` (project anti-patterns)
+- Recent breaking changes in dependencies (Tavily search if needed)
+
+If error matches a known pattern → apply documented fix directly (L1-L2), no agents.
+
+### 1.2 Complexity classification
+
+Per `_shared.md` § 2.
+
+### 1.3 Investigation by complexity
+
+**L1-L2 — Direct fix.** Read file → identify root cause → apply minimal fix → run gates.
+
+**L3 — Single agent.** Spawn 1 `debugger` agent (foreground): investigate root cause, return findings table with file:line. DO NOT FIX — report only.
+
+**L4-L5 — Parallel agents.** Spawn in same message:
+
+```
+code-archaeologist (explorer, background):
+  - Find exact file:line where flow breaks
+  - git log --oneline -10 -- <affected-files> for recent regressions
+  - Map dependency chain
+  - Return findings table (# | Finding | Confidence 1-5 | Source | Impact). DO NOT FIX.
+
+regression-hunter (explorer, background):
+  - Read .claude/skills/debugger/references/methodology.md (or pack-guides.md)
+  - Cross-check stability rules + ${overlay}/anti-patterns.md
+  - If MATCH: return pattern + root cause + fix guidance
+  - If NO MATCH: top-3 hypotheses with evidence for/against. DO NOT FIX.
+```
+
+If agents return contradictory findings or no definitive file:line → escalate to `codex:rescue` (foreground, diagnosis-only):
+
+```
+"Diagnose root cause only — do not apply any fixes.
+ Context: [paste agent findings table]
+ Error: [paste exact error]
+ Focus: [file:line range]"
+```
+
+**L6+ — Full investigation.** Above + `db-state-inspector` (debugger, background): schema check, FK indexes, type exports, RLS/tenant boundaries, auth procedure levels.
+
+### 1.4 While agents run
+
+- Read files cited in the error stack — answers are usually there
+- Grep for suspicious patterns in affected scope
+- Compare with similar working implementations
+- Form your own hypothesis
+
+### 1.5 Consolidate hypotheses
+
+```markdown
+## Main Hypothesis
+[Root cause with file:line]
+
+## Evidence
+- Agent 1: [finding]
+- Agent 2: [finding]
+- Own investigation: [finding]
+
+## Alternative Hypotheses
+1. [alternative]
+2. [alternative]
+```
+
+### 1.6 Implement fix
+
+- Fix the SOURCE, not the symptom
+- NEVER "while I'm here…" — scope creep kills debugging
+- Run quality gates AFTER EACH fix
+
+**Sequential mode (default — same file/flow):** ONE fix at a time.
+
+```
+Edit → Quality Gates → Pass? → Next fix
+                       → Fail? → Analyze new error → Back to triage
+```
+
+**Parallel mode (independent issues, distinct areas):** spawn one `debugger` agent per area in same message. Each: read target → minimal fix → run gates → report file:line + gate output.
+
+| Criterion | Parallel OK | Sequential required |
+|---|---|---|
+| Different files, no cross-imports | ✅ | — |
+| Same router/component | — | ✅ |
+| Frontend + backend of SAME flow | — | ✅ (backend first) |
+| Schema change + code that uses schema | — | ✅ (schema first) |
+
+After parallel fixes: full gate suite. If gates fail → resolve sequentially.
+
+**If 2+ fixes failed in same area:** escalate to `codex:rescue` for full fix. Then if still failing → switch to `/debug recover`.
+
+### 1.7 Cleanup
+
+After validated fixes:
+
+| Check | Threshold | Action if failed |
+|---|---|---|
+| Cyclomatic complexity | No function > 10 branches | Extract sub-functions |
+| Security | No new injection / auth gaps / PII exposure | Fix before closing |
+| New dependencies | None added without deliberate choice | Audit or remove |
+| Dead code | No commented-out blocks introduced | Remove |
+| Root cause test | Fix has a regression test | Add test |
+
+Auth/payments/PII fixes (L4+) → run `codex:rescue` adversarial review:
+
+```
+"Run codex adversarial-review --scope working-tree.
+ Focus: [security / auth / data integrity].
+ Report findings only — do not apply fixes."
+```
+
+Present per `codex:codex-result-handling`: show issues → STOP → ask user which to fix.
+
+After close: optionally `/evolve` to persist learnings.
+
+---
+
+## 2. Audit mode — `/debug audit` (full-stack 9 dimensions)
+
+> Comprehensive audit. For targeted bug fixing use default mode.
+> **PR/diff variant:** `/debug audit pr` — runs `codex adversarial-review --scope branch` first, then covers code-quality + dependencies + tech-debt + security on changed files only.
+
+### 2.1 Setup
+
+Run § 0.1, then load `.claude/templates/audit-agent-prompts.md` for the 4 agent prompts and consolidation report template.
+
+### 2.2 Quality gates baseline
+
+Per `_shared.md` § 1 using config tooling. Also collect metrics:
 
 ```bash
-bun run lint 2>&1 | tail -10         # Biome + oxlint
-bunx astro check 2>&1 | tail -30    # TypeScript + Astro validation
-bun run build 2>&1 | tail -30       # Static build check
+# Total source files (adapt extensions per project)
+find ${PATHS_BACKEND_ROOT} ${PATHS_FRONTEND_ROOT} -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.astro" -o -name "*.py" -o -name "*.go" \) | wc -l
+
+# Test files
+find ${PATHS_BACKEND_ROOT} ${PATHS_FRONTEND_ROOT} -type f \( -name "*.test.*" -o -name "*.spec.*" \) | wc -l
+
+git log --oneline -20
 ```
 
-### Astro-Specific Diagnostics
+### 2.3 Severity classification
 
-```bash
-# TypeScript + Content Collection validation
-bunx astro check 2>&1 | tail -30
+Per `templates/audit-agent-prompts.md` § Severity classification (P0-P3 + auto-flag thresholds: coverage < 80% on critical paths; cyclomatic > 10; CVE ≥ 7.0).
 
-# Build with full output for error context
-bun run build 2>&1 | tail -50
+### 2.4 Spawn 4 parallel agents
 
-# Check for common anti-patterns
-grep -r "as any" src/ --include="*.ts" --include="*.tsx" -c 2>/dev/null
-grep -r "console\.log" src/ --include="*.ts" --include="*.tsx" --include="*.astro" -c 2>/dev/null
-grep -r "TODO\|FIXME\|HACK" src/ --include="*.ts" --include="*.tsx" --include="*.astro" -c 2>/dev/null
+Use prompts verbatim from `templates/audit-agent-prompts.md`:
 
-# Astro 6 anti-patterns
-grep -r "ViewTransitions" src/ --include="*.astro" 2>/dev/null        # Should be ClientRouter
-grep -r "config\.ts" src/content/ 2>/dev/null                          # Astro 6 infers schemas
-grep -r "client:" src/ --include="*.astro" 2>/dev/null                 # client:* on .astro = error
-grep -rn "hardcoded.*#[0-9a-fA-F]" src/ --include="*.astro" 2>/dev/null  # Hardcoded hex colors
-```
+- **Agent 1** — `evaluator` (Mode 3) — Architecture & Structure (D1-D2)
+- **Agent 2** — `debugger` — Code Quality (D3 + D8 dependencies + D9 tech-debt)
+- **Agent 3** — `debugger` — Documentation + Missing Flows (D4-D5)
+- **Agent 4** — `frontend-specialist` — UX + Tests/CI (D6-D7)
 
-### Astro Skill Reference
+All `run_in_background: true`, same message. Replace `${PATHS_*}` in prompts from config before spawning.
 
-> Load `Skill("astro")` for detailed troubleshooting patterns. See `.claude/skills/astro/references/troubleshooting.md` for:
-> - Build errors (module not found, Content Collection errors, Vite errors)
-> - Hydration mismatches (Date/timezone, random values, browser-only APIs)
-> - Styling issues (Tailwind v4, scoped styles, CLS)
-> - Dev server issues (port conflicts, HMR, cache)
+### 2.5 While agents run
+
+Run quality gates from § 2.2 and collect repo metrics.
+
+### 2.6 Consolidate report
+
+Produce `docs/AUDIT-REPORT-{YYYY-MM-DD}.md` per template in `templates/audit-agent-prompts.md` § Consolidation report template.
+
+### 2.7 Codex adversarial cross-check (P0/P1)
+
+When report surfaces P0/P1 → optionally run `codex:rescue` with adversarial-review on those file:line targets. Show findings → STOP → ask user.
+
+### 2.8 PR variant — `/debug audit pr`
+
+Before § 2.4, run `codex adversarial-review --scope branch` for an independent baseline diff review. Then narrow the 4 agents to D3 + D8 + D9 + security on changed files only. Output: per-file inline feedback (no exec summary).
 
 ---
 
-> For complex bugs that span multiple sessions or require persistent state across context resets, use `/gsd:debug` instead — it maintains a debug log and checkpoints across context windows.
+## 3. Frontend mode — `/debug frontend` (static + Playwright E2E)
+
+**Iron Laws (frontend):**
+```
+NO FIXES WITHOUT STATIC DIAGNOSIS + VISUAL EVIDENCE FIRST.
+NO INTERACTION WITHOUT A SNAPSHOT BEFORE IT.
+NO FIX WITHOUT A SNAPSHOT/SCREENSHOT AS EVIDENCE.
+NO FIX WITHOUT A PASSING UNIT REPRODUCTION TEST.
+```
+
+### 3.1 Setup
+
+Run § 0.1. Run `/prime frontend`.
+
+### 3.2 Quality gates baseline
+
+Run unit-test suite first (cheap, catches logic errors): `${tooling.testRunner}` against frontend project. Then `${tooling.typeChecker}` and `${tooling.linter}`. Only proceed to browser if unit tests pass.
+
+### 3.3 Static diagnosis (parallel)
+
+```
+Agent 1 (frontend-specialist, background):
+  - Component tree, hooks, rerender triggers
+  - Token/layout issues, controlled-vs-uncontrolled state
+  - Flickering, unstable rerenders, key warnings
+  - Scope: $ARGUMENTS (after mode token)
+  - Return: file:line + root cause hypothesis. DO NOT FIX.
+
+Agent 2 (debugger, background):
+  - Frontend ↔ backend integration paths used by the failing flow
+  - Silent failures, latency issues, suspense interactions
+  - Mutations wrapped in try-catch (stability rule J)
+  - Post-mutation cache invalidation
+  - Return: handler/procedure with potential issues + hypothesis. DO NOT FIX.
+```
+
+### 3.4 Route + coverage discovery (parallel)
+
+```
+Agent 1 (explorer, background):
+  - Map all routes recursively under ${PATHS_FRONTEND_ROOT}
+  - List: path, component, functionality
+  - Identify critical user flows (auth, CRUD, integrations, settings)
+  - List expected interactions per flow
+  - Return: route table + prioritized journeys
+
+Agent 2 (explorer, background):
+  - Map existing E2E coverage (look for e2e/, tests/e2e, playwright/)
+  - For each test: routes covered, assertions, interactions tested
+  - Cross-reference; identify routes WITHOUT coverage
+  - Return: coverage table (route | tested? | file | quality) + gaps list
+```
+
+### 3.5 Browser session
+
+Resolve target URL: `${project.stagingUrl}` from config (override via `/debug frontend url=http://...`).
+
+```
+mcp__playwright__browser_navigate({ url: TARGET_URL })
+mcp__playwright__browser_snapshot()             # accessibility baseline (~120 tokens)
+mcp__playwright__browser_console_messages()
+```
+
+### 3.6 Journey loop (per critical flow)
+
+```
+1. Navigate
+2. Snapshot (ALWAYS before interaction — refs go stale)
+3. Interact using refs from snapshot (click / fill / select)
+4. Wait: browser_wait_for({ text: "..." })
+5. Capture: browser_snapshot()  # default 120 tokens
+   browser_take_screenshot()    # only for visual regression (1500 tokens)
+6. Verify: browser_console_messages() + browser_network_requests() (catch 4xx/5xx)
+7. If issue:
+   a) Document: snapshot + console_messages
+   b) Write unit reproduction test → must FAIL (confirms repro)
+   c) Fix in source
+   d) Re-run unit test → must PASS
+   e) Re-test E2E: navigate → snapshot → interact → snapshot
+   f) Run gates (type-check + lint)
+```
+
+### 3.7 Viewports
+
+```
+Desktop: browser_resize({ width: 1280, height: 720 })
+Mobile:  browser_resize({ width: 375,  height: 667 })
+Tablet:  browser_resize({ width: 768,  height: 1024 })  # optional
+```
+
+### 3.8 Per-step verification
+
+- [ ] Element exists/visible (snapshot)
+- [ ] Interaction produces expected state (snapshot)
+- [ ] No JS errors (console_messages)
+- [ ] No failed requests (network_requests)
+- [ ] Loading states appear/disappear
+- [ ] Visual feedback after actions (toast/alert)
+- [ ] Navigation returns to correct state
+
+### 3.9 Report
+
+```markdown
+## E2E Test Report
+Date: {date} | Target: {url} | Viewports: Desktop, Mobile
+
+### Summary
+| Metric | Value |
+|---|---|
+| Journeys tested | X |
+| Snapshots captured | X |
+| Issues found | X |
+| Issues fixed | X |
+| Issues pending | X |
+
+### Journeys
+| # | Journey | Status | Steps | Issues |
+
+### Issues
+| # | Severity | Journey | Step | Description | Evidence | Status |
+
+### Coverage
+| Area | Routes | Tested | % |
+```
+
+### 3.10 Cleanup
+
+```
+mcp__playwright__browser_close()
+```
+
+Run final quality gates per `_shared.md` § 1.
 
 ---
 
-## 2. MODE A: DEBUG (mode=debug)
+## 4. Backend mode — `/debug backend`
 
-### 2.0 Select Investigation Strategy *(picking the wrong strategy wastes agent cycles — one row match prevents a full re-investigation)*
+Run § 0.1, then default flow (§ 1) with focus on:
+- API routes / handlers / middleware
+- Service layer, validators (Zod or equivalent)
+- Database access patterns
+- External provider calls (timeouts, idempotency)
 
-Before spawning agents, pick the strategy that fits the bug type:
+Spawn `code-archaeologist` + `regression-hunter` (background).
 
-| Bug Type | Strategy | How |
-| -------- | -------- | --- |
-| Regression (used to work, now broken) | **Git Bisect** | `git bisect start; git bisect bad HEAD; git bisect good <last-good-commit>` to find the breaking commit |
-| Intermittent / hard to reproduce | **Binary Search** | Comment out / disable half the code path to narrow the failing region; repeat until isolated |
-| Unknown root cause | **5 Whys** | Ask "why did this fail?" five times — stop at systemic cause, not symptom |
-| State / data corruption | **Data Flow Trace** | Follow data from source (JSON/API) → transform → render; inspect at each boundary |
-| Visual / layout discrepancy | **Visual Diff** | Screenshot before/after change; compare DOM via accessibility snapshot |
-
-Pick **one** primary strategy. Switch only if it yields no new information after 2 rounds.
-
-### 2.1 Phase 1 — Parallel Investigation
-
-Spawn parallel research agents targeting the relevant layers:
-
-| Layer              | What to investigate                                         | Skill Reference |
-| ------------------ | ----------------------------------------------------------- | --------------- |
-| Astro Pages/Layout | `.astro` files, slots, head injection, Content Collections  | `astro` → core-concepts, content-collections |
-| React Islands      | Hydration, client directives, props serialization, state    | `astro` → islands-architecture |
-| Styling/Tailwind   | CSS v4 @theme, semantic tokens, glass utilities, responsive | `astro` → styling-tailwind |
-| View Transitions   | ClientRouter (not ViewTransitions), lifecycle events         | `astro` → view-transitions |
-| Build/Deploy       | astro.config.mjs, Railway, static output, env vars          | `astro` → configuration |
-
-```typescript
-// Agent 1: Astro layer investigation
-Task({
-  subagent_type: "debugger",
-  run_in_background: true,
-  prompt: `TASK: Investigate Astro layer for bug
-CONTEXT: $ARGUMENTS
-SKILLS: Load Skill("astro") for Astro 6 patterns
-MISSION:
-1. Read relevant .astro pages and layouts
-2. Check Content Collections usage — Astro 6 infers schemas (no config.ts)
-3. Verify component imports, slot usage, and Astro.props typing
-4. Check ClientRouter usage (not deprecated ViewTransitions)
-5. Look for build-time vs runtime confusion (frontmatter = server, template = HTML)
-6. Verify getCollection() data flow — map to .data before passing to React islands
-RETURN: Files analyzed with line numbers, hypothesis of root cause. DO NOT FIX YET.`,
-});
-
-// Agent 2: React Islands + client-side investigation
-Task({
-  subagent_type: "debugger",
-  run_in_background: true,
-  prompt: `TASK: Investigate React Islands for bug
-CONTEXT: $ARGUMENTS
-SKILLS: Load Skill("astro") → islands-architecture reference
-MISSION:
-1. Check client:* directives — only on React/Vue/Svelte, NEVER on .astro components
-   - client:idle = deferred hydration (Hero visual effects: AuroraBackground, TextGenerateEffect — reduz TBT; SSR mantém layout/texto legível)
-   - client:visible = viewport (CTA effects: LampBackdrop, BackgroundBeams)
-   - Only Aceternity UI visual effects in src/components/ui/ — no interactive React islands
-2. Verify props serialization — map CollectionEntry to .data before passing
-   - No functions, Dates, class instances — only plain objects
-3. Check hydration mismatch risks — Date/timezone, Math.random(), window/document
-4. Check Framer Motion: only transform/opacity animations, prefers-reduced-motion via useReducedMotion()
-5. Verify Lucide React icon usage (no emoji icons)
-RETURN: Files analyzed with line numbers, hypothesis of root cause. DO NOT FIX YET.`,
-});
-```
-
-### 2.2 Phase 2 — Consolidate Hypotheses
-
-When agents complete:
-
-1. Read all reports
-2. Identify convergence (where 2+ agents found the same problem)
-3. Form PRIMARY HYPOTHESIS
-4. List alternative hypotheses
-
-### 2.3 Phase 3 — Fix (ONE AT A TIME)
-
-- ONE fix at a time
-- Fix at the SOURCE, not the symptom
-- NEVER "while I'm here..."
-- Run Quality Gates after EACH fix
-- Commit atomically after each validated fix: `git commit -m "fix: <description>"`
-
-### 2.4 Phase 4 — Validate
-
-Run Quality Gates (Section 1). If they fail: DO NOT add more fixes. Analyze and return to Phase 1 if needed.
+Loaded rules: `.claude/rules/backend.md` + `.claude/rules/integrations.md` + `.claude/rules/stability.md`. Plus `${overlay}/routing-supplements.md` if present.
 
 ---
 
-## 3. MODE B: AUDIT (mode=audit)
+## 5. Auth-DB mode — `/debug auth-db`
 
-### 3.0 Iron Laws
+Run § 0.1, then default flow (§ 1) with focus on:
+- Auth middleware, session, role/procedure levels
+- Tenant isolation in WHERE clauses
+- RLS policies, FK integrity, type/enum mismatches
+- TOCTOU patterns, owner filter, webhook secret mismatch
 
-```
-NO FIX WITHOUT FULL INVENTORY FIRST.
-NO OBSERVATION WITHOUT CODE EVIDENCE.
-```
+Spawn `code-archaeologist` + `regression-hunter` + `db-state-inspector` (background).
 
-### 3.1 Severity Classification
-
-| Severity     | Code | Criteria                                             | Action          |
-| ------------ | ---- | ---------------------------------------------------- | --------------- |
-| **Critical** | P0   | Build failure, broken page, security vulnerability   | Fix immediately |
-| **Important**| P1   | a11y violation, performance regression, broken mobile| Fix this sprint |
-| **Moderate** | P2   | Code smell, inconsistency, minor visual bug          | Plan fix        |
-| **Minor**    | P3   | Optimization, docs, marginal improvement             | Backlog         |
-
-### 3.2 Parallel Audit Agents (4 Groups)
-
-> **GLOBAL RULE:** DO NOT APPLY FIXES — report only. Format: `File:line | Severity (P0-P3) | Description | Recommendation`
-
-```typescript
-// Group A: Astro Build Validation
-Task({ subagent_type: "debugger", run_in_background: true,
-  prompt: `Audit Group A — Astro Build. Run bunx astro check + bun run build.
-Check: astro.config.mjs (integrations, output, site URL, @tailwindcss/vite plugin),
-Content Collections (Astro 6 schema inference — NO config.ts needed),
-.astro imports, head metadata (title, OG, favicon), ClientRouter (not ViewTransitions).
-RETURN: File:line | P0-P3 | Description | Recommendation` });
-
-// Group B: Frontend (React Islands + Components)
-Task({ subagent_type: "debugger", run_in_background: true,
-  prompt: `Audit Group B — Frontend. Check:
-- React islands must have a real client-JS justification; Aceternity UI visual effects
-  (aurora-background, spotlight, background-beams, lamp, text-generate-effect) are the primary use case.
-  Flag any island that could be a static .astro component instead.
-- client:* directives ONLY on .tsx components (NEVER on .astro),
-- props: getCollection().map(e => e.data) before passing to React islands,
-- prefers-reduced-motion on ALL Framer Motion (useReducedMotion hook),
-- Lucide React only (no emoji icons), @theme tokens only (no hardcoded hex),
-- Content Collections via getCollection/getEntry (no hardcoded data),
-- glass utilities (.glass-card, .bg-mesh), Tailwind v4 @utility directives.
-RETURN: File:line | P0-P3 | Description | Recommendation` });
-
-// Group C: Performance & Accessibility
-Task({ subagent_type: "debugger", run_in_background: true,
-  prompt: `Audit Group C — Perf & a11y.
-PERF: Astro Image (webp/avif, lazy), no layout animations (only transform/opacity),
-font loading (preload, font-display), minimal client JS, no large deps.
-A11Y (WCAG AA): alt text, labels, heading hierarchy, contrast via tokens,
-keyboard nav, aria-*, prefers-reduced-motion on ALL animations, skip-to-content.
-RETURN: File:line | P0-P3 | Description | Recommendation` });
-
-// Group D: Responsive (375px, 768px, 1024px, 1440px)
-Task({ subagent_type: "debugger", run_in_background: true,
-  prompt: `Audit Group D — Responsive at 375/768/1024/1440px.
-Check: Tailwind responsive classes, text scaling, mobile nav, glass-card overflow,
-CTA touch targets (44x44px min), no horizontal scroll, responsive images.
-Use Playwright MCP if available: browser_navigate + browser_resize + browser_take_screenshot.
-RETURN: File:line | P0-P3 | Description | Recommendation + screenshots` });
-```
-
-### 3.3 Consolidation & Fix
-
-When ALL agents complete, produce summary table (Group x Severity) + Action Plan (P0 first). Then apply fixes ONE AT A TIME, highest severity first. Run Quality Gates after each fix.
+Loaded rules: `.claude/rules/database.md` + `.claude/rules/backend.md` + `.claude/rules/stability.md`. Plus `${overlay}/anti-patterns.md` (RLS specifics) if present.
 
 ---
 
-## 4. MODE C: FRONTEND-DEBUG (mode=frontend-debug)
+## 6. Recover mode — `/debug recover` (failure recovery)
 
-### 4.0 Iron Laws
+> Trigger: 2+ failed fix attempts on same hypothesis · quality gate fails 2× · user signals "this isn't working" · confidence < 3 after multi-file investigation.
 
-```
-NO FIX WITHOUT STATIC DIAGNOSTIC + VISUAL EVIDENCE FIRST.
-NO INTERACTION WITHOUT SNAPSHOT BEFORE.
-NO FIX WITHOUT SCREENSHOT EVIDENCE.
-```
+Load `.claude/templates/recovery-protocol.md` and execute its 5 steps verbatim:
 
-### 4.1 Phase Pre-0 — Static Diagnostics
+1. **STOP** — halt all fix attempts; no more changes
+2. **DOCUMENT** — structured failure report (original error, attempts, why each failed, current state, hypothesis tree)
+3. **REVERT** (if applicable) — show diff first; confirm with user before destructive ops
+4. **CONSULT evaluator (Mode 3)** — pass failure report; expect root-cause analysis + recommended approach
+5. **REPORT** — present evaluator analysis verbatim, options with effort estimates (S/M/L), ask user
 
-```typescript
-Task({
-  subagent_type: "debugger",
-  description: "Static frontend diagnostics",
-  run_in_background: true,
-  prompt: `TASK: Static diagnostic of frontend issue
-CONTEXT: $ARGUMENTS
-MISSION:
-1. Analyze affected Astro components and React Islands
-2. Check hydration directives, props, state management
-3. Verify Tailwind classes and semantic token usage
-4. Check Framer Motion config and reduced-motion support
-5. Look for SSG vs client-side rendering confusion
-RETURN: Problematic files with line numbers, hypothesis. DO NOT FIX YET.`,
-});
-```
-
-### 4.2 Phase 1 — Browser Session Setup
-
-Determine target URL (default: `http://localhost:4321`):
-
-```typescript
-// Start dev server if not running
-Bash({ command: "bun run dev &", timeout: 5000 });
-
-// Use Playwright MCP tools (check AGENTS.md for serverIdentifier):
-// browser_navigate({ url: targetUrl })
-// browser_snapshot({})             — accessibility tree
-// browser_take_screenshot({})      — visual state
-```
-
-### 4.3 Phase 2 — Investigate with Browser Evidence
-
-For each suspected issue:
-
-1. **Navigate** to the affected page/section
-2. **Snapshot** the accessibility tree (`browser_snapshot`)
-3. **Screenshot** the visual state (`browser_take_screenshot`)
-4. **Check console** for errors (`browser_console_messages`)
-5. **Check network** for failed requests (`browser_network_requests`)
-6. **Resize** to test responsive behavior (`browser_resize`)
-
-### 4.4 Phase 3 — Responsive Testing
-
-Test at all breakpoints with evidence:
-
-```typescript
-const breakpoints = [
-  { width: 375, height: 812, name: "mobile" },
-  { width: 768, height: 1024, name: "tablet" },
-  { width: 1024, height: 768, name: "laptop" },
-  { width: 1440, height: 900, name: "desktop" },
-];
-
-// For each breakpoint, use Playwright MCP tools:
-// browser_resize({ width: bp.width, height: bp.height })
-// browser_take_screenshot({})
-// Check for horizontal overflow, broken layouts, hidden content
-```
-
-### 4.5 Phase 4 — Fix and Validate
-
-1. Apply ONE fix at a time
-2. Reload browser page
-3. Re-screenshot to confirm visual fix
-4. Run Quality Gates (Section 1)
-5. Commit atomically after each validated fix: `git commit -m "fix: <description>"`
-6. Repeat until resolved
+Anti-patterns: looping past 2 attempts · skipping documentation · reverting without showing diff · vague evaluator question.
 
 ---
 
-## 5. RED FLAGS — STOP IMMEDIATELY
+## 7. Agent / mode matrix
 
-**STOP if you:**
+| Bug type | Mode | Sub-agents | Skill |
+|---|---|---|---|
+| API / handler error | `backend` | code-archaeologist + regression-hunter | `debugger` |
+| UI / component / hydration | `frontend` | (per § 3) + frontend-specialist + debugger | `debugger` |
+| Auth / permissions / RLS | `auth-db` | code-archaeologist + regression-hunter + db-state-inspector | `debugger` |
+| Database / schema / migration | `auth-db` | code-archaeologist + db-state-inspector | `debugger` |
+| Performance | (run `/perf` instead) | — | `performance-optimization` |
+| Full audit | `audit` | 4 parallel (evaluator/debugger/debugger/frontend-specialist) | all |
+| Failure recovery | `recover` | evaluator (Mode 3) | — |
 
-- Propose a fix before finding root cause
-- Make multiple changes at once
+---
+
+## 8. Escalation hierarchy
+
+Before stopping, escalate in this order:
+1. 2+ failed fixes in same area → `codex:rescue` for full fix
+2. Contradictory agent findings → `codex:rescue` diagnosis mode
+3. Architecture-level blocker → `evaluator` (Mode 3)
+4. All escalations exhausted → `/debug recover` → user decides
+
+**Hard STOP signs:**
+- Proposing a fix before finding root cause
+- Multiple simultaneous changes in same flow
 - "Just try this and see"
-- Skip Quality Gates verification
-- Ignore evidence that contradicts your hypothesis
-
-**If 3+ fixes have failed:**
-
-- Question the approach
-- Communicate with the user
-- DO NOT attempt another fix
+- Skipping quality gate verification
+- Ignoring evidence contradicting your hypothesis
 
 ---
 
-## 6. QUALITY GATE (Final Validation)
+## 9. Auto mode
 
-After ALL fixes, run the full gate:
-
-```bash
-bun run lint && bunx astro check && bun run build
-```
-
-All commands must pass with zero errors. If any fails, return to investigation.
-
----
-
-## 7. USAGE EXAMPLES
-
-```bash
-/debug the countdown component is not rendering          # mode=debug (default)
-/debug mode=audit                                        # Full landing page audit
-/debug mode=audit escopo=performance                     # Focused audit
-/debug mode=frontend-debug the hero section overlaps     # Browser-assisted debug
-/debug mode=frontend-debug url=http://localhost:4321     # Custom URL
-```
+If `auto` token in `$ARGUMENTS`: complete default flow (§ 1), then run AutoResearch Loop per `_shared.md` § 5 on skills used in this session.

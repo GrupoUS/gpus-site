@@ -1,150 +1,284 @@
 ---
 name: skill-creator
-description: Use when creating a new skill, editing or iterating on an existing skill, verifying skill quality before deployment, or when unsure how to structure skill content for maximum agent discoverability and compliance.
+description: Use when creating a new skill, editing or iterating on an existing skill, verifying skill quality before deployment, or when unsure how to structure skill content for maximum agent discoverability and compliance. Also trigger when a user says "make a skill for X", "create a skill that does Y", "how do I package this as a skill", "improve this skill", "my skill isn't triggering", or "help me write a SKILL.md". Even if they don't say "skill" explicitly — if they're asking how to make Claude reliably invoke specialized knowledge or workflows, use this skill.
 ---
 
 # Skill Creator
 
-Guide for creating effective, discoverable, and testable skills.
+Guide for creating effective, discoverable, and testable skills — and iterating on them until they work.
+
+## The Core Loop
+
+> **Every skill follows this cycle:** Capture Intent → Draft → Test → Evaluate → Improve → Repeat
+
+Don't skip straight to writing. Understand the intent first, test after writing, and improve based on evidence — not intuition.
+
+---
 
 ## About Skills
 
-Skills are modular, self-contained packages that extend AI agent capabilities with specialized knowledge, workflows, and tools. They transform a general-purpose agent into a domain specialist equipped with procedural knowledge no model fully possesses.
+Skills are self-contained packages that extend AI agent capabilities with specialized knowledge, workflows, and bundled tools.
 
 ### Skill Types
 
-| Type           | Purpose                                     | Example                                         |
-| -------------- | ------------------------------------------- | ----------------------------------------------- |
-| **Technique**  | Concrete method with steps to follow        | condition-based-waiting, root-cause-tracing     |
-| **Pattern**    | Way of thinking about problems              | flatten-with-flags, test-invariants             |
-| **Reference**  | API docs, syntax guides, tool documentation | office-docs, pptx-api                           |
-| **Discipline** | Rules/requirements that enforce compliance  | TDD enforcement, verification-before-completion |
+| Type           | Purpose                                          | Example                              |
+| -------------- | ------------------------------------------------ | ------------------------------------ |
+| **Technique**  | Concrete method with steps to follow             | condition-based-waiting              |
+| **Pattern**    | Way of thinking about problems                   | flatten-with-flags                   |
+| **Reference**  | API docs, syntax guides, tool documentation      | office-docs, pptx-api                |
+| **Discipline** | Rules/requirements that enforce compliance       | TDD enforcement                      |
 
-Classify the skill type early — it determines testing strategy (see `references/testing-skills.md`).
-
-### What Skills Provide
-
-1. **Specialized workflows** — multi-step procedures for specific domains
-2. **Tool integrations** — instructions for working with specific file formats or APIs
-3. **Domain expertise** — company-specific knowledge, schemas, business logic
-4. **Bundled resources** — scripts, references, and assets for complex and repetitive tasks
+Classify early — it determines testing strategy (see `references/testing-skills.md`).
 
 ### Anatomy of a Skill
 
 ```
 skill-name/
 ├── SKILL.md (required)
-│   ├── YAML frontmatter metadata (required)
-│   │   ├── name: (required)
-│   │   └── description: (required)
-│   └── Markdown instructions (required)
+│   ├── YAML frontmatter: name, description (required)
+│   └── Markdown instructions
 └── Bundled Resources (optional)
-    ├── scripts/          - Executable code (Python/Bash/etc.)
-    ├── references/       - Documentation loaded into context as needed
-    └── assets/           - Files used in output (templates, icons, fonts, etc.)
+    ├── scripts/     - Deterministic code; can run without loading into context
+    ├── references/  - Documentation loaded as needed
+    └── assets/      - Templates, files used in output
 ```
-
-#### SKILL.md (required)
-
-**Metadata Quality:** The `name` and `description` in YAML frontmatter determine when the agent will use the skill. Optimize for discovery — see **Agent Search Optimization** below.
-
-#### Bundled Resources (optional)
-
-##### Scripts (`scripts/`)
-
-Executable code for tasks needing deterministic reliability or that are repeatedly rewritten.
-
-- **When to include**: Same code rewritten repeatedly, or deterministic reliability needed
-- **Benefits**: Token-efficient, deterministic, may be executed without loading into context
-
-##### References (`references/`)
-
-Documentation loaded as needed into context to inform process and thinking.
-
-- **When to include**: Detailed information the agent should reference while working
-- **Best practice**: If files are large (>10k words), include grep search patterns in SKILL.md
-- **Avoid duplication**: Information lives in EITHER SKILL.md OR references, not both. Prefer references for detailed content — keeps SKILL.md lean and context-efficient.
-
-##### Assets (`assets/`)
-
-Files not loaded into context, but used within the output the agent produces.
-
-- **When to include**: Templates, images, boilerplate code that get copied or modified
-- **Benefits**: Separates output resources from documentation
-
-### File Organization Patterns
-
-| Pattern                  | Structure                                         | When to Use                                 |
-| ------------------------ | ------------------------------------------------- | ------------------------------------------- |
-| **Self-contained**       | `skill/SKILL.md` only                             | All content fits inline, no heavy reference |
-| **With reusable tool**   | `skill/SKILL.md` + `example.ts`                   | Tool is reusable code, not just narrative   |
-| **With heavy reference** | `skill/SKILL.md` + `references/*.md` + `scripts/` | Reference material > 100 lines              |
 
 ---
 
-## Agent Search Optimization (ASO)
+## Step 1: Capture Intent
 
-> **Critical for discovery:** Future agents need to FIND the skill. Optimize for this flow:
->
-> 1. **Encounters problem** → 2. **Finds skill** (description matches) → 3. **Scans overview** → 4. **Reads patterns** → 5. **Loads examples** (only when implementing)
+Before writing anything, understand exactly what the skill should do. Extract answers from the current conversation first (tools used, sequence of steps, corrections, I/O formats). Then ask the user:
 
-### Description Field
+1. What should this skill enable Claude to do?
+2. When should it trigger? (what phrases, contexts, symptoms)
+3. What's the expected output format?
+4. Should we set up test cases? (see Step 5 — skills with objectively verifiable outputs benefit most)
 
-**Format:** Start with "Use when…" to focus on triggering conditions. Max 1024 characters. Third-person voice.
+Ask one question at a time. Wait for confirmation before moving to drafting.
 
-**CRITICAL: Description = When to Use, NOT What the Skill Does.**
+---
 
-Testing reveals that when a description summarizes workflow, agents may follow the description instead of reading the full skill body. This creates a shortcut that makes the skill body documentation the agent skips.
+## Step 2: Plan & Research
+
+For each concrete use case the user describes:
+
+1. Think through how you'd execute it from scratch
+2. Identify what scripts, references, or assets would help when repeated
+3. Choose a file organization pattern:
+
+| Pattern                  | Structure                                      | When to Use                             |
+| ------------------------ | ---------------------------------------------- | --------------------------------------- |
+| **Self-contained**       | `skill/SKILL.md` only                          | All content fits inline, no heavy refs  |
+| **With reusable tool**   | `skill/SKILL.md` + `scripts/`                  | Code rewritten repeatedly across runs   |
+| **With heavy reference** | `skill/SKILL.md` + `references/` + `scripts/`  | Reference material > 100 lines          |
+
+Research before writing: check available MCPs (Tavily for best practices, Context7 for library docs) and run subagents in parallel if available.
+
+---
+
+## Step 3: Initialize
+
+Run the init script to generate a template:
+
+```bash
+python .claude/skills/skill-creator/scripts/init_skill.py <skill-name> --path <output-dir>
+```
+
+Creates the directory with SKILL.md template and example resource directories. Customize or delete generated files as needed.
+
+---
+
+## Step 4: Write the Skill
+
+### Description Field (Critical for Triggering)
+
+The description is the **primary triggering mechanism**. Agents decide whether to use a skill based solely on this field.
+
+**Key principle:** Description = *When to use* (triggering conditions + symptoms). NOT a workflow summary.
 
 ```yaml
-# ❌ BAD: Summarizes workflow — agent shortcuts full reading
-description: Skill for TDD — write test first, watch it fail, write minimal code, refactor
+# ❌ BAD: Summarizes workflow — agent reads description instead of skill body
+description: Skill for TDD — write test first, watch it fail, write minimal code
 
-# ❌ BAD: Vague, no triggering conditions
+# ❌ BAD: Too vague — doesn't trigger on real user phrases
 description: Helps with testing
 
-# ✅ GOOD: Just triggering conditions, no workflow summary
-description: Use when implementing any feature or bugfix, before writing implementation code
-
-# ✅ GOOD: Specific symptoms and contexts
-description: Use when tests have race conditions, timing dependencies, or pass/fail inconsistently
+# ✅ GOOD: Specific conditions and symptoms that match what users actually type
+description: Use when implementing any feature or bugfix, before writing implementation code. Trigger on: "write tests", "add feature", "fix bug", "implement X".
 ```
 
-### Keyword Coverage
+**Make descriptions slightly "pushy"**: Agents tend to undertrigger — they don't use skills when they'd be useful. Include synonyms, related terms, and explicit trigger phrases. Example: instead of "for dashboard creation", write "for dashboard creation — also trigger when the user mentions data visualization, internal metrics, or wants to display any kind of company data, even if they don't say 'dashboard'."
 
-Use words agents would search for:
+**Formula:**
+```
+Use when [specific symptoms/contexts]. Trigger on: [phrases users actually type].
+```
+Max 1024 characters. Start with "Use when". Include error messages, symptoms, tool names.
 
-- **Error messages**: "Hook timed out", "ENOTEMPTY", "race condition"
-- **Symptoms**: "flaky", "hanging", "zombie", "pollution"
-- **Synonyms**: "timeout/hang/freeze", "cleanup/teardown/afterEach"
-- **Tools**: Actual commands, library names, file types
+### SKILL.md Structure
 
-### Naming Conventions
+```markdown
+---
+name: skill-name
+description: Use when [conditions]. Trigger on: [phrases].
+---
 
-**Use active voice, verb-first, gerund form (-ing):**
+# Skill Name
 
-- ✅ `creating-skills` not `skill-creation`
-- ✅ `condition-based-waiting` not `async-test-helpers`
-- ✅ `root-cause-tracing` not `debugging-techniques`
+## Overview
+Core principle in 1-2 sentences.
+
+## When to Use
+Bullet list of symptoms and use cases. Include "When NOT to use."
+
+## Core Pattern (for techniques/patterns)
+Before/after comparison.
+
+## Quick Reference
+Table or bullets for common operations.
+
+## Implementation
+Inline code for simple patterns. Link to file for heavy reference.
+
+## Common Mistakes
+What goes wrong + fixes.
+```
+
+### Token Efficiency
+
+The context window is shared. Every SKILL.md line competes with conversation history.
+
+- **Target**: SKILL.md body < 500 lines
+- Move details to `references/` — keep SKILL.md as an overview with pointers
+- Cross-reference instead of duplicating
+- One excellent example beats three mediocre ones
+- Challenge each paragraph: "Does the agent need this, or is it common knowledge?"
+
+### Progressive Disclosure
+
+| Level | Content | Budget |
+|-------|---------|--------|
+| 1 — Metadata | `name` + `description` | ~100 words, always loaded |
+| 2 — SKILL.md body | Core instructions | < 500 lines, loaded on trigger |
+| 3 — Bundled resources | Scripts, references, assets | Unlimited, loaded on demand |
+
+Point to bundled resources clearly from SKILL.md with guidance on when to read them.
+
+### Writing Style
+
+- Imperative form: "Validate input before calling the API" not "You should validate..."
+- Explain the *why* behind rules, not just the rule. Agents with good theory of mind follow reasoning better than commandments.
+- Avoid ALL CAPS MUST/NEVER — if you find yourself reaching for them, that's a signal to explain the reasoning instead.
+- Don't put content in both SKILL.md and references — pick one home.
 
 ---
 
-## Token Efficiency
+## Step 5: Test & Evaluate
 
-The context window is a shared resource. Every token in a loaded skill competes with conversation history and other context.
+**Test before deploying. Always. Even reference skills.**
 
-**Targets:**
+### 5a. Write Test Cases
 
-- SKILL.md body: **< 500 lines** (split into references if exceeded)
-- Frequently-loaded skills: **< 200 words** total
-- Other skills: **< 500 words** (still be concise)
+Come up with 2-3 realistic prompts — the kind a real user would actually type. Save to `evals/evals.json`:
 
-**Techniques:**
+```json
+{
+  "skill_name": "example-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "User's realistic task prompt",
+      "expected_output": "Description of what success looks like",
+      "assertions": [
+        { "id": "A01", "description": "Output contains X", "check": "contains: X", "critical": true }
+      ]
+    }
+  ]
+}
+```
 
-1. **Move details to references** — keep SKILL.md as an overview/table-of-contents
-2. **Cross-reference, don't repeat** — reference other skills/docs instead of duplicating
-3. **Compress examples** — one excellent example beats three mediocre ones
-4. **Challenge each paragraph** — "Does the agent really need this explanation?" If it's common knowledge, omit it.
+Share with the user for review before running.
+
+### 5b. Run With-Skill vs. Baseline
+
+For each test case, spawn two subagents in the same turn — one with the skill loaded, one without (or with the old version if iterating):
+
+```
+With-skill run:
+- Skill path: <path-to-skill>
+- Task: <eval prompt>
+- Save outputs to: <workspace>/iteration-N/eval-<id>/with_skill/outputs/
+
+Baseline run (same prompt):
+- No skill (or old skill snapshot)
+- Save to: without_skill/outputs/ (or old_skill/outputs/)
+```
+
+**Don't spawn with-skill first and baselines later** — launch both together so they finish concurrently.
+
+### 5c. Draft Assertions While Runs Complete
+
+While subagents are running, draft quantitative assertions. Good assertions are:
+- **Objectively verifiable** — not "output looks good"
+- **Discriminating** — would fail without the skill
+- **Named descriptively** — someone reading results immediately understands what each checks
+
+Skip quantitative assertions for subjective skills (writing style, design quality). Focus on qualitative review instead.
+
+### 5d. Review Results
+
+After runs complete:
+
+1. Run `scripts/run_evals.py` to grade assertions against outputs
+2. Show the user results for qualitative review (outputs side by side)
+3. Capture their feedback — specific complaints per test case
+
+For discipline-enforcing skills, see `references/testing-skills.md` for the full RED-GREEN-REFACTOR pressure testing methodology.
+
+---
+
+## Step 6: Improve & Iterate
+
+This is the heart of the loop. Improve the skill based on evidence, not intuition.
+
+### How to Think About Improvements
+
+1. **Generalize from feedback.** The skill will be used across many prompts and contexts, not just the test cases. Make changes that address the underlying pattern, not just the specific example.
+
+2. **Keep the skill lean.** Remove instructions that aren't pulling their weight. Read the transcripts — if the skill is causing the agent to waste time on unproductive detours, cut the parts causing that.
+
+3. **Explain the why.** Replace rigid rules ("ALWAYS do X") with reasoning ("Do X because Y — without it, Z breaks"). Agents with context follow reasoning better than commandments, and can handle edge cases the rules don't cover.
+
+4. **Bundle repeated work.** If multiple test runs independently wrote the same helper script, that script belongs in `scripts/`. Write it once, reference it in SKILL.md.
+
+### Iteration Loop
+
+After improving:
+1. Rerun all test cases into `iteration-N+1/` including baselines
+2. Review results with the user
+3. Read feedback, improve again, repeat
+
+Stop when: user is satisfied, all feedback is empty, or you're not making meaningful progress.
+
+---
+
+## Step 7: Optimize the Description
+
+After the skill body is stable, optimize the description for triggering accuracy.
+
+Generate 20 eval queries — a mix of should-trigger and should-not-trigger — and verify the description reliably picks the right ones. The most valuable negative cases are near-misses: queries that share keywords with the skill but need something different.
+
+If available, run the description optimization loop:
+
+```bash
+python .claude/skills/skill-creator/scripts/run_loop.py \
+  --eval-set <path-to-trigger-eval.json> \
+  --skill-path <path-to-skill> \
+  --model <current-model-id> \
+  --max-iterations 5
+```
+
+Report best description and scores before/after to the user.
 
 ---
 
@@ -152,259 +286,65 @@ The context window is a shared resource. Every token in a loaded skill competes 
 
 Match instruction specificity to the task's fragility:
 
-| Level              | When to Use                                          | Style                             |
-| ------------------ | ---------------------------------------------------- | --------------------------------- |
-| **High freedom**   | Multiple valid approaches, context-dependent         | Text-based guidance, heuristics   |
-| **Medium freedom** | Preferred pattern exists, some variation OK          | Pseudocode, parameterized scripts |
-| **Low freedom**    | Fragile/error-prone operations, consistency critical | Exact scripts, "do not modify"    |
-
----
-
-## Progressive Disclosure
-
-Skills use a three-level loading system to manage context efficiently:
-
-1. **Metadata (name + description)** — Always in context (~100 words)
-2. **SKILL.md body** — When skill triggers (< 500 lines)
-3. **Bundled resources** — As needed by the agent (unlimited\*)
-
-\*Unlimited because scripts can be executed without reading into context window.
-
----
-
-## Skill Creation Process
-
-Follow these steps in order, skipping only when clearly not applicable.
-
-### Step 1: Understanding the Skill with Concrete Examples
-
-Skip only when usage patterns are already clearly understood.
-
-Clearly understand concrete examples of how the skill will be used. Ask the user:
-
-- "What functionality should this skill support?"
-- "Can you give examples of how it would be used?"
-- "What would a user say that should trigger this skill?"
-
-Avoid asking too many questions at once. Start with the most important and follow up.
-
-**Conclude when:** Clear sense of the functionality the skill should support.
-
-### Step 2: Planning Reusable Skill Contents
-
-Analyze each concrete example by:
-
-1. Considering how to execute the example from scratch
-2. Identifying what scripts, references, and assets would help when executing repeatedly
-3. Choosing the file organization pattern (self-contained / tool / heavy-reference)
-
-**Output:** A list of reusable resources to include.
-
-### Step 3: Initializing the Skill
-
-Skip if iterating on an existing skill.
-
-Run the `init_skill.py` script to generate a template:
-
-```bash
-scripts/init_skill.py <skill-name> --path <output-directory>
-```
-
-The script creates the skill directory with SKILL.md template, frontmatter, and example resource directories. Customize or remove generated files as needed.
-
-### Step 4: Edit the Skill
-
-The skill is being created for another AI agent instance to use. Focus on non-obvious procedural knowledge, domain-specific details, and reusable assets.
-
-#### 4a. Start with Reusable Contents
-
-Implement the resources identified in Step 2 (`scripts/`, `references/`, `assets/`). Delete example files not needed. This step may require user input (e.g., brand assets, documentation).
-
-#### 4b. Write SKILL.md
-
-**Writing style:** Use **imperative/infinitive form** (verb-first instructions). Objective, instructional language ("To accomplish X, do Y" not "You should do X").
-
-Answer these questions:
-
-1. What is the purpose of the skill?
-2. When should the skill be used? (ASO-optimized description)
-3. How should the agent use the skill? Reference all bundled resources.
-
-**SKILL.md recommended structure:**
-
-```markdown
----
-name: Skill-Name-With-Hyphens
-description: Use when [specific triggering conditions and symptoms]
----
-
-# Skill Name
-
-## Overview
-
-Core principle in 1-2 sentences.
-
-## When to Use
-
-Bullet list with SYMPTOMS and use cases.
-When NOT to use.
-
-## Core Pattern (for techniques/patterns)
-
-Before/after code comparison.
-
-## Quick Reference
-
-Table or bullets for scanning common operations.
-
-## Implementation
-
-Inline code for simple patterns.
-Link to file for heavy reference or reusable tools.
-
-## Common Mistakes
-
-What goes wrong + fixes.
-```
-
-### Step 5: Verify the Skill
-
-**Test before deploying. No exceptions.**
-
-For discipline-enforcing skills, use the TDD-for-skills methodology:
-
-> See `references/testing-skills.md` for the complete RED-GREEN-REFACTOR cycle adapted for skills.
-
-For all skill types, run the quality checklist below.
-
-### Step 6: Iterate
-
-After using the skill on real tasks:
-
-1. Notice struggles or inefficiencies
-2. Identify how SKILL.md or bundled resources should be updated
-3. Implement changes
-4. **Re-verify** — edits to existing skills also require testing
+| Level              | When to Use                                 | Style                             |
+| ------------------ | ------------------------------------------- | --------------------------------- |
+| **High freedom**   | Multiple valid approaches, context-dependent| Text guidance, heuristics         |
+| **Medium freedom** | Preferred pattern exists, variation OK      | Pseudocode, parameterized scripts |
+| **Low freedom**    | Fragile operations, consistency critical    | Exact scripts, "do not modify"    |
 
 ---
 
 ## Anti-Patterns
 
-| Anti-Pattern                                                     | Why Bad                                                                |
-| ---------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| **Narrative storytelling** ("In session 2025-10-03, we found…")  | Too specific, not reusable                                             |
-| **Multi-language dilution** (example-js, example-py, example-go) | Mediocre quality, maintenance burden. One excellent example is enough. |
-| **Code in flowcharts** (`step1 [label="import fs"]`)             | Can't copy-paste, hard to read                                         |
-| **Generic labels** (helper1, step3, pattern4)                    | Labels must have semantic meaning                                      |
-| **Workflow summaries in description**                            | Agent shortcuts full skill reading                                     |
-| **Repeating info across SKILL.md + references**                  | Wastes tokens, creates maintenance drift                               |
-| **Over-explaining common knowledge**                             | Agent already knows what a PDF is                                      |
+| Anti-Pattern                                | Why Bad                                                        |
+| ------------------------------------------- | -------------------------------------------------------------- |
+| Narrative storytelling ("In session X...")  | Too specific, not reusable across contexts                     |
+| Multi-language examples (JS + Py + Go)      | Mediocre quality, maintenance burden. One excellent > three OK |
+| Workflow summary in description             | Agent shortcuts reading the full skill body                    |
+| Content in both SKILL.md and references     | Token waste, maintenance drift when they diverge               |
+| Over-explaining common knowledge            | Agent knows what a JSON object is                              |
+| ALL CAPS rules without reasoning            | Brittle compliance; agents find workarounds under pressure     |
 
 ---
 
 ## Quality Checklist
 
 ### Structure
-
-- [ ] Name uses only letters, numbers, hyphens (no special chars)
+- [ ] Name: letters, numbers, hyphens only (no special chars)
 - [ ] YAML frontmatter with `name` and `description` only (max 1024 chars)
-- [ ] Description starts with "Use when…", includes specific triggers/symptoms
-- [ ] Description in third person, **no workflow summary**
-- [ ] SKILL.md body under 500 lines
-- [ ] Additional details in reference files (if needed)
+- [ ] Description starts with "Use when…", includes trigger phrases, no workflow summary
+- [ ] SKILL.md body under 500 lines; details in `references/` if needed
 
 ### Content
-
-- [ ] Keywords throughout for search (errors, symptoms, tools)
+- [ ] Skill type classified (Technique / Pattern / Reference / Discipline)
+- [ ] Description includes synonyms, error messages, and near-miss exclusions
 - [ ] Clear overview with core principle
-- [ ] One excellent example per pattern (not multi-language)
-- [ ] No narrative storytelling
-- [ ] Consistent terminology throughout
-- [ ] Progressive disclosure used appropriately
+- [ ] Rules explained with reasoning, not just directives
+- [ ] No content duplicated between SKILL.md and references
 
-### Code & Scripts
+### Testing
+- [ ] At least 2-3 realistic test cases written and run
+- [ ] With-skill vs. baseline comparison done
+- [ ] Results reviewed (quantitative assertions + user qualitative review)
+- [ ] Improvements made based on observed failures, not assumptions
 
-- [ ] Scripts solve problems deterministically (not punt to agent)
-- [ ] Error handling is explicit and helpful
-- [ ] Required packages listed and verified
-- [ ] No Windows-style paths (all forward slashes)
-
-### Testing (for discipline-enforcing skills)
-
+### Discipline-Enforcing Skills (additional)
 - [ ] Pressure scenarios created (3+ combined pressures)
-- [ ] Baseline behavior documented WITHOUT skill
-- [ ] Skill addresses specific baseline failures
-- [ ] Agent complies WITH skill present
-- [ ] Rationalization table built from all test iterations
+- [ ] Baseline behavior documented verbatim WITHOUT skill
+- [ ] Rationalization table built
 - [ ] Red flags list created
-
----
-
-## TDD for Skills
-
-Before finalizing any skill, test it:
-
-### Step 1: Baseline Scenario
-
-Run a test scenario WITHOUT the skill:
-
-- Document all violations of the intended behavior
-- Note where agent makes wrong decisions
-- Capture rationalizations used to skip good practices
-
-### Step 2: Skill Draft
-
-Write the skill targeting the documented violations:
-
-- Each violation → specific rule in skill
-- Each rationalization → countermeasure
-
-### Step 3: Verification
-
-Run same scenario WITH the skill:
-
-- All violations should be prevented
-- Rationalizations should trigger "STOP" responses
-- Agent should follow skill exactly
-
-### Step 4: Refine
-
-If violations still occur:
-
-- Add explicit rules for edge cases
-- Strengthen forbidden response lists
-- Add more specific red flags
-
----
-
-## CSO: Claude Search Optimization
-
-Skill descriptions should be **triggering conditions**, NOT workflow summaries:
-
-❌ **Bad**: "This skill helps you write better code by following TDD principles..."
-✅ **Good**: "Use when implementing any feature or bugfix, before writing implementation code."
-
-**Why**: Claude searches descriptions for relevance. Workflow content dilutes search signal.
-
-### Description Formula
-
-```
-Use when [specific triggering conditions and symptoms]
-```
-
-- Start with "Use when"
-- List specific symptoms, error messages, scenarios
-- Include synonyms and related terms
-- Max 1024 characters
-- Third-person voice
+- [ ] Verified compliant WITH skill under pressure
 
 ---
 
 ## Resources
 
-- `references/testing-skills.md` — TDD-for-skills methodology with pressure scenarios
-- `references/persuasion-principles.md` — Persuasion techniques for discipline-enforcing skills
-- `references/anthropic-best-practices-summary.md` — Condensed official Anthropic skill authoring guidance
-- `scripts/init_skill.py` — Initialize new skill directory
-- `scripts/package_skill.py` — Package skill for distribution
-- `scripts/quick_validate.py` — Validate skill structure
+| Resource | Purpose |
+|----------|---------|
+| `references/testing-skills.md` | TDD-for-skills: RED/GREEN/REFACTOR cycle, pressure scenarios |
+| `references/persuasion-principles.md` | Techniques for discipline-enforcing skills |
+| `references/anthropic-best-practices-summary.md` | Condensed official Anthropic skill authoring guidance |
+| `scripts/init_skill.py` | Initialize new skill directory with template |
+| `scripts/package_skill.py` | Package skill for distribution as `.skill` file |
+| `scripts/quick_validate.py` | Validate skill structure against quality checklist |
+| `scripts/run_evals.py` | Run binary assertion evals against skill responses |

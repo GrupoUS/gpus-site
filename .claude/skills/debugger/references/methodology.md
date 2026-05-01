@@ -37,14 +37,14 @@ git log --oneline -10
 
 ### Multi-Component Tracing
 
-For each boundary (Astro page → React Island → Content Collection → JSON data):
+For each boundary (client → tRPC → Drizzle → Neon):
 
 ```typescript
 // Add logging at each layer
-console.error("=== Astro page props ===", { slug, params });
-console.error("=== React Island props ===", { items, initialState });
-console.error("=== Content Collection entry ===", { collection, id: entry.id });
-console.error("=== JSON data ===", { count: data.length, keys: Object.keys(data[0]) });
+console.error("=== tRPC input ===", { input, userId: ctx.userId });
+console.error("=== Service args ===", { mentoradoId, filters });
+console.error("=== Query params ===", { where: conditions });
+console.error("=== Result ===", { count: result.length });
 ```
 
 ---
@@ -91,8 +91,8 @@ Before committing to any fix:
 ### 1. Create Failing Test
 
 ```typescript
-it("should reject empty event slug", () => {
-  expect(() => getEventData("")).toThrow();
+it("should reject empty mentoradoId", () => {
+  expect(() => service.create({ mentoradoId: "" })).toThrow();
 });
 ```
 
@@ -104,7 +104,7 @@ it("should reject empty event slug", () => {
 ### 3. Verify Gates
 
 ```bash
-bun run check && bun run lint:check && bun test
+bun run type-check && bun run lint:oxlint:check && bun run test
 ```
 
 ### 3-Fix Escalation Rule
@@ -121,23 +121,21 @@ Trace backward through call chain to find original trigger.
 ### 5-Step Backward Trace
 
 ```
-1. Observe Symptom        → "Cannot read properties of undefined (reading 'data')"
-2. Find Immediate Cause   → const { data } = entry; // entry is undefined
-3. Ask: What Called This? → getEntry("events", slug)
-4. Keep Tracing Up        → slug = undefined — Astro.params not yet available
-5. Find Original Trigger  → getStaticPaths missing this slug value
+1. Observe Symptom        → "column mentorado_id does not exist"
+2. Find Immediate Cause   → db.select().where(eq(metricas.mentorado_id, id))
+3. Ask: What Called This? → metricasRouter.getByMentorado(id)
+4. Keep Tracing Up        → id = undefined — context not yet loaded
+5. Find Original Trigger  → Query fires before auth resolves
 ```
 
 **Fix at source:**
 
 ```typescript
-// Root cause: slug missing from getStaticPaths
-export async function getStaticPaths() {
-  const events = await getCollection("events");
-  return events.map((event) => ({
-    params: { slug: event.slug }, // ← Ensure all slugs are generated
-  }));
-}
+// Root cause: query fires without mentoradoId
+const { data } = trpc.metricas.getByMentorado.useQuery(
+  { mentoradoId },
+  { enabled: !!mentoradoId } // ← Fix at source
+);
 ```
 
 ### Git Bisect for Regressions
@@ -178,8 +176,8 @@ git bisect reset
 **Root Cause**: [5 Whys result]
 **Fix**: [What was changed]
 **Verification**:
-- [ ] `bun run check` ✅
-- [ ] `bun test` ✅
+- [ ] `bun run type-check` ✅
+- [ ] `bun run test` ✅
 
 **Lessons Learned**: What would have caught this earlier?
 ```
@@ -192,5 +190,5 @@ fix(scope): brief description
 Root cause: [5 Whys result]
 Fix: [What was changed]
 
-Tested: bun run check ✅, bun test ✅
+Tested: bun run type-check ✅, bun run test ✅
 ```

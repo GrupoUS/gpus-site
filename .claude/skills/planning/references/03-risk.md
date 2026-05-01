@@ -46,11 +46,11 @@ Score = Probabilidade (1-3) × Impacto (1-3)
 
 | Layer | Falha | Prevenção |
 |-------|-------|-----------|
-| Content Collections | Schema drift (Zod vs JSON) | Validate with `bunx astro check` |
-| React Islands | Hydration mismatch | Minimize client state, match server output |
-| Tailwind CSS v4 | Purge removes used classes | Avoid dynamic class names, use safelist |
-| Astro SSG | Missing getStaticPaths entries | Generate all slugs from collection |
-| Framer Motion | Layout shift on animation | Use `transform`/`opacity` only |
+| Drizzle | Missing index FK | Sempre add index |
+| tRPC | Zod drift | Derivar de Drizzle |
+| Clerk | Webhook signature | Verificar secret |
+| Neon | Cold start | Connection pooling |
+| Stripe | Missing events | Idempotent handler |
 
 ---
 

@@ -1,451 +1,295 @@
 ---
-description: Execute implementation plans created by orchestrator. Parses plan for agent assignments, handles parallel/sequential phases, spawns correct specialist per task.
+description: Execute implementation plans. Parses plan for phase structure + agent assignments, loads domain skills, spawns specialists, orchestrates parallel/sequential execution with sprint contract gates.
+workflow_type: orchestrator-workers
 ---
 
-# /implement — Execution Engine
+# /implement
 
-**ARGUMENTS**:$ARGUMENTS
+**ARGUMENTS**: $ARGUMENTS
 
-> **Plans come from:** `orchestrator` with D.R.P.I.V methodology
-> **Plan format:** `docs/plans/YYYY-MM-DD-<feature>.md`
+> **Plans come from:** `/plan` — format defined in `.claude/skills/planning/SKILL.md`
+> **Plan files:** `docs/plans/YYYY-MM-DD-<feature>.md` or active conversation context
 
 ---
 
-## 0. Pre-flight Check
-
-### Verify Plan Exists
+## 0. Pre-flight
 
 ```bash
-# Check for plan files
-ls docs/plans/*.md 2>/dev/null || ls PLAN-*.md 2>/dev/null
+ls docs/plans/*.md 2>/dev/null
 ```
 
-| Source           | Action                                        |
-| ---------------- | --------------------------------------------- |
-| **File exists**  | Load `docs/plans/YYYY-MM-DD-*.md`             |
-| **Chat context** | Extract tasks from current conversation       |
-| **None found**   | **Suggest `/plan` first**                     |
+| Source | Action |
+|---|---|
+| Plan file exists | Load from file |
+| Plan in chat context | Extract phases + tasks from conversation |
+| No plan found | Run `/plan` first — never implement without a plan |
+
+Parse from plan: **Complexity**, **Layers**, phase markers (`[SEQUENTIAL]` / `[PARALLEL]`), task list (`- [ ]`), verify commands, sprint contracts, `[ASSUMED]` items to validate before starting.
+
+Read `.claude/config.json` for tooling + paths. If `${overlay}/routing-supplements.md` exists, also read it for project-specific layer/agent routing.
+
+**Flags:**
+
+| Flag | Effect |
+|---|---|
+| `--codex` | Delegate L5+ phases to `codex:rescue` skill |
+| `--sprint=N` | Execute only sprint N of multi-sprint plan |
+| `--dry-run` | Parse + display task/agent assignments without executing |
 
 ---
 
-## 1. Parse Plan Structure
+## 1. Skill routing
 
-### Extract from Plan File
+Per `_shared.md` § 6 (Skill-to-Domain Matrix), load the skill matching the task domain **before spawning any agent for that phase**.
 
-```markdown
-# [Feature Name] Implementation Plan
+If the plan touches:
+- Schema / migrations / data → load `debugger` skill (and `supabase-postgres-best-practices` for Postgres)
+- API / handlers / services → `debugger`
+- React / components / styling → `ui-ux-pro-max` + `frontend-design`
+- Performance / SEO → `performance-optimization`
+- Spreadsheets / data files → `xlsx`
+- Skill creation / iteration → `skill-creator`
+- Supabase products → `supabase`
 
-**Goal:** ...
-**Complexity:** L[1-10]
-
-### Phase 1: Foundation [SEQUENTIAL]
-
-### Task 1: [Name]
-**Files:** `src/components/Hero.astro:10-45`
-**Agent:** `frontend-specialist`
-**Dependencies:** None — PARALLEL-SAFE
-...
-
-### Phase 2: Core [PARALLEL]
-> PARALLEL-SAFE
-
-### Task 2: [Name]
-**Agent:** `frontend-specialist`
-...
-```
-
-### Parse Rules
-
-1. **Complexity Level** — Determines execution mode
-2. **Phase Type** — `[SEQUENTIAL]` or `[PARALLEL]`
-3. **Agent Assignment** — `**Agent:** \`agent-name\``
-4. **Dependencies** — Order or parallelize tasks
+Multiple skills may load. Process skills (`planning`, `debugger`) before implementation skills.
 
 ---
 
-## 2. Mode Selection
+## 2. Agent assignment
 
-| Complexity | Mode        | Action                            |
-| ---------- | ----------- | --------------------------------- |
-| **L1-L2**  | DIRECT      | Execute in main agent             |
-| **L3-L5**  | SUBAGENTS   | `Task()` with `run_in_background` |
-| **L6+**    | AGENT TEAMS | `TeamCreate` + `TaskCreate`       |
+If plan doesn't specify `**Agent:**`, assign by file-path detection:
 
----
+| File-path pattern | Agent |
+|---|---|
+| `${paths.schemaRoot}/**` | `debugger` |
+| `${paths.backendRoot}/**` | `debugger` |
+| `${paths.frontendRoot}/**` (UI files) | `frontend-specialist` |
+| `${paths.frontendRoot}/**` (logic / hooks / non-UI) | `debugger` |
+| Cross-domain (3+ layers) | `project-planner` as coordinator |
+| Any failing task | `debugger` |
 
-## 3. Agent Assignment Matrix
+If `${overlay}/routing-supplements.md` extends this table → respect those bindings.
 
-| Task Type                          | Agent                   | Skills                                    |
-| ---------------------------------- | ----------------------- | ----------------------------------------- |
-| Astro components, layouts, pages   | `frontend-specialist`   | `astro`, gpus-theme, ui-ux-pro-max        |
-| React Islands, animations          | `frontend-specialist`   | `astro` (islands-architecture), gpus-theme |
-| Content Collections, JSON data     | `frontend-specialist`   | `astro` (content-collections)             |
-| Styling, Tailwind v4, @theme       | `frontend-specialist`   | `astro` (styling-tailwind), gpus-theme    |
-| View Transitions, ClientRouter     | `frontend-specialist`   | `astro` (view-transitions)                |
-| Performance, a11y, SEO             | `performance-optimizer` | performance-optimization, `astro` (performance) |
-| Build errors, TypeScript           | `debugger`              | `astro` (troubleshooting), debugger       |
-| Codebase research                  | `explorer`              | planning                                  |
-| External docs research             | `librarian`             | —                                         |
-| Astro docs research                | `librarian`             | Context7: `/websites/v6_astro_build_en`   |
-| Architecture consultation          | `oracle`                | read-only analysis                        |
+Background read-only agents (always `run_in_background: true`):
 
-**Rule:** Every task in the plan MUST specify `**Agent:**`. If missing, use domain detection above.
+| When | Agent |
+|---|---|
+| Before any phase — grep existing patterns | `explorer` |
+| External API docs, package versions | `librarian` |
 
 ---
 
-## 4. Mode A: DIRECT (L1-L2)
+## 3. Execution mode (per `_shared.md` § 2)
 
-Single domain, 1-3 tasks, no parallelism needed.
-
-```bash
-# Execute tasks directly, run gates after each
-bunx astro check
-```
+| Complexity | Mode |
+|---|---|
+| L1-L2 | DIRECT — main agent executes |
+| L3-L5 | SUBAGENTS — `Agent()` per task/phase |
+| L6+ | AGENT TEAMS — `TeamCreate` + coordinator + `TaskCreate` |
 
 ---
 
-## 5. Mode B: SUBAGENTS (L3-L5)
+## 4. Mode A — DIRECT (L1-L2)
 
-Multi-domain, parallel tasks, no complex dependencies.
+1. Load skill for the task domain
+2. Execute task directly in main agent
+3. Run verify command
+4. Gate per `_shared.md` § 1 (type-check)
 
-### Sequential Phase Execution
+---
+
+## 5. Mode B — SUBAGENTS (L3-L5)
+
+### Before any phase
+
+Spawn `explorer` in background to grep existing patterns relevant to this phase:
 
 ```typescript
-// SEQUENTIAL phase - execute one at a time
-for (const task of phase1Tasks) {
-  await Task({
-    subagent_type: task.agent, // From **Agent:** field
-    prompt: `Execute: ${task.name}
-
-FILE: ${task.file}
-${task.code}
-
-Run: bunx astro check`,
-    run_in_background: false, // Sequential
-  });
-}
-```
-
-### Parallel Phase Execution
-
-```typescript
-// PARALLEL phase - spawn all simultaneously
-const parallelTasks = phase2Tasks.map(task =>
-  Task({
-    subagent_type: task.agent, // From **Agent:** field
-    prompt: `Execute: ${task.name}
-
-FILE: ${task.file}
-${task.code}
-
-Run: bunx astro check`,
-    run_in_background: true, // Parallel background task
-  })
-);
-
-// Wait for all and collect background output
-await Promise.all(parallelTasks.map(id => background_output(id)));
-```
-
-### PARALLEL-FIRST Default
-
-Always spawn parallel when tasks are in a `[PARALLEL]` phase or marked `PARALLEL-SAFE`:
-
-```typescript
-// Spawn ALL parallel tasks in single message (one tool call block)
-Task({ subagent_type: "frontend-specialist", prompt: "...", run_in_background: true });
-Task({ subagent_type: "performance-optimizer", prompt: "...", run_in_background: true });
-// Wait for background outputs before proceeding to next phase
-```
-
-> Rule: `run_in_background: true` is MANDATORY for all parallel tasks.
-> Never spawn parallel tasks sequentially — that defeats the purpose.
-
-### Complete Spawn Pattern
-
-```typescript
-// Example: Plan with mixed phases
-
-// Phase 1: Foundation [SEQUENTIAL]
-await Task({
-  subagent_type: "frontend-specialist",
-  prompt: `Execute: Create Astro layout and base page structure...`,
-  run_in_background: false,
+Agent({
+  subagent_type: "explorer",
+  prompt: "Grep [domain] patterns in [paths]. Report file:line for reuse.",
+  run_in_background: true
 });
-
-// Phase 2: Core [PARALLEL]
-// PARALLEL-SAFE
-Task({ subagent_type: "frontend-specialist", prompt: `Execute: Hero section component...`, run_in_background: true });
-Task({ subagent_type: "frontend-specialist", prompt: `Execute: React Island (Countdown)...`, run_in_background: true });
-
-// Wait for parallel tasks, then continue
-// Phase 3: Polish [SEQUENTIAL]
-await Task({
-  subagent_type: "performance-optimizer",
-  prompt: `Execute: Performance audit and optimization...`,
-  run_in_background: false,
-});
-
-// Final quality gates
-bunx astro check && bun run build
 ```
+
+### Sequential phase
+
+Per `_shared.md` § 8 (Sequential Phase Gating).
+
+```
+Load domain skill
+→ Spawn agent for task 1 → wait → run verify command → gate
+→ Spawn agent for task 2 → wait → run verify command → gate
+→ ...
+```
+
+### Parallel phase
+
+Per `_shared.md` § 7 (Parallel Agent Spawn). Spawn all independent tasks in **single message**:
+
+```typescript
+// Write-capable → foreground:
+Agent({ subagent_type: "frontend-specialist", prompt: "..." })
+Agent({ subagent_type: "debugger", prompt: "..." })
+// Read-only → background:
+Agent({ subagent_type: "explorer", prompt: "...", run_in_background: true })
+```
+
+After all complete: parse each agent's `## Context Handoff` block, consolidate changes, run phase gate.
+
+### Sprint contract gate
+
+If plan includes sprint contracts, after all tasks in a sprint:
+
+1. Run each `verify:` command listed in the contract's Done Definition
+2. All must pass — no partial credit
+3. Any failure → fix + re-run before next sprint
 
 ---
 
-## 6. Mode C: AGENT TEAMS (L6+)
+## 6. Mode C — AGENT TEAMS (L6+)
 
-4+ domains, complex dependencies, requires coordination.
-
-### Orchestrator Pattern
+### Setup
 
 ```typescript
-// 1. Create Team
-TeamCreate({
-  team_name: "implement-feature",
-  description: "Multi-domain development team for feature X",
-});
+TeamCreate({ team_name: "[feature-slug]" });
+```
 
-// 2. Create Tasks with Dependencies (from plan)
-// Parse plan for dependencies
+### Coordinator pattern
+
+Create a **coordinator task** assigned to `project-planner`. The coordinator:
+- Holds the full plan + sprint contracts
+- Delegates domain tasks via `SendMessage`
+- Validates `## Context Handoff` from each specialist against the contract
+- Gates sprints before advancing
+- Reports progress + blockers
+
+```typescript
+// Coordinator (foreground — must complete before team cleanup):
+TaskCreate({ subject: "Coordinator — [feature]", owner: "project-planner" });
+
+// Domain specialists (spawned by coordinator or in parallel where contracts allow):
+TaskCreate({ subject: "Schema + API — Sprint N", owner: "debugger" });
 TaskCreate({
-  subject: "Hero Section",
-  description: "Build hero with animated headline and CTA",
-  addBlocks: ["performance-audit"], // Blocks perf audit
+  subject: "UI Layer — Sprint N",
+  owner: "frontend-specialist",
+  addBlockedBy: ["[schema-task-id]"]
 });
 TaskCreate({
-  subject: "React Islands",
-  description: "Implement Countdown, FAQ, and Testimonials islands",
-  addBlocks: ["performance-audit"], // Blocks perf audit
+  subject: "Integration — Sprint N",
+  owner: "debugger",
+  addBlockedBy: ["[api-task-id]"]
 });
-TaskCreate({
-  subject: "Content Collections",
-  description: "Define schemas and populate event data",
-  // No dependencies - parallelizable
-});
-TaskCreate({
-  subject: "Performance Optimization",
-  description: "Lighthouse audit, image optimization, a11y checks",
-  addBlockedBy: ["hero-section", "react-islands"], // Depends on components
-});
-
-// 3. Assign Tasks to Specialists (from **Agent:** field)
-TaskUpdate({ taskId: "Hero Section", owner: "frontend-specialist" });
-TaskUpdate({ taskId: "React Islands", owner: "frontend-specialist" });
-TaskUpdate({ taskId: "Content Collections", owner: "frontend-specialist" });
-TaskUpdate({ taskId: "Performance Optimization", owner: "performance-optimizer" });
-
-// 4. Enter Delegate Mode (Coordination Only)
-// Press Shift+Tab to enter Delegate Mode
 ```
 
-### Team Operations & Communication
+### Coordinator prompt template
 
-```typescript
-// Direct Message
-SendMessage({
-  type: "message",
-  recipient: "frontend-specialist",
-  content: "Content collections are ready for component integration.",
-});
-
-// Broadcast (Critical Blockers Only)
-SendMessage({
-  type: "broadcast",
-  content: "Changing layout structure, please hold.",
-});
-
-// Graceful Shutdown
-SendMessage({
-  type: "shutdown_request",
-  recipient: "frontend-specialist",
-  content: "Work complete",
-});
-
-// Cleanup
-TeamDelete();
 ```
+You are the coordinator for implementing [feature].
+
+Plan: [paste plan content or docs/plans/[slug].md]
+Sprint contract: [paste Sprint N contract]
+Skill loaded: [skill name for this domain]
+
+Responsibilities:
+1. Delegate schema/API tasks to debugger agent via SendMessage
+2. Delegate UI tasks to frontend-specialist (only after API phase passes gate)
+3. Validate each agent's Context Handoff against contract Done Definition
+4. Run quality gate after each phase: ${tooling.packageManager} run ${tooling.typeChecker}
+5. If any criterion fails → return detailed feedback to the responsible agent, not the user
+6. Only report to user: SPRINT N COMPLETE (all criteria met) or BLOCKED: [specific failing criterion]
+
+Do not implement yourself. Coordinate, validate, gate.
+```
+
+### Context management
+
+| Model | Strategy |
+|---|---|
+| Sonnet 4.x | Context reset between sprints — write handoff artifact before each reset |
+| Opus 4.6+ | Auto-compaction, continuous session — monitor for context anxiety |
+
+Handoff artifact path: `docs/plans/HANDOFF-[slug]-sprint-N.md` (use `.claude/templates/handoff-template.md` structure).
+
+Handoff contains: completed tasks, verified state, next sprint contract, open issues, key decisions, modified files, resume commands.
+
+Context anxiety symptoms (Sonnet): agent rushing, skipping edge cases, accepting failures. If observed → trigger reset immediately.
 
 ---
 
-## 7. Execution Flow
+## 7. `--codex` flag (L5+ delegation)
 
-```
-1. PARSE plan — Extract: complexity, phases, tasks, agents, dependencies
-2. SELECT mode — Based on complexity (L1-L10)
-3. SPAWN agents — Based on **Agent:** field in each task
-4. EXECUTE phases — Sequential or parallel per plan
-5. VALIDATE — Run quality gates after each phase
-6. COMPLETE — Present options to user
-```
+For implementation phases too large or complex for a standard agent:
 
-### Phase Execution Order
+Invoke `codex:rescue` skill with:
+- Task description from the plan phase
+- Sprint contract done criteria
+- Relevant file paths + line references
+- Verify command
 
-```markdown
-### Phase 1: Foundation [SEQUENTIAL]
-> Execute tasks one-by-one, wait for each
-
-### Phase 2: Core [PARALLEL]
-> PARALLEL-SAFE
-> Spawn all tasks simultaneously, wait for all
-
-### Phase 3: Polish [SEQUENTIAL]
-> Execute tasks one-by-one, wait for each
-```
+Codex handles implementation. Main agent validates against the sprint contract when done.
 
 ---
 
-## 8. Quality Gates
+## 8. Quality gates
 
-```bash
-# After each task
-bun run lint              # Biome + oxlint
-bunx astro check          # TypeScript + Astro validation
+Per `_shared.md` § 1.
 
-# After each phase
-bun run lint && bunx astro check && bun run build   # Full validation
-
-# Final
-bun run lint && bunx astro check && bun run build   # Full validation must succeed
-```
-
-### Gate Enforcement
-
-- **After each task:** Run `bunx astro check` (quick)
-- **After each phase:** Run `bunx astro check && bun run build`
-- **Final:** Run `bunx astro check && bun run build`
-
-### Gate Timing
-
-- **After each task:** `bunx astro check` (fast Astro/TypeScript gate)
-- **After each [SEQUENTIAL] phase:** `bunx astro check && bun run build`
-- **After all [PARALLEL] tasks complete:** `bunx astro check && bun run build`
-- **Final:** `bunx astro check && bun run build`
+| When | Command |
+|---|---|
+| After each task | `${tooling.packageManager} run ${tooling.typeChecker}` |
+| After each phase | type-check + lint |
+| After sprint (if contracts) | All `verify:` commands in Done Definition |
+| Final | type-check + lint + tests |
 
 ---
 
-## 9. Failure Handling
+## 9. Failure handling
 
-1. **Pause** — Don't retry immediately
-2. **Identify** — Which task failed?
-3. **Debug** — Run `/debug` workflow
-4. **Fix** — Minimal, targeted fix
-5. **Verify** — Re-run gates before continuing
+| Attempt | Action |
+|---|---|
+| 1st | Read error. Retry with error context added to agent prompt |
+| 2nd | Invoke `debugger` skill. Break task into smaller subtasks |
+| 3rd | Switch to `/debug recover`. Escalate to user with root-cause analysis |
 
-### Retry Policy
+Never retry blindly. Never skip a gate because a task "looks correct."
 
-| Failure Count | Action |
-|---------------|--------|
-| 1st | Retry same task |
-| 2nd | Break into smaller tasks |
-| 3rd | Switch mode OR escalate to oracle |
+---
+
+## Stopping conditions
+
+- STOP if no plan exists → run `/plan` first
+- STOP after 3rd failure on same task → invoke `/debug recover`
+- STOP if agent team runs 10+ task iterations without sprint completion
+- ASK if plan has `[ASSUMED]` items not yet validated
+- ASK before destructive operations (schema drops, data deletion)
 
 ---
 
 ## 10. Cleanup (Agent Teams)
 
+After all sprints complete:
+
 ```typescript
-// Graceful shutdown all teammates
-SendMessage({ type: "shutdown_request", recipient: "frontend-specialist", content: "Complete" });
-SendMessage({ type: "shutdown_request", recipient: "performance-optimizer", content: "Complete" });
-// ... for all teammates
-
-// After confirmations
-TeamDelete();
+// Signal completion, collect final handoffs
+TeamDelete({ team_name: "[feature-slug]" });
 ```
 
 ---
 
-## 11. Completion Options
-
-After all tasks pass gates, present:
+## 11. Completion
 
 ```
-Implementation complete!
+Implementation complete.
 
-Summary:
-  - Tasks completed: {N}
-  - Phases: {sequential_count} sequential, {parallel_count} parallel
-  - Agents used: frontend-specialist, performance-optimizer
+Gates passed:
+  - Type check: ok
+  - Lint: ok
+  - Tests: ok
+  - Sprint contracts: ok (if applicable)
 
-What would you like to do?
-
-1. **Merge back to <base-branch> locally**
-2. **Push and create a Pull Request**
-3. **Keep the branch as-is**
-4. **Discard this work**
-
-Which option?
+Options:
+  1. PR     → push + open PR
+  2. Keep   → branch ready for review
+  3. /evolve → capture learnings, update AGENTS.md + memory
 ```
-
-| Option     | Actions                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------- |
-| 1. Merge   | `git checkout base && git pull && git merge branch && bun run build && git branch -d branch`      |
-| 2. PR      | `git push -u origin branch && gh pr create`                                                       |
-| 3. Keep    | Report branch name                                                                                |
-| 4. Discard | Require "discard" confirmation — `git branch -D branch`                                           |
-
----
-
-## 12. Proximos Passos (Pos-Implementacao)
-
-```
-Implementacao completa!
-
-Proximos passos:
-1. /evolve — Autoresearch (opcional, com <evolve_request>) + captura de aprendizados (recomendado)
-2. Testar em staging — Validar em ambiente real
-3. Documentar — Atualizar README se necessario
-```
-
-O `/evolve` pode primeiro rodar **EVOLVE_AUTORESEARCH** (baseline, evals objetivos, keep/discard) quando houver `<evolve_request>`; depois executa simplify/gates, memory, GSD e session-report. Sem request, apenas a fase de captura.
-
----
-
-## Quick Reference Card
-
-```
-/implement workflow:
-
-PARSE > SELECT MODE > SPAWN AGENTS > EXECUTE PHASES > VALIDATE > COMPLETE
-
-Complexity > Mode:
-  L1-L2  > DIRECT (main agent)
-  L3-L5  > SUBAGENTS (Task with run_in_background)
-  L6+    > AGENT TEAMS (TeamCreate + TaskCreate)
-
-Agent Routing:
-  **Agent:** `frontend-specialist` > Task({ subagent_type: "frontend-specialist" })
-  **Agent:** `performance-optimizer` > Task({ subagent_type: "performance-optimizer" })
-  **Agent:** `explorer` > Task({ subagent_type: "explorer" })
-
-Phase Execution:
-  [SEQUENTIAL] > One at a time
-  [PARALLEL]   > All at once (run_in_background: true as parallel task)
-
-Quality Gates:
-  After task  > bunx astro check
-  After phase > bunx astro check && bun run build
-  Final       > bunx astro check && bun run build
-```
-
----
-
-## Astro Implementation Checklist
-
-Before marking any Astro task as complete, verify:
-
-- [ ] `.astro` components for static content (zero JS default)
-- [ ] React islands only for Aceternity UI visual effects (`src/components/ui/`) — `client:idle` (hero visual-only) ou `client:visible` (below fold); `client:load` só se houver interação crítica imediata
-- [ ] Content data via `getCollection()` — mapped to `.data` for React props
-- [ ] Tailwind v4 tokens from `@theme {}` — no hardcoded hex
-- [ ] Fonts via Astro 6 Fonts API (self-hosted) — no Google CDN
-- [ ] Images with explicit `width`/`height` — LCP image: `loading="eager"` + `fetchpriority="high"`
-- [ ] Animations: `transform`/`opacity` only, `prefers-reduced-motion` support
-- [ ] `bun run lint && bunx astro check && bun run build` passes
-
-## References
-
-- **astro skill** — `.claude/skills/astro/SKILL.md` — Full Astro 6 reference
-- **orchestrator.md** — Plan creation with D.R.P.I.V methodology
-- **CLAUDE.md** — Orchestration, agent types, skill routing
-- **planning skill** — D.R.P.I.V workflow reference

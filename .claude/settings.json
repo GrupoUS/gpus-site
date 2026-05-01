@@ -1,60 +1,66 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "cleanupPeriodDays": 90,
   "env": {
-    "BASH_MAX_OUTPUT_LENGTH": "100000",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "75",
-    "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": "100000"
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
-  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
-      "Bash(bun:*)",
-      "Bash(bunx:*)",
-      "Bash(git:*)",
-      "Bash(python:*)",
-      "Bash(python3:*)",
+      "Bash(bun *)",
+      "Bash(bunx *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(pnpm *)",
+      "Bash(yarn *)",
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Bash(docker *)",
+      "Bash(python *)",
+      "Bash(python3 *)",
+      "Bash(node *)",
+      "Bash(deno *)",
+      "Bash(tsc *)",
+      "Bash(tsgo *)",
+      "Bash(curl *)",
+      "Bash(wc *)",
+      "Bash(awk *)",
+      "Bash(tail *)",
+      "Bash(test *)",
       "Read(**/*.json)",
       "Read(**/*.js)",
       "Read(**/*.ts)",
       "Read(**/*.tsx)",
-      "Read(**/*.astro)",
-      "Read(**/*.css)",
+      "Read(**/*.py)",
       "Read(**/*.md)",
+      "Read(**/*.css)",
       "Edit(**/*.js)",
       "Edit(**/*.ts)",
       "Edit(**/*.tsx)",
-      "Edit(**/*.astro)",
-      "Edit(**/*.css)",
+      "Edit(**/*.py)",
       "Edit(**/*.json)",
+      "Edit(**/*.css)",
       "Edit(**/*.md)",
       "Write(**/*.js)",
       "Write(**/*.ts)",
       "Write(**/*.tsx)",
-      "Write(**/*.astro)",
-      "Write(**/*.css)",
-      "Skill(gsd:plant-seed)",
-      "Skill(gsd:plant-seed:*)",
-      "Skill(gsd:session-report)",
-      "Skill(gsd:session-report:*)"
+      "Write(**/*.py)",
+      "Write(**/*.md)"
     ],
     "deny": [
       "Read(./.env*)",
       "Read(./secrets/**)",
-      "Bash(rm -rf:*)",
-      "Bash(sudo:*)",
-      "Bash(npm:*)",
-      "Bash(yarn:*)",
-      "Bash(pnpm:*)"
+      "Bash(rm -rf *)",
+      "Bash(sudo *)"
     ]
   },
   "enableAllProjectMcpServers": true,
+  "enabledPlugins": {
+    "playwright": true
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/scripts/context-monitor.py"
+  },
+  "plansDirectory": "./docs",
   "hooks": {
     "SessionStart": [
       {
@@ -62,15 +68,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-context.sh"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node .claude/hooks/gsd-check-update.js"
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session_context.py",
+            "timeout": 15,
+            "statusMessage": "Loading AGENTS.md + project context..."
           }
         ]
       }
@@ -81,8 +81,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/smart-bash-approver.sh",
-            "timeout": 10
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/smart_bash_approver.py",
+            "timeout": 5
           }
         ]
       },
@@ -91,27 +91,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh",
-            "timeout": 10
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect_files.py",
+            "timeout": 5
           }
         ]
       },
       {
-        "matcher": "Task",
+        "matcher": "Agent",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/task-routing-guard.sh",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node .claude/hooks/gsd-prompt-guard.js",
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/task_routing_guard.py",
             "timeout": 5
           }
         ]
@@ -119,7 +109,7 @@
     ],
     "PermissionRequest": [
       {
-        "matcher": "Read|Grep|Glob|Bash|Edit|Write|mcp__plugin_serena_serena__.*",
+        "matcher": "Read|Grep|Glob|Bash|Edit|Write|mcp__plugin_serena_serena__.*|mcp__tavily__.*|mcp__sequential-thinking__.*|mcp__stitch__.*|mcp__playwright__.*|mcp__claude_ai_Context7__.*",
         "hooks": [
           {
             "type": "command",
@@ -134,17 +124,20 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ultracite-fix.sh",
-            "timeout": 60
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ultracite_fix.py",
+            "timeout": 30,
+            "statusMessage": "Formatting & linting..."
           }
         ]
-      },
+      }
+    ],
+    "Notification": [
       {
-        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
+        "matcher": "permission_prompt|idle_prompt",
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/gsd-context-monitor.js",
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/notify.py",
             "timeout": 10
           }
         ]
@@ -152,31 +145,64 @@
     ],
     "Stop": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ultracite-check.sh",
-            "timeout": 120
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ultracite_check.py",
+            "timeout": 30,
+            "statusMessage": "Running lint check..."
           }
         ]
       }
     ],
-    "Notification": [
+    "TeammateIdle": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/notify.sh"
+            "command": "exit 0"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": "debugger|evaluator|explorer-agent|explorer|frontend-specialist|librarian|mobile-developer|performance-optimizer|project-planner|verification",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/subagent_start.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/task_completed.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/evaluator_escalation.py",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/subagent_log.py",
+            "timeout": 5
           }
         ]
       }
     ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/scripts/context-monitor.py"
-  },
-  "enabledPlugins": {}
+  }
 }

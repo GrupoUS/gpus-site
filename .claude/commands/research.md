@@ -1,90 +1,109 @@
 ---
-description: Deep research mode - parallel exploration of codebase and external docs. Returns structured findings only, no code changes.
+description: Deep research mode — parallel exploration of codebase + external docs. Returns structured findings only, no code changes.
+workflow_type: parallelization
 ---
 
-# /research - Parallel Research Only
+# /research — Parallel Research Only
 
-**ARGUMENTS**:$ARGUMENTS
+**ARGUMENTS**: $ARGUMENTS
 
-<command-instruction>
-Trigger Phase 2A of the orchestrator protocol in RESEARCH-ONLY mode.
+> Triggers Phase 2A of the D.R.P.I.V methodology in **research-only** mode. No edits. No fixes.
 
-## Agent Routing (MANDATORY — choose based on WHERE the answer lives)
+---
 
-> [!CRITICAL]
-> **`explorer` = CUSTOM agent at `.claude/agents/explorer-agent.md`** — structured Findings Table with confidence scores (1-5), Knowledge Gaps, Librarian Requests.
-> **NOT the built-in `Explore` agent.** Use `subagent_type: "explorer"` (exact case, no substitution).
+## Agent routing (mandatory — choose by **where the answer lives**)
 
-| Question Type                        | Agent       | Why                        |
-| ------------------------------------ | ----------- | -------------------------- |
-| What exists in our codebase?         | `explorer`  | Answer lives in filesystem |
-| How does this code pattern work?     | `explorer`  | Answer lives in filesystem |
-| Which files need to change?          | `explorer`  | Answer lives in filesystem |
-| How does this library/API work?      | `librarian` | Answer lives externally    |
-| What are the best practices for X?   | `librarian` | Answer lives externally    |
-| Is this package behavior documented? | `librarian` | Answer lives externally    |
+> **`explorer` = custom agent at `.claude/agents/explorer-agent.md`** — structured findings table with confidence scores (1-5), Knowledge Gaps, Librarian Requests.
+> **NOT the built-in `Explore`.** Use `subagent_type: "explorer"` (exact case).
 
-## Astro Knowledge Sources (Priority Order)
+| Question type | Agent | Why |
+|---|---|---|
+| What exists in our codebase? | `explorer` | Filesystem |
+| How does this code pattern work? | `explorer` | Filesystem |
+| Which files need to change? | `explorer` | Filesystem |
+| How does this library/API work? | `librarian` | External |
+| What are best practices for X? | `librarian` | External |
+| Is this package behavior documented? | `librarian` | External |
 
-For Astro-specific research, use this cascade:
-
-1. **`astro` skill** (`.claude/skills/astro/`) — First check: covers components, Content Collections, islands, styling, config, performance, View Transitions, troubleshooting
-2. **Context7 MCP** — Query Astro v6 docs: `resolve-library-id("astro")` → `query-docs(libraryId, query)`
-3. **Codebase explorer** — Check existing patterns in `src/`
-4. **Tavily/Web** — Only if 1-3 are insufficient
-
-### Context7 3-Step Lookup Protocol *(guessing a library ID returns wrong docs — the 3-step costs one call and saves re-researching later)*
-
-**NEVER call `query-docs` without a valid resolved ID. Always follow this sequence:**
-
-```
-Step 1: resolve-library-id("library name")         → returns candidate IDs
-Step 2: Select the correct ID from the results
-Step 3: query-docs(selectedId, "specific question") → returns relevant docs
-```
-
-**Limits:** Max 3 Context7 calls per research session to avoid context bloat. If a library is in the pre-resolved table below, skip Step 1.
-
-**For libraries NOT in the table:**
-- Do NOT guess or fabricate library IDs
-- Always run `resolve-library-id` first
-- If resolution returns no results, fall back to `librarian` agent with Tavily/WebFetch
-
-### Context7 Astro Library IDs (Pre-resolved)
-
-| Library ID | Source | Best For |
-| --- | --- | --- |
-| `/websites/v6_astro_build_en` | Astro v6 official docs | Latest Astro 6 features, breaking changes |
-| `/llmstxt/astro_build_llms-full_txt` | LLM-optimized docs | Comprehensive reference, code examples |
-| `/llmstxt/astro_build_llms_txt` | LLM-small docs | Quick lookups, concise answers |
+---
 
 ## Execution
 
-1. **Check `astro` skill first** — Read relevant reference file from `.claude/skills/astro/references/`
-2. Fire `explorer` (custom agent, NOT built-in `Explore`) in background for codebase structure analysis
-3. Fire `librarian` in background for external documentation **IF** any library, package, or external API is mentioned
-   - For Astro docs, instruct librarian to use Context7 with library IDs above
-4. Continue reading immediately — do not wait
-5. Collect background results
-6. Output structured findings table with Confidence (1-5), Source, Impact
-7. Do NOT implement. Research only.
+1. Fire `explorer` (custom agent, **NOT** built-in `Explore`) in background for codebase analysis.
+2. Fire `librarian` in background for external documentation **IF** any library, package, or external API is mentioned.
+3. Continue reading immediately — do not wait for agents.
+4. Collect background results.
+5. Output structured findings table with confidence (1-5), source, impact.
+6. **Do NOT implement.** Research only.
 
-## Findings Format
+---
 
-| #   | Finding | Confidence | Source              | Impact |
-| --- | ------- | ---------- | ------------------- | ------ |
-| 1   | ...     | 4          | codebase: path/file | high   |
-| 2   | ...     | 5          | docs: URL           | high   |
+## Tool selection
 
-## Knowledge Gaps
+| Question | Tool | Rationale |
+|---|---|---|
+| API syntax, config options, framework patterns | **Context7** | Official docs — version-accurate |
+| Current best practices, community patterns | **Tavily** | Training data stales; community evolves |
+| Package CVEs, security advisories, maintenance | **Tavily** | Realtime ecosystem (GHSA, Snyk, npm) |
+| Breaking changes in library vN | **Context7 → Tavily** | Official migration → community pitfalls |
+| Comparing 2+ packages | **Tavily** | Community benchmarks, npm stats |
+| Exact hook/function signatures, schemas | **Context7** | Always prefer over training |
+
+### Tavily — web intelligence
+
+For community patterns, CVEs, ecosystem comparisons, migration war stories.
+
+- Formulate 2-3 query variations (`"<lib> middleware order 2026"`, `"<lib> v<N> breaking changes"`)
+- Scope to authoritative sources: `github.com`, `npmjs.com`, `github.com/advisories`, `snyk.io`
+- For CVEs: `site:github.com/advisories <package>` or `<package> CVE GHSA`
+- **Always add year + version** to queries — avoids stale results
+
+### Context7 — documentation lookup
+
+For exact API signatures, config options, anything needing authoritative current docs.
+
+1. `mcp__claude_ai_Context7__resolve-library-id` — get library ID from package name
+2. `mcp__claude_ai_Context7__query-docs` — query with specific topic (`"useQuery options"`, `"insert returning"`)
+
+Always prefer Context7 over training knowledge for any library/framework where the API surface is non-trivial.
+
+---
+
+## Approach
+
+1. Classify: answer in codebase (explorer) or external (librarian)?
+2. External: API/docs question (Context7) or ecosystem state (Tavily)?
+3. Run both when question spans documentation + community context
+4. Verify key facts across sources — flag contradictions
+5. Confidence score reflects source quality: 1=speculation · 3=community · 5=official docs
+
+---
+
+## Output
+
+- Research methodology + queries used
+- Curated findings with source URLs
+- Credibility assessment of sources
+- Synthesis highlighting key insights
+- Contradictions or gaps identified
+- Data tables / structured summaries
+- Recommendations for further research
+
+Direct quotes for important claims. Actionable insights only.
+
+---
+
+## Findings format
+
+| # | Finding | Confidence | Source | Impact |
+|---|---|---|---|---|
+| 1 | … | 4 | codebase: path/file | high |
+| 2 | … | 5 | docs: URL | high |
+
+## Knowledge gaps
 
 [List what remains unknown after both agents complete]
 
-## Astro Skill References Used
-
-[List which `.claude/skills/astro/references/*.md` files were consulted]
-
-## Recommended Next Step
+## Recommended next step
 
 [One suggested action based on findings]
-</command-instruction>

@@ -1,218 +1,250 @@
 ---
-description: Repo-aware design workflow for Grupo US. Tiered plan-first gates (A.P.T.E inside D.R.P.I.V), Astro-first UI, skill routing, and validation with project gates.
+description: Canonical design workflow. Phase 0 (design spec) → Phase 1 (prototype, optional) → Phase 2 (convert to code) → Phase 3 (validate). frontend-specialist runs in foreground (requires file write permissions).
+workflow_type: prompt-chaining
 ---
 
-# /design — Grupo US
+# /design — Design Workflow
 
 **ARGUMENTS**: $ARGUMENTS
 
-> Use this command for real UI work in this Astro repo. Start from the current codebase, not from historical prompts.
+> Orchestration-only. Deep policy lives in `ui-ux-pro-max` (spec) + `frontend-design` (creative execution).
 
-## Project Contract
+---
 
-- Read `AGENTS.md` and `.claude/CLAUDE.md` before doing anything else.
-- Audit the current repo state before proposing or implementing UI changes.
-- This site is static Astro. Do **not** introduce SPA behavior or `ClientRouter` unless the user explicitly overrides the repo rules.
-- Prefer `.astro` components. Use React islands only when the interaction truly requires client JS, and pair motion with `useReducedMotion()` when React/Framer is used.
-- Use the real project tokens and fonts already configured in the repo: GPUS navy/gold, Playfair Display, Inter, Lucide icons.
-- Validate every change with runtime evidence. A design task is not done until the relevant checks pass.
+## Stopping Conditions
 
-## Methodology: D.R.P.I.V + A.P.T.E
+- STOP if 3 design iterations fail Template Test → present options, ask user
+- ASK if no design tokens exist for the required color role
+- ASK if design contradicts existing component patterns in `${paths.componentsRoot}/`
 
-Map reasoning onto the delivery phases:
+---
 
-| D.R.P.I.V phase | A.P.T.E step | Purpose in `/design` |
-| --- | --- | --- |
-| Discover | **Analyze** | Inspect target files, classify blast radius, pick workstream. |
-| Research | **Research** | Reconcile SoT, facts (URLs, pricing, copy), patterns in repo. |
-| Plan | **Think** + **Elaborate** | Choose approach, state non-goals, produce plan or `UI-SPEC`. |
-| Implement | (execution) | Astro-first changes per repo rules. |
-| Validate | (evidence) | CLI gates + browser/a11y checks below. |
+## 0. Context load (WISC)
 
-**Fast path does not skip Discover:** even Tier A requires reading the target file(s) and parent layout; "fast" means no written mini-plan, not no audit.
+1. Run `/prime frontend` — loads frontend rules first, then only the required references on demand.
+2. If continuing a prior session → read `.claude/docs/evolution/HANDOFF.md` first.
 
-## Scope tiers (gates)
+**Tier 3 references (read on demand only):**
+- Project design system foundation (e.g., `docs/design-specs/00-design-system-foundation.md` or `.claude/rules/DESIGN.md` if exists)
+- LEVER / extend-vs-create philosophy doc — only when deciding extend vs create new component
+- Relevant feature spec — only for the surface being designed
 
-Classify the task **after** Phase 0 audit:
+---
 
-| Tier | When | Plan artifact | `/gsd:ui-phase` |
-| --- | --- | --- | --- |
-| **A** | Single obvious fix, one component or style tweak, no journey/tokens/global layout change | None beyond mental checklist | Not required |
-| **B** | Multiple files, new section variant, typography/spacing system touch, or any CTA/journey/copy change | Short mini-plan: goal, files, approach, assumptions, non-goals | Optional; use if layout/interaction is ambiguous |
-| **C** | New page, major redesign, or new reusable visual system across pages | Written plan + **`UI-SPEC.md`** via `/gsd:ui-phase` before code | **Required** before implementation |
+## 1. Assess complexity
 
-**Tier B mini-plan (before code):** one paragraph goal, bullet list of files, chosen approach + one alternative rejected briefly, explicit assumptions, what you will **not** change.
+Per `_shared.md` § 2.
 
-**Tier C:** Do not implement until `UI-SPEC.md` exists and user has approved direction if they asked for review.
+| Complexity | Pattern | When |
+|---|---|---|
+| L1-L2 | Direct code | Bug fix, simple tweak |
+| L3 | Single agent (foreground) | Component, known pattern |
+| L4-L5 | Multiple agents | New feature, multi-component |
+| L6+ | Agent Team | Full page, complex UX |
 
-## Skill and context routing (order)
+---
 
-Load in this order unless the task is pure copy with zero layout (then `grupo-us` + content JSON may come first):
+## 2. Design tool chain
 
-1. **`astro`** — Content Collections, `.astro` patterns, islands policy, images, Tailwind v4 in this repo.
-2. **`gpus-theme`** — Tokens, `glass-card`, navy/gold; **repo wins** over portable theme docs (this site is dark-only, MPA).
-3. **`.claude/rules/frontend.md`** and **`.claude/rules/a11y.md`** — Hard gates for components and layout.
-4. **`grupo-us`** — When changing or validating copy, CTAs, product messaging, journey order, or `src/content/products/*.json`.
-5. **`ui-ux-pro-max`** — Only for meaningful visual/UX invention (new layout language, ambiguous hierarchy). Treat as **heuristic library**; follow the skill’s **Grupo US Astro** override block so stack advice matches this repo (not mobile/RN defaults).
-6. **GSD UI** — `/gsd:ui-phase` / `gsd-ui-phase` skill for Tier C; `gsd-ui-review` after large passes if useful.
+```
+Phase 0: explorer + Skill("ui-ux-pro-max") → design spec
+Phase 1: optional — prototype tool (Stitch / Figma plugin / manual) → reference layout
+Phase 2: frontend-specialist + Skill("frontend-design") → component code
+Phase 3: debugger + performance-optimizer → validate
+```
 
-**Do not** lean on `ui-ux-pro-max` for every small tweak.
+**Key rule:** `ui-ux-pro-max` generates the *spec* (Phase 0). `frontend-design` drives the *creative execution* (Phase 2). They never swap phases.
 
-## Available Tooling
+### 2.1 Phase 1 prototype tool selection
 
-- **Primary skills:** `astro`, `gpus-theme` (plus path rules above).
-- **Conditional:** `grupo-us` (copy/journey/CTA/content), `ui-ux-pro-max` (substantial new surfaces or unclear visual direction).
-- **UI design contract:** `/gsd:ui-phase` — `UI-SPEC.md` for Tier C (and optional for Tier B when unclear).
-- **UI verification:** browser MCP (check `AGENTS.md` for the correct `serverIdentifier`).
-- **Do not depend on:** Stitch MCP, hardcoded prototype workflows, or fixed "3 islands" rules.
+| Tool | When |
+|---|---|
+| `mcp__stitch__*` (if available) | New pages with available design system asset IDs in project's design-tokens skill |
+| Figma / external prototype | When designer hands off in another tool |
+| Manual reference | Skip Phase 1 — proceed directly to Phase 2 with the Phase 0 spec |
 
-## Source-of-Truth Order
+Pass `--prototype-tool=stitch|figma|manual` in `$ARGUMENTS` to force a specific tool. Default = `auto` (use Stitch if MCP available + design-system asset IDs known, else `manual`).
 
-Use this order whenever content or routing conflicts appear:
+---
 
-1. Current approved repo state
-2. Direct user instruction
-3. Live canonical pages for factual product data (`drasacha.com.br`, `namesa.gpus.com.br`, `otb.gpus.com.br`)
-4. Historical docs in `docs/plans/aprimoramento/`
+## 3. Pre-flight: design research (mandatory L3+)
 
-Notes:
+Before ANY implementation, spawn `explorer` (foreground) to generate a design specification.
 
-- For factual conflicts like location, dates, pricing, and product destination URLs, prefer the live canonical page over historical docs unless the user says otherwise.
-- For implementation strategy, prefer the repo rules over older prompts.
-- If a fact cannot be verified, state **Knowledge gap** and do not invent.
+Prompt template:
 
-## Mandatory Phase 0: Current-State Audit First
+```
+Invoke Skill("ui-ux-pro-max") and analyze: [user request]
 
-Before changing anything:
+Using ui-ux-pro-max, generate a complete design spec:
+1. Style selection (justify against request context)
+2. Color palette (semantic design tokens — never hardcode hex)
+3. Typography pairing (name + scale)
+4. Layout system (grid, spacing, breakpoints)
+5. Component inventory (list primitives to use — shadcn/ui or equivalent)
+6. Interaction patterns (hover, focus, loading, error, empty states)
+7. Accessibility requirements (WCAG AA minimum)
+8. Animation strategy (entrance, micro-interactions, prefers-reduced-motion)
 
-1. Inspect the files that already implement the target surface (trace page → components → content JSON when relevant).
-2. Check whether the work is:
-   - new UI
-   - refinement of an existing section
-   - copy/legal/SEO
-   - external product redirect-only
-3. Confirm whether related checks already fail (`bun run check:external-urls`, `bunx astro check`, `bun run build`, `bun run lint`).
-4. Identify existing patterns to preserve before inventing new ones.
-5. **Assign Tier A / B / C** and satisfy that tier’s plan gate before coding.
-6. **Tier C:** run `/gsd:ui-phase` first to generate `UI-SPEC.md` (layout, interactions, empty states, tokens) before writing implementation code.
+Context: existing patterns in ${paths.componentsRoot}/, current design tokens in ${paths.stylesRoot}/global.css (or equivalent)
+Return: structured design spec (no code yet)
+```
 
-If the repo already contains the feature in partial form, treat the task as **preserve and finish**, not "start from zero."
+**Skip only for:** bug fixes (L1-L2) or trivial CSS tweaks.
 
-## Workstream Routing
+---
 
-Choose the branch that matches the task:
+## 4. Agent selection
 
-| Workstream | Typical Scope | Default Approach |
-| --- | --- | --- |
-| `home` | Hero, product grid, journey, stats, CTA, testimonials | Astro-first, preserve section order |
-| `about` | Mission, values, team, credibility | Astro-first, content-driven |
-| `landing` | Product landing sections | Reuse `src/components/landing/*` patterns |
-| `legal-seo-copy` | metadata, legal pages, copy alignment, OG, favicon | Usually no heavy design loop needed |
-| `external-product-redirect` | `externalSiteUrl`, redirects, sitemap, nav/grid consistency | Treat as routing/content integrity work first |
+| Task type | Agent | Background? |
+|---|---|---|
+| Component or new page | `frontend-specialist` | **No — foreground (Write/Edit required)** |
+| Accessibility test | `debugger` | Yes |
+| Performance review | `performance-optimizer` | Yes |
+| SEO meta | `performance-optimizer` | Yes |
 
-If the task is mainly `legal-seo-copy` or `external-product-redirect`, do **not** force a heavyweight visual design process (Tier A/B only unless user asks for redesign).
+For parallel execution of write-capable agents: multiple foreground `Agent()` calls in **one message**.
 
-## Implementation Rules
+---
 
-### 1. Load the right context
+## 5. Execution patterns
 
-Follow **Skill and context routing (order)** above.
+### 5.1 L1-L2 (bug fix / tweak)
 
-### 2. Preserve structural guards from the repo
+Fix directly. Skip Phase 0 + background agents.
 
-- Home order must stay coherent with the current conversion flow.
-- Product landing pages must respect the established section order in `AGENTS.md`.
-- Legal links must point to real routes.
-- `skip-link` and no-JS reveal fallback must remain intact.
-- FAQ behavior must stay accessible and avoid height tween anti-patterns.
-- Content and schema: prefer `getCollection()` / JSON in `src/content/`; no hardcoded product copy in components; hero images need explicit dimensions per `AGENTS.md`.
+### 5.2 L3 (component / known pattern)
 
-### 3. External product guardrails
+1. Pre-flight: spawn `explorer` foreground with design spec prompt
+2. Wait for spec
+3. Spawn `frontend-specialist` foreground with spec
 
-When touching `na-mesa-certa` or `otb`:
+### 5.3 L4-L5 (multi-component / feature)
 
-- Keep `externalSiteUrl`, `cta.url`, `astro.config.mjs` redirects, and sitemap filtering aligned.
-- Avoid hardcoded external URLs outside the approved pattern.
-- Run `bun run check:external-urls` before considering the task complete.
+1. Pre-flight: spawn `explorer` foreground with design spec prompt
+2. Wait for spec
+3. Spawn multiple `frontend-specialist` agents foreground (one per component/section) in same message
 
-### 4. Journey and CTA guardrails
+### 5.4 L6+ (full page / complex UX)
 
-- The home journey must follow the canonical 5-stage order:
-  `curso-auriculo` -> `comunidade-us` -> `trintae3` -> `mentoria-black-neon` -> `otb`
-- `neon-dash` and `na-mesa-certa` are complementary experiences, not part of that 5-stage sequence.
-- Distinguish page destination from CTA destination:
-  - navigation/info link: `externalSiteUrl ?? /slug`
-  - conversion link: `cta.url`
-- Do not "normalize" heterogeneous CTA destinations unless the user explicitly asks for that product strategy change.
+1. Pre-flight: spawn `explorer` foreground with design spec prompt
+2. Phase 1 prototype (if new page + tool available): use Stitch MCP with project's design-tokens skill (`gpus-theme`, `design-tokens`, etc.)
+3. Spawn `frontend-specialist` agents per section as foreground parallel calls
 
-## Agent / Tool Routing
+---
 
-Use the lightest workflow that fits:
+## 6. Skills to load
 
-- **Tier A / small scoped change:** implement after Phase 0; no subagent required.
-- **Tier B / multi-file or ambiguous UX:** optional `frontend-specialist` or short plan-only pass first.
-- **Tier C / large surface:** `frontend-specialist` or GSD UI workflow as appropriate after `UI-SPEC`.
-- **Accessibility or behavior review:** add `debugger` skill/agent.
-- **Performance or Lighthouse-sensitive work:** add `performance-optimizer` skill/agent.
-- **Visible UI verification:** browser MCP after changes.
+```
+Phase 0 (in explorer):           Skill("ui-ux-pro-max")
+Phase 1 (if Stitch):              Skill("<project-design-tokens-skill>")  // provides asset IDs
+Phase 2 (in frontend-specialist): Skill("frontend-design") + Skill("<project-design-tokens-skill>")
+```
 
-**MCP:** Before any MCP tool call, read the tool schema under `AGENTS.md` paths and use the correct `serverIdentifier` (e.g. browser MCP for screenshots).
+If project lacks a design-tokens skill, the design tokens come from `${paths.stylesRoot}/global.css` `@theme` (or equivalent) — pass them explicitly to the agent.
 
-Prefer background subagents only when the task is large enough to benefit from them.
+---
 
-## Validation Gates
+## 7. 4-phase pipeline
 
-Run the gates that match the change:
+### Phase 0 — Design research (`explorer` + `ui-ux-pro-max`)
 
-### Always for substantive code changes
+Always for L3+. Generates structured design spec. Pass spec to frontend-specialist prompt.
 
-- `bunx astro check`
-- `bun run build`
-- `bun run lint`
+### Phase 1 — Prototype (optional)
 
-### Additionally when external products are touched
+**When:** new pages or landing pages where the design system supports prototype generation. Skip for components and bug fixes.
 
-- `bun run check:external-urls`
+If using Stitch MCP:
+1. Invoke project design-tokens skill — loads design system asset IDs
+2. `mcp__stitch__generate_screen_from_text` with design prompt
+3. `mcp__stitch__apply_design_system` using project asset IDs
+4. Iterate with `mcp__stitch__edit_screens` if needed
+5. `mcp__stitch__get_screen` → download HTML reference
 
-### Additionally when visible UI changes are touched (acceptance minimum)
+If skipping prototype: pass Phase 0 spec directly to Phase 2.
 
-- **Routes:** every affected route loaded (or redirect behavior verified if redirect-only).
-- **Viewports:** at least **375px** and **1280px** (add **1024px** if layout has desktop breakpoints).
-- **Keyboard:** tab through primary navigation, first CTA, and any new interactive control; focus visible (gold outline per `global.css`).
-- **Motion:** if CSS reveal, Framer, or infinite animations changed — verify `prefers-reduced-motion` behavior (or `useReducedMotion()` on islands).
-- **Browser:** screenshot or live check on affected pages; spot-check heading order (`h1` once, logical `h2`/`h3`).
-- **Content/images:** meaningful `alt` on changed images; no new arbitrary hex — use tokens from `@theme` / approved utilities.
+### Phase 2 — Convert to code
 
-For marketing-critical pages, align with `AGENTS.md` performance/a11y targets (Lighthouse, LCP, CLS) or note explicit waiver with the user.
+**`frontend-specialist` MUST invoke BOTH `Skill("frontend-design")` and the project design-tokens skill BEFORE writing any code.**
 
-## Anti-Patterns
+#### Declare DESIGN COMMITMENT (mandatory — before first line of code)
 
-Never do the following in this repo:
+```
+DESIGN COMMITMENT: [Style Name]
+  Geometry:    [specific layout — not "clean grid"]
+  Typography:  [font + scale decision]
+  Palette:     [specific design tokens]
+  Effects:     [specific animations / micro-interactions]
+  Anti-cliché: NOT Bento / glass / mesh / safe 50-50 split
+```
 
-- Depend on Stitch MCP or any unavailable design tool
-- Assume the task needs a prototype before reading the existing code
-- Hardcode `Na Mesa Certa` or any single product as the default design context
-- Hardcode "only 3 React islands"
-- Introduce `ClientRouter` or SPA behavior by default
-- Replace data-driven URLs with manual links in components
-- Skip `bun run check:external-urls` when changing external product flows
-- Ignore dirty worktree context and overwrite unrelated existing changes
-- Skip Tier B mini-plan or Tier C `UI-SPEC` when the tier applies
-- Implement from generic skill advice when it conflicts with `AGENTS.md` (MPA, islands, tokens)
+> If you can describe the layout as "clean and minimal" without specifics, you haven't committed — restart thinking.
 
-## Definition of Done
+#### Implement
 
-A `/design` task is done only when:
+1. Break into components (max ~150 lines each)
+2. Use design system primitives (shadcn/ui or project equivalent)
+3. All colors → semantic design tokens (never hardcode hex)
+4. Add data queries (per project's data layer — tRPC / server actions / loaders / fetch)
+5. TypeScript interfaces
+6. Scroll-triggered entrance animations (staggered) — gated by `prefers-reduced-motion`
+7. Micro-interactions (`scale` / `translate` / `opacity` only — never animate layout properties)
+8. `prefers-reduced-motion` support mandatory
 
-- The implementation follows the repo's Astro-first rules
-- The chosen source of truth is explicit and consistent
-- The scope tier and its plan gate were satisfied (A/B/C)
-- Any external product routing stays aligned
-- Required validation commands pass
-- Visible UI changes meet the **acceptance minimum** in Validation Gates
-- **Tier B/C visual changes: Maestro Auditor check passed** *(generic designs ship unnoticed — these 3 questions prevent bland-by-default)*:
-  - **Template Test** — "Can I find this exact layout in a Tailwind UI/generic template?" If yes, push harder for distinctiveness before shipping.
-  - **Memory Test** — "Will the user remember one specific visual element 24 hours later?" If nothing stands out, the design is forgettable.
-  - **Differentiation Test** — "Does this feel like Grupo US / Dra. Sacha, or like any health/education SaaS template?" Generic = reject.
+### Phase 3 — Validate
 
-> `MAESTRO RULE: "If I can find this layout in a Tailwind UI template, I have failed."`
+#### Maestro auditor (auto-rejection gates)
+
+If ANY trigger is true → delete the implementation and restart:
+
+| Trigger | Fail condition | Fix |
+|---|---|---|
+| Safe Split | `grid-cols-2`, 50/50, 60/40, 70/30 layouts | Switch to 90/10, 100% stacked, or overlapping |
+| Glass Trap | `backdrop-blur` without solid borders | Remove blur → solid colors + raw 1-2px borders |
+| Glow Trap | Soft gradients to "pop" elements | High-contrast solid colors or grain textures |
+| Bento Trap | Safe rounded grid boxes | Fragment grid, break alignment intentionally |
+| Blue Trap | Default blue/teal as primary | Use project tokens or distinctive accent |
+| Line Trap | `1px solid` border dividers | Background shifts, thick padding, ghost borders |
+
+**Template test:** "Could this be a Vercel/Stripe template?" → YES = FAIL.
+
+#### UX quality
+
+- [ ] Loading states (skeletons shaped like expected output — not spinners)
+- [ ] Error states
+- [ ] Empty states with user guidance
+- [ ] Keyboard navigation + focus not obscured by sticky elements (WCAG 2.2 SC 2.4.11)
+- [ ] Touch targets ≥ 44×44px; minimum 24×24px with spacing (WCAG 2.2 SC 2.5.8)
+- [ ] Drag interactions have non-drag alternatives (WCAG 2.2 SC 2.5.7)
+- [ ] Key content left-aligned (NN Group: 69% more attention on left half)
+- [ ] Choices grouped if >7 options (Hick's Law)
+- [ ] Hover/state animations via CSS transitions, not JS (protects INP < 200ms at p75)
+
+#### Visual quality
+
+- [ ] Semantic tokens only (no hardcoded hex)
+- [ ] Dark mode tested (if dark mode is in scope)
+- [ ] Responsive breakpoints verified
+
+#### Code quality (per `_shared.md` § 1)
+
+- [ ] Design system primitives used
+- [ ] Type-check passes
+- [ ] Lint passes
+
+---
+
+## Anti-patterns
+
+| Don't | Do |
+|---|---|
+| Skip Phase 0 for L3+ | Always run explorer + ui-ux-pro-max first |
+| Run frontend-specialist in background | Foreground only (background silently denies Write/Edit) |
+| Skip Skill("frontend-design") | Invoke before any code in frontend-specialist |
+| Write code before DESIGN COMMITMENT | Declare geometry/typography/palette/effects first |
+| Use ui-ux-pro-max in frontend-specialist | Phase 0 (explorer) only |
+| Hardcode colors | Semantic design tokens |
+| Custom modal from scratch | Design system Dialog primitive |
+| Nested ScrollArea | Single at layout level |
+| Components in `ui/` | `components/[feature]/` |

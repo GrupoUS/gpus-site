@@ -12,46 +12,49 @@ After fixing, add validation at EVERY layer data passes through.
 
 | Layer | Purpose | Example |
 |-------|---------|---------|
-| **1. Entry Point** | Reject invalid input at boundary | Content Collection Zod schema |
-| **2. Business Logic** | Ensure data makes sense | Validate event data before render |
-| **3. Environment Guards** | Prevent dangerous operations | Block build with wrong SITE URL |
+| **1. Entry Point** | Reject invalid input at API boundary | Zod schema validation |
+| **2. Business Logic** | Ensure data makes sense | Duplicate check before create |
+| **3. Environment Guards** | Prevent dangerous operations | Refuse prod DB ops in tests |
 | **4. Debug Instrumentation** | Capture context for forensics | Stack traces, timestamps |
 
 ### Implementation
 
 ```typescript
-// Layer 1: Entry Point (Content Collection schema + Zod)
-const eventSchema = z.object({
-  title: z.string().min(1, "Titulo é obrigatório"),
-  date: z.date(),
-  location: z.string(),
-  capacity: z.number().positive(),
-});
+// Layer 1: Entry Point (tRPC + Zod)
+export const create = mentoradoProcedure
+  .input(z.object({
+    nome: z.string().min(1, "Nome é obrigatório"),
+    email: z.string().email().optional(),
+  }))
+  .mutation(async ({ ctx, input }) => { /* ... */ });
 
-// Layer 2: Business Logic (Astro page data loading)
-export async function getEventData(slug: string) {
-  const event = await getEntry("events", slug);
-  if (!event) {
-    throw new Error(`Event not found: ${slug}`);
+// Layer 2: Business Logic
+async function createMentorado(ctx: Context, input: CreateInput) {
+  const existing = await ctx.db
+    .select()
+    .from(mentorados)
+    .where(and(
+      eq(mentorados.userId, ctx.userId),
+      eq(mentorados.nome_completo, input.nome),
+    ));
+
+  if (existing.length > 0) {
+    throw new TRPCError({ code: "CONFLICT", message: "Nome já existe" });
   }
-  if (event.data.capacity <= 0) {
-    throw new Error(`Invalid capacity for event: ${slug}`);
-  }
-  return event;
 }
 
 // Layer 3: Environment Guard
-if (import.meta.env.MODE === "production") {
-  const siteUrl = import.meta.env.SITE ?? "";
-  if (!siteUrl.includes("namesacerta")) {
-    throw new Error("Refusing to build with incorrect SITE URL");
+if (process.env.NODE_ENV === "test") {
+  const dbUrl = process.env.DATABASE_URL ?? "";
+  if (!dbUrl.includes("localhost") && !dbUrl.includes("neondb_test")) {
+    throw new Error("Refusing operation on non-test database");
   }
 }
 
 // Layer 4: Debug Instrumentation
-console.error("DEBUG content-load:", {
-  collection,
-  slug,
+console.error("DEBUG db-op:", {
+  table,
+  dataKeys: Object.keys(data),
   timestamp: new Date().toISOString(),
   stack: new Error().stack,
 });

@@ -176,45 +176,6 @@ After design is approved and documented:
 
 ---
 
-## MCP Cascade (For Research)
-
-```
-1. Codebase → Grep/Glob/Read
-   └─► Confidence: 5 (verified in code)
-
-2. Tavily → search/searchContext/extract
-   └─► Confidence: 4-5 (freshest web data)
-
-3. NotebookLM → ask_question (project memory)
-   └─► Confidence: 4-5 (curated validation)
-
-4. Sequential Thinking → synthesis
-   └─► For complex decisions
-```
-
-### Tavily (Primary)
-
-```
-tavily_search → tavily_searchContext → tavily_extract
-```
-
-### NotebookLM (Validation)
-
-```
-ask_question(notebook_id: "<project-notebook-id>", question: "...")
-ask_question(notebook_id: "planning-prompt-engineering", question: "...")
-```
-
-### Sequential Thinking
-
-| Situação | Pensamentos |
-|----------|-------------|
-| Bug simples | 2-3 |
-| Feature | 4-5 |
-| Arquitetura | 6-8 |
-
----
-
 ## Principles
 
 | Princípio | Por quê |
