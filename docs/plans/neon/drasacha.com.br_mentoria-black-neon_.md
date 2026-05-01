@@ -12,14 +12,14 @@ QUERO SER NEON
 Um negócio de Saúde Estética vai muito além dos procedimentos
 Você domina a técnica, as pessoas amam seus resultados, você é apaixonada pelo que faz…
 
-Mas, no dia a dia, a realidade pode ser desafiadora: a concorrência acirrada, a dependência de você na operação, a gestão financeira que tira o sono, a sensação de trabalhar incansavelmente sem ver o lucro desejado, e a dúvida sobre qual o próximo passo para realmente escalar. 
+Mas, no dia a dia, a realidade pode ser desafiadora: a concorrência acirrada, a dependência de você na operação, a gestão financeira que tira o sono, a sensação de trabalhar incansavelmente sem ver o lucro desejado, e a dúvida sobre qual o próximo passo para realmente escalar.
 
 Você foi ensinada a ser uma excelente injetora, mas nunca te disseram como é construir uma empresa.
 
 É por isso que o NEON não é apenas uma mentoria. É a sua virada de chave. Uma experiência completa que vai além da técnica, oferecendo o suporte estratégico que você precisa para acelerar sua carreira, estruturar um negócio saudável e consolidar sua marca como referência no mercado premium da Saúde Estética.
-Para quem o Neon foi desenhado:  
+Para quem o Neon foi desenhado: 
 
- Você merece ter um negócio que te dá liberdade. Nós entregamos a estrutura para isso.
+Você merece ter um negócio que te dá liberdade. Nós entregamos a estrutura para isso.
 Já atua em Saúde Estética Avançada
 Quer ser ainda mais reconhecida e bem paga
 Quer escalar com estratégia, não com exaustão
@@ -133,8 +133,8 @@ Hoje, com mais de 13 anos como empresária, especialista em Saúde Estética Ava
 
 Você não precisa fazer esse caminho sozinha. Com o direcionamento certo, você acelera seus resultados, constrói autoridade e atrai clientes de alto valor, tudo isso sem abrir mão da sua essência.
 
-É por isso que criei o NEON, minha Mentoria Black. Para te ajudar a sair do comum, escalar com estratégia e viver o extraordinário na sua carreira.
-Se você está pronta para brilhar como nunca, eu estou aqui pra caminhar com você.  Dra. Sacha Gualberto Mentora de Profissionais da Saúde
+É por isso que criei o NEON, minha Mentoria Black.Para te ajudar a sair do comum, escalar com estratégia e viver o extraordinário na sua carreira.
+Se você está pronta para brilhar como nunca, eu estou aqui pra caminhar com você.Dra. Sacha GualbertoMentora de Profissionais da Saúde
 
 Ainda com dúvidas?
 Clique no link abaixo e fale com nosso suporte!
