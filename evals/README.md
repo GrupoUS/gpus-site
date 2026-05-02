@@ -2,6 +2,15 @@
 
 This tree is **mandatory** whenever `/evolve` runs **Fase 1** (autoresearch with `<evolve_request>`).
 
+## Top-level dirs
+
+| Path | Status | Purpose |
+|---|---|---|
+| `README.md` | active | this file (layout SSOT) |
+| `site/<area-slug>/` | **active** | GPUS site copy/SEO/CTA autoresearch — `compound.md` + `runs/` (cited by `docs/learnings-log.md`) |
+| `<skill-slug>/runs/<id>/` | active (write target) | new `/evolve optimize <slug>` runs land here |
+| `_archive/` | **read-only** | frozen `2026-03-26` skill-autoresearch snapshots (wins promoted to skills) — see [`_archive/README.md`](_archive/README.md) |
+
 ## Layout
 
 ```text
@@ -30,7 +39,7 @@ Use one `runs/<run-id>/` folder per optimization session so history stays diff-f
 From the repo root:
 
 ```bash
-python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py init \
+python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_log.py init \
   --evals-root evals \
   --skill-slug <target_skill_name_slug> \
   --target-skill-name "Human name" \
@@ -39,19 +48,19 @@ python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_log.py in
 
 Then `import-response` with `--merge-backlog` to append gaps from the XML into `backlog.md`.
 
-See `.claude/commands/evolve.md` (Fase 1) and `.claude/skills/evolve-autoresearch/SKILL.md`.
+See `.claude/commands/evolve.md` (`optimize` mode) and `.claude/skills/evolution-core/references/optimizer.md`.
 
 Alternative bootstrap flow:
 
 ```bash
-python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_harness.py init-run \
+python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_harness.py init-run \
   --file /tmp/evolve-request.xml
-python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_mutate.py seed-candidates \
+python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_mutate.py seed-candidates \
   --run-dir evals/<slug>/runs/<run-id>
-python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_score.py score-candidate \
+python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_score.py score-candidate \
   --run-dir evals/<slug>/runs/<run-id> \
   --grade-file evals/<slug>/runs/<run-id>/grades/baseline.json
-python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_report.py build-response \
+python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_report.py build-response \
   --run-dir evals/<slug>/runs/<run-id> \
   --append-backlog
 ```
@@ -88,6 +97,6 @@ After a **keep** decision, update `compound.md` with what should be preserved in
 
 Performance-focused site batches may live under `evals/site/performance-batch-<date>/` with the same structure (see `performance-batch-2026-03-26/`).
 
-Primary human-readable log still remains **`AGENTS.md`** → `## Learnings log (evolve)`, but `compound.md` is the area-level memory for future autoresearch.
+Primary human-readable log lives at **`docs/learnings-log.md`** (root `AGENTS.md § Recent learnings` carries the last 3 as a one-line summary). `compound.md` is the area-level memory for future autoresearch.
 
-Skill: `.claude/skills/auto-research-gpus/SKILL.md`.
+Sub-skill: `.claude/skills/evolution-core/references/gpus-profile.md` (loaded by `/evolve optimize site:<area>` or whenever `<input><area>` appears).

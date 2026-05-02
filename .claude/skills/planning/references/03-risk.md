@@ -1,93 +1,106 @@
-# Risk — Risco e Decisões (L6+)
+# Risk — Risk Assessment & Decisions (L6+)
 
-**Quando usar:** L6+ tasks, architecture decisions
-**Quando skip:** L1-L5 (a menos que breaking changes/security)
+**When to use:** L6+ tasks, architecture decisions, multi-module changes, breaking changes, security-sensitive work.
+**Skip:** L1-L5 unless breaking changes / security / data loss risk.
 
 ---
 
-## Pre-Mortem (Análise de Risco)
+## Pre-Mortem (Failure Analysis)
 
-### 1. Assumir Falha
+### 1. Assume Failure
 
-> "2 dias depois. O feature quebrou. O que aconteceu?"
+> "2 days later. The feature broke. What happened?"
 
-Categorias:
-- **Technical** — code logic, null checks, race conditions
-- **Integration** — webhooks, API contracts
-- **Data** — migrations, FK, indexes
-- **Performance** — N+1, full table scans
-- **Human** — requisitos mal entendidos
+Common categories:
+- **Build / type-check** — schema drift, missing import, generated-types stale, lockfile conflict
+- **Logic** — null checks, race conditions, off-by-one, unhandled promise rejection
+- **Integration** — webhook signature, API contract mismatch, version skew
+- **Data** — migration path, FK constraint, missing index, data loss on rollback
+- **Auth / permission** — wrong scope, tenant filter missing, privilege escalation
+- **Performance** — N+1, full table scan, hot path allocation, bundle bloat
+- **Security** — input validation gap, secret leak, CSRF/XSS, SSRF
+- **A11y / SEO** — missing labels, focus traps, broken canonical, missing meta
+- **Cross-cutting** — telemetry blind spot, log injection, missing rollback path
+- **Human** — requirement misread, scope creep, cardinal-rule violation
 
 ### 2. Ranking
 
 ```
-Score = Probabilidade (1-3) × Impacto (1-3)
+Score = Probability (1-3) × Impact (1-3)
 ```
 
-| Score | Ação |
-|-------|------|
-| 7-9 | **BLOCK** — Mitigar antes |
-| 4-6 | **MITIGATE** — Adicionar safeguards |
-| 1-3 | **ACCEPT** — Monitorar |
+| Score | Action                         |
+|-------|--------------------------------|
+| 7-9   | **BLOCK** — mitigate first     |
+| 4-6   | **MITIGATE** — add safeguards  |
+| 1-3   | **ACCEPT** — monitor           |
 
-### 3. Embed no Plano
+### 3. Embed in Plan
 
 ```markdown
 ## Risk
 
 | # | Risk | Score | Mitigation |
 |---|------|-------|------------|
-| 1 | FK cascade | 6 | Soft-delete instead |
+| 1 | [risk description] | 6 | [concrete mitigation step + owner] |
 ```
 
 ---
 
-## Falhas Comuns do Stack
+## Stack-Specific Failure Modes
 
-| Layer | Falha | Prevenção |
-|-------|-------|-----------|
-| Drizzle | Missing index FK | Sempre add index |
-| tRPC | Zod drift | Derivar de Drizzle |
-| Clerk | Webhook signature | Verificar secret |
-| Neon | Cold start | Connection pooling |
-| Stripe | Missing events | Idempotent handler |
+> Populate from the host project's `${overlay}/layer-map.md`. Generic checklist below — adapt to stack.
+
+| Layer | Failure (generic) | Prevention |
+|-------|-------------------|------------|
+| Schema / migration | Missing index on FK | Add index in same migration |
+| Validator | Drift between DB shape and API contract | Derive validator from canonical source (ORM, schema gen) |
+| Auth | Webhook signature unverified | Verify signing secret, fail closed |
+| DB connection | Cold-start saturation | Pool / serverless-friendly driver |
+| Payment / 3rd-party | Missing event handling, non-idempotent | Idempotent handler keyed on provider event ID |
+| Caching | Stale data after write | Invalidate on write, or short TTL |
+| Tests | Snapshot/fixture drift | Regenerate + review before merge |
+| Build | Lockfile out of sync | Commit lockfile with same package-manager version |
+| Deploy | Env var missing on target | Document in `.env.example`; fail-fast on first read |
+
+For project-specific failure modes (frontend hydration, render-mode invariants, design-token drift, redirect tri-sync, etc.), keep them in the host project's `.claude/rules/stability.md` or `${overlay}/layer-map.md` — not in this generic skill.
 
 ---
 
 ## ADR (Architecture Decision Records)
 
-**Quando:** L6+ com múltiplas abordagens válidas
-**Skip:** L1-L5, ou quando só existe uma abordagem
+**When:** L6+ with multiple valid approaches.
+**Skip:** L1-L5, or single-approach decisions.
 
-### Formato (≤15 linhas)
-
-```markdown
-### ADR: [Título]
-
-**Context:** [Problema e por que precisa decidir]
-
-**Options:** A) [Opção] / B) [Opção]
-
-**Decision:** [X] because [razão]
-
-**Consequences:** [Consequência], [Trade-off]
-```
-
-### Exemplo
+### Format (≤15 lines)
 
 ```markdown
-### ADR: Router para novos endpoints
+### ADR: [Title]
 
-**Context:** 8 novos endpoints. Projeto migra Express → Hono.
+**Context:** [Problem and why decision is needed]
 
-**Options:** A) Express / B) Hono
+**Options:** A) [Option] / B) [Option]
 
-**Decision:** Hono because alinhado com plano de migração.
+**Decision:** [X] because [reason]
 
-**Consequences:** Melhora performance, team aprende Hono.
+**Consequences:** [Consequence], [Trade-off]
 ```
 
-### Integração no Plano
+### Example (generic)
+
+```markdown
+### ADR: Router for new endpoints
+
+**Context:** 8 new endpoints. Project is mid-migration from Framework A to Framework B.
+
+**Options:** A) Framework A / B) Framework B
+
+**Decision:** B because aligned with migration roadmap; new endpoints don't need to be ported later.
+
+**Consequences:** Better long-term DX, team learns B, slightly higher initial setup cost.
+```
+
+### Plan Integration
 
 ```markdown
 ## Research
@@ -104,8 +117,9 @@ Score = Probabilidade (1-3) × Impacto (1-3)
 
 ## Checklist
 
-- [ ] 5+ failure modes brainstormed
-- [ ] Top 3 risks com mitigação
-- [ ] Score ≥ 7 tem rollback
-- [ ] Stack failures checkados
-- [ ] ADR para decisões arquiteturais (L6+)
+- [ ] 5+ failure modes brainstormed (cover build / logic / integration / data / auth / perf / security / cross-cutting)
+- [ ] Top 3 risks with mitigations
+- [ ] Score ≥ 7 has rollback path
+- [ ] Stack-specific failures from `${overlay}/layer-map.md` checked
+- [ ] Cardinal-rule violations from host `.claude/CLAUDE.md` checked
+- [ ] ADR for architectural decisions (L6+)

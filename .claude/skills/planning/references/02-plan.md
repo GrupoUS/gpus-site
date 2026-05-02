@@ -2,6 +2,9 @@
 
 **Save to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
 
+> Project context comes from `.claude/config.json` (`paths.*`, `tooling.*`) and the optional `${overlay}/layer-map.md`. Examples below use placeholders — substitute with the host project's values.
+> Plan handoff to executor agent must conform to `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md`.
+
 ---
 
 ## Plan Document Template
@@ -13,9 +16,9 @@
 
 **Goal:** [One sentence describing what this builds]
 
-**Architecture:** [2-3 sentences about approach]
+**Architecture:** [2-3 sentences — which layers in the project's chain, why]
 
-**Tech Stack:** [Key technologies/libraries]
+**Tech Stack:** [resolved from `.claude/config.json::tooling` — package manager, build tool, type checker, test runner, framework]
 
 **Complexity:** L[1-10] — [Justification]
 
@@ -23,9 +26,9 @@
 
 ## Research Summary
 
-| #   | Finding | Confidence | Source   | Impact |
-| --- | ------- | ---------- | -------- | ------ |
-| 1   | ...     | 4          | codebase | high   |
+| #  | Finding | Confidence | Source   | Impact |
+|----|---------|------------|----------|--------|
+| 1  | ...     | 4          | codebase | high   |
 
 **Knowledge Gaps:** [What remains unknown]
 **Assumptions:** [To validate]
@@ -36,21 +39,22 @@
 ## Sprint Contracts
 
 > Negotiated between planner and evaluator BEFORE implementation begins.
-> See `references/04-harness-patterns.md` for full template and calibration anchors.
+> Full template + calibration anchors → `references/04-harness-patterns.md`.
 
 ### Sprint Contract: Sprint 1 — [Name]
 
 **Deliverables:**
-- [ ] `exact/path/to/file.ts` — [what it does]
+- [ ] `exact/path/to/file.<ext>` — [what it does]
 
 **Acceptance Criteria:**
-- [ ] `bun run type-check` passes
-- [ ] `bun test [path]` passes
+- [ ] `${tooling.packageManager} run ${tooling.typeChecker}` reports 0 errors
+- [ ] `${tooling.packageManager} run ${tooling.testRunner} <path>` passes (when project has a test runner)
+- [ ] `${tooling.packageManager} run ${tooling.linter}` passes
 - [ ] Edge case: [describe at least 1]
 
-**Done Definition:** `bun run type-check && bun test [path]`
+**Done Definition:** [project's quality-gate command from `.claude/config.json` or `${overlay}/layer-map.md`]
 
-**Boundary (NOT in Sprint 1):** [what is explicitly excluded]
+**Boundary (NOT in Sprint 1):** [explicit deferrals]
 
 ### Sprint Contract: Sprint 2 — [Name]
 
@@ -62,58 +66,57 @@
 
 ### Phase 1: Foundation [SEQUENTIAL]
 
-> Context Reset Checkpoint: After this phase completes, write handoff artifact if context > 80K.
+> Context Reset Checkpoint: write handoff artifact if context > 80K (per `references/04-harness-patterns.md § 3`).
 
 ### Task 1: [Component Name]
 
 **Files:**
+- Create: `exact/path/to/file.<ext>`
+- Modify: `exact/path/to/existing.<ext>:123-145`
+- Test: `tests/path/to/test.<ext>` (if `tooling.testRunner` non-empty)
 
-- Create: `exact/path/to/file.ts`
-- Modify: `exact/path/to/existing.ts:123-145`
-- Test: `tests/path/to/test.ts`
+**Step 1: Define the contract first** (TDD when project has a test runner)
 
-**Step 1: Write the failing test**
-
-\`\`\`typescript
+```pseudo
 test('specific behavior', () => {
-const result = processInput(input);
-expect(result).toBe(expected);
+  const result = process(input);
+  expect(result).toBe(expected);
 });
-\`\`\`
+```
 
-**Step 2: Run test to verify it fails**
+**Step 2: Run and verify it fails**
 
-Run: `bun test tests/path/test.ts`
+Run: `${tooling.packageManager} run ${tooling.testRunner} tests/path/test.<ext>`
 Expected: FAIL with "function not defined"
 
-**Step 3: Write minimal implementation**
+**Step 3: Minimal implementation**
 
-\`\`\`typescript
-export function processInput(input: InputType): OutputType {
-return expected;
+```pseudo
+export function process(input: InputType): OutputType {
+  return expected;
 }
-\`\`\`
+```
 
-**Step 4: Run test to verify it passes**
+**Step 4: Verify it passes**
 
-Run: `bun test tests/path/test.ts`
+Run: `${tooling.packageManager} run ${tooling.testRunner} tests/path/test.<ext>`
 Expected: PASS
 
 **Step 5: Commit**
 
-\`\`\`bash
-git add tests/path/test.ts src/path/file.ts
-git commit -m "feat: add specific feature"
-\`\`\`
+```bash
+git add tests/path/test.<ext> src/path/file.<ext>
+git commit -m "feat: <concise message>"
+```
 
 ### Phase 2: Core [PARALLEL]
 
 > ⚡ PARALLEL-SAFE: Can run simultaneously
-> Context Reset Checkpoint: After this phase completes, write handoff artifact if context > 80K.
+> Context Reset Checkpoint after phase if context > 80K.
 
 ### Task 2: [Backend Component]
 
-**Owner:** debugger
+**Owner:** debugger (or appropriate specialist)
 [Same structure as Task 1]
 
 ### Task 3: [Frontend Component]
@@ -134,37 +137,39 @@ git commit -m "feat: add specific feature"
 **Options:**
 
 1. Implement now — `/implement`
-2. Review first — Open plan file
-3. Modify plan — Adjust before execution
+2. Review first — open plan file
+3. Modify plan — adjust before execution
 
-**Artifact handoff format** (for context resets between phases):
+**Artifact handoff format** (mid-plan context resets):
 - Save current state to `docs/plans/HANDOFF-{slug}.md`
 - Include: current phase, completed deliverables, active sprint contract, unresolved decisions, next action
-- See `references/04-harness-patterns.md` for full handoff artifact template
+- Schema → `references/04-harness-patterns.md § 3`
+
+**Executor handoff** (planner → executing agent): conform to Context Handoff schema in `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md`. Parallel-batch returns conform to `parallel-batch-contracts.md`.
 ```
 
 ---
 
 ## Complexity Levels
 
-| Level  | Indicadores               | Deliverables                |
-| ------ | ------------------------- | --------------------------- |
-| L1-L2  | Bug fix, single function  | Atomic tasks                |
-| L3-L5  | Feature, multi-file       | Tasks + research + parallel + mini-contracts |
-| L6-L8  | Architecture, integration | + full sprint contracts + pre-mortem + ADR |
-| L9-L10 | Migrations, multi-service | + dependency graph          |
+| Level  | Indicators                       | Deliverables                                  |
+|--------|----------------------------------|-----------------------------------------------|
+| L1-L2  | Bug fix, single function         | Atomic tasks                                  |
+| L3-L5  | Feature, multi-file              | Tasks + research + parallel + mini-contracts  |
+| L6-L8  | Architecture, integration        | + full sprint contracts + pre-mortem + ADR    |
+| L9-L10 | Migrations, multi-service        | + dependency graph                            |
 
 ### Complexity Indicators
 
-| Aumenta (+1 a +2) | Diminuye (-1)       |
-| ----------------- | ------------------- |
-| Multi files       | Patterns existentes |
-| DB changes        | Similar code        |
-| Auth              | Isolated            |
-| 3rd party APIs    | Tests exist         |
-| Breaking changes  |                     |
-| Security          |                     |
-| Multi-service     |                     |
+| Increases (+1 to +2) | Decreases (-1)        |
+|----------------------|-----------------------|
+| Multi-file            | Existing pattern reused |
+| DB / schema change    | Similar code already exists |
+| Auth / permission change | Isolated to one module |
+| 3rd-party API integration | Tests already exist |
+| Breaking change       | Feature flag available |
+| Security-sensitive    | |
+| Multi-service         | |
 
 ---
 
@@ -185,9 +190,9 @@ git commit -m "feat: add specific feature"
 
 ### Task Requirements
 
-- Exact file paths with line ranges
-- Complete code (never "add validation" or "implement logic")
-- Validation command with expected output
+- Exact file paths with line ranges where relevant
+- Complete code snippets (never "add validation" or "implement logic")
+- Validation command per phase (`${tooling.packageManager} run …`)
 - Rollback implicit: undo the change
 - Dependencies marked with ⚡ PARALLEL-SAFE
 
@@ -201,7 +206,7 @@ git commit -m "feat: add specific feature"
 ### Phase 1: Foundation [SEQUENTIAL]
 
 > Must complete before next phase
-> Context Reset Checkpoint: write handoff artifact after phase if context > 80K
+> Context Reset Checkpoint after phase if context > 80K
 
 - Task 1.1
 - Task 1.2
@@ -212,7 +217,7 @@ git commit -m "feat: add specific feature"
 ```markdown
 ### Phase 2: Core [PARALLEL]
 
-> ⚡ PARALLEL-SAFE: Can run simultaneously
+> ⚡ PARALLEL-SAFE: independent components
 
 - Task 2.1 (debugger)
 - Task 2.2 (frontend-specialist)
@@ -223,13 +228,13 @@ git commit -m "feat: add specific feature"
 
 ## Confidence Scoring
 
-| Score | Significado               | Ação                |
-| ----- | ------------------------- | ------------------- |
-| **5** | Verified in codebase/docs | Use directly        |
-| **4** | Multiple sources agree    | Use with confidence |
-| **3** | Community consensus       | Note uncertainty    |
-| **2** | Single source/unverified  | Flag as assumption  |
-| **1** | Speculation               | Don't rely on it    |
+| Score | Meaning                       | Action               |
+|-------|-------------------------------|----------------------|
+| **5** | Verified in codebase / docs   | Use directly         |
+| **4** | Multiple sources agree        | Use with confidence  |
+| **3** | Community consensus           | Note uncertainty     |
+| **2** | Single source / unverified    | Flag as assumption   |
+| **1** | Speculation                   | Don't rely on it     |
 
 **Rule:** Findings ≤ 2 MUST be flagged and validated before relying.
 
@@ -237,13 +242,15 @@ git commit -m "feat: add specific feature"
 
 ## Agent Selection
 
-| Complexity | Pattern    | Agents           | Parallel? |
-| ---------- | ---------- | ---------------- | --------- |
-| L1-L2      | Direct     | None             | N/A       |
-| L3         | Subagent   | 1 explorer | No        |
-| L4-L5      | Swarm      | 2-3 subagents    | YES       |
-| L6-L8      | Team       | 3-5 teammates    | YES       |
-| L9-L10     | Full Swarm | 5+               | YES       |
+| Complexity | Pattern    | Agents              | Parallel? |
+|------------|------------|---------------------|-----------|
+| L1-L2      | Direct     | None                | N/A       |
+| L3         | Subagent   | 1 (explorer or specialist) | No |
+| L4-L5      | Swarm      | 2-3 subagents       | YES       |
+| L6-L8      | Team       | 3-5 teammates       | YES       |
+| L9-L10     | Full Swarm | 5+                  | YES       |
+
+Spawn templates + handoff schema → `.claude/skills/senior-prompt-engineer/SKILL.md`.
 
 ---
 
@@ -257,7 +264,7 @@ For complex tasks (L6+), add these sections:
 ## Risk Assessment
 
 | Risk     | Probability  | Impact       | Mitigation        |
-| -------- | ------------ | ------------ | ----------------- |
+|----------|--------------|--------------|-------------------|
 | [Risk 1] | High/Med/Low | High/Med/Low | [How to mitigate] |
 ```
 
@@ -278,7 +285,7 @@ For complex tasks (L6+), add these sections:
 **Consequences:** [Trade-offs accepted]
 ```
 
-> See `references/03-risk.md` for full pre-mortem protocol.
+> Full pre-mortem protocol → `references/03-risk.md`.
 
 ---
 
@@ -286,22 +293,24 @@ For complex tasks (L6+), add these sections:
 
 Before presenting plan:
 
-- [ ] Research complete (codebase, docs, edge cases)
-- [ ] Sprint contracts negotiated and evaluator-approved
+- [ ] Research complete (codebase, official docs via Context7, current best practices via Tavily)
+- [ ] Sprint contracts negotiated and evaluator-approved (L6+)
 - [ ] Atomic tasks (2-5 min each step)
-- [ ] Exact paths with line ranges
-- [ ] Complete code provided
+- [ ] Exact paths
+- [ ] Complete code snippets provided
 - [ ] Parallel tasks marked with ⚡
 - [ ] Confidence scores (1-5)
 - [ ] L6+: ADR + Risk Assessment
+- [ ] No layers invented that the host project doesn't have
+- [ ] Cardinal rules from host `.claude/CLAUDE.md` upheld
 
 ---
 
 ## Remember
 
-- Exact file paths always
+- Exact file paths
 - Complete code in plan (not "add validation")
-- Exact commands with expected output
-- DRY, YAGNI, TDD, frequent commits
+- Exact verify command per phase (lint / type-check / test / build per project convention)
+- DRY, YAGNI, frequent commits (Conventional Commits)
 - One action per step (2-5 minutes)
-- Sprint contracts come BEFORE tasks — evaluator must approve them first
+- Sprint contracts come BEFORE tasks — evaluator approves first

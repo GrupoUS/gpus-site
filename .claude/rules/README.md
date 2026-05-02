@@ -1,46 +1,57 @@
-# Rules — Tier 2 Domain Guardrails
+# Rules — Tier 2 Universal Guardrails
 
-> Tier 2 rule files. Loaded on demand by `/prime` per the routing matrix in `.claude/CLAUDE.md`.
-> Per-project specifics live in `${overlay}/rules/` (e.g., `.claude/overlay/<project>/rules/`).
-
-## Purpose
-
-These templates describe **what each rule file should contain** for the project that adopts them. They're scaffolds — fill them in with the project's actual stack, conventions, and constraints.
-
-The companion overlay (`${overlay}/rules/*.md` if present) provides authoritative project-specific rules. The harness preferentially loads overlay rules first; if absent, it falls back to these generic stubs.
+> Universal do/don't tier-2 rules. Portable to any project.
+> Project-specific values resolve via `.claude/config.json` + tech-stack skills + project skills.
+> Loaded on demand by `/prime` per the routing matrix in `.claude/CLAUDE.md`.
 
 ## Files
 
 | File | Scope |
 |---|---|
-| `backend.md` | Server-side code (API routes, middleware, ORM, validators) |
-| `database.md` | Schema, migrations, RLS, views, functions, indexes |
-| `frontend.md` | Pages, components, layouts, styling, hydration boundaries |
-| `integrations.md` | External providers (payments, email, monitoring, real-time) |
-| `stability.md` | Universal stability checklist (always-applicable guardrails) |
-| `DESIGN.md` | Design tokens, component specs, typography, color, accessibility |
+| `frontend.md` | Component placement, hydration philosophy, content-data SSOT, forms, external surfaces, performance budget, a11y plumbing |
+| `DESIGN.md` | Color tokens, typography, components spec, layout, border radius, iconography, motion, imagery, depth, focus |
+| `stability.md` | Universal A–L checklist, render-mode invariants, performance gates (CWV), smoke template, anti-patterns, debug triage, escalation triggers |
+| `seo.md` | Locale, routes, sitemap, robots, OG/Twitter cards, JSON-LD, CWV thresholds, AI citation (GEO) |
 
 ## How rules are loaded
 
 1. `/prime` (auto / backend / frontend / fullstack) reads `.claude/CLAUDE.md` § routing matrix
 2. Routing matrix says "task type X loads rule Y"
-3. Loader checks `${overlay}/rules/Y.md` first
-4. Falls back to `.claude/rules/Y.md` (this directory) if overlay absent
-5. Stops once minimum-viable context loaded
+3. Loader reads `.claude/rules/Y.md`
+4. Stops once minimum-viable context loaded
 
-## Adapting to a new project
+## Cross-project portability
 
-1. Read each template. Replace placeholders (`<your-stack>`, `<your-paths>`, `<your-tooling>`) with project specifics.
-2. Either edit `.claude/rules/<file>.md` directly (stack-specific project) **or** create `.claude/overlay/<project>/rules/<file>.md` (multi-overlay scenario).
-3. Update `.claude/config.json::overlay` to point at the right overlay directory.
+Drop `.claude/rules/` into any Claude Code project. Universal substance survives:
 
-## Project-specific authoritative rules
+- Universal frontend do/don't (hydration, content SSOT, forms, perf, a11y)
+- Universal design do/don't (color, typography, motion, imagery, focus)
+- Universal stability checklist + smoke template
+- Universal SEO + GEO patterns
 
-For Missão Amazônica (this repo), full rules live in `.claude/overlay/missao-amazonica/rules/`:
+Stack-specific syntax (Astro `client:*`, Next.js Server Components, SvelteKit `+page.svelte`, Tailwind v4 `@theme`) lives in tech-stack skills. Project values (canonical URL, brand voice, design tokens) live in project skills + `.claude/config.json`.
 
-- `backend.md` — Astro API routes, Supabase server clients, Pix providers, Resend, Sentry
-- `database.md` — Supabase schema, RLS, views, idempotency, donor PII rules
-- `frontend.md` — Astro hybrid, render mode, Lucide icons, Tailwind v4 tokens
-- `integrations.md` — Pix BR-Code, Resend, Sentry, Supabase Realtime, Vercel
-- `stability.md` — Universal A-L checklist + project-specific idempotency / performance gates
-- `DESIGN.md` — Sal da Terra Material 3 tokens, light/dark contract, typography
+## Stack signals
+
+When a task touches stack-specific patterns, the rule points to the matching tech-stack skill. Claude auto-loads via skill description match (Anthropic skills auto-trigger model). Common stacks:
+
+| Stack | Skill |
+|---|---|
+| Astro (any version) | `astro` |
+| React / React 19 | `react` (or composite stack skill) |
+| Next.js (Pages / App Router) | `nextjs` |
+| Remix | `remix` |
+| SvelteKit | `sveltekit` |
+| Vite + vanilla | `vite` |
+
+## Project signals
+
+When a task touches project-specific tokens / brand voice / SSOT helpers, the rule points to the matching project skill. Auto-triggers via skill description match. Examples:
+
+- `<brand>-theme` skill — color palette + token canon
+- `<brand>` skill — brand voice + product canon + WhatsApp / SDR contact SSOT
+- Domain skills (e.g., `<product>-rules` overlay) — repo-specific conventions
+
+## Cardinal rules
+
+Per-project cardinal rules (the 8 / 12 / N non-negotiable invariants) live in `.claude/CLAUDE.md`. Rules in this folder support those cardinals universally — they don't override or duplicate them.

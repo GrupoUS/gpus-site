@@ -34,7 +34,7 @@ Skill("debugger")          // WHEN debugging UI issues — root cause analysis, 
 Skill("frontend-design")  // WHEN converting design spec to React code — creative execution, anti-slop rules
 ```
 
-If the project ships its own design-tokens skill (e.g., `gpus-theme`, `<project>-tokens`), invoke it as well. Read `.claude/config.json` and check `${overlay}/CLAUDE-overlay.md` for project-specific skill names.
+If the project ships its own design-tokens skill (e.g., `gpus-theme`, `<project>-tokens`), invoke it as well. Read `.claude/config.json` and `.claude/CLAUDE.md` for project-specific skill names.
 
 Project-specific design-tokens skill triggers when:
 - A hardcoded hex, blue/teal primary, backdrop-blur, bento grid, or hero split layout appears
@@ -234,7 +234,7 @@ When invoked for refactoring (not new feature work), follow this priority order 
 ### Post-Refactor
 
 - [ ] Run quality gates per `_shared.md` § 1
-- [ ] If a non-obvious pattern was discovered, append to project learnings doc (`docs/frontend-learnings.md` or `${overlay}/...`)
+- [ ] If a non-obvious pattern was discovered, append to `docs/learnings-log.md` (top, append-only) and surface a one-liner in `AGENTS.md § Recent learnings`
 
 ---
 

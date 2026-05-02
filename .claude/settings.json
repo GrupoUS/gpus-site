@@ -124,9 +124,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ultracite_fix.py",
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ultracite.py",
             "timeout": 30,
-            "statusMessage": "Formatting & linting..."
+            "statusMessage": "Formatting..."
           }
         ]
       }
@@ -148,7 +148,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ultracite_check.py",
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ultracite.py",
             "timeout": 30,
             "statusMessage": "Running lint check..."
           }
@@ -193,13 +193,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/evaluator_escalation.py",
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/subagent_stop.py",
             "timeout": 10
-          },
-          {
-            "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/subagent_log.py",
-            "timeout": 5
           }
         ]
       }

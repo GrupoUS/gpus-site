@@ -24,56 +24,27 @@ Substitution placeholders used in commands (resolve at runtime):
 | `${project.name}` | `project.name` |
 | `${project.stagingUrl}` | `project.stagingUrl` |
 | `${project.locale}` | `project.locale` |
-| `${paths.backendRoot}` | `paths.backendRoot` |
 | `${paths.frontendRoot}` | `paths.frontendRoot` |
-| `${paths.schemaRoot}` | `paths.schemaRoot` |
 | `${paths.libRoot}` | `paths.libRoot` |
 | `${paths.componentsRoot}` | `paths.componentsRoot` |
+| `${paths.stylesRoot}` | `paths.stylesRoot` |
 | `${tooling.packageManager}` | `tooling.packageManager` |
 | `${tooling.buildTool}` | `tooling.buildTool` |
 | `${tooling.typeChecker}` | `tooling.typeChecker` |
 | `${tooling.linter}` | `tooling.linter` |
-| `${tooling.testRunner}` | `tooling.testRunner` |
 | `${gates.lighthouse.*}` | `gates.lighthouse.*` |
 | `${gates.lcp/cls/inp/initialJsKb}` | `gates.*` |
-| `${overlay}` | `overlay` (path; check existence before loading) |
 
-**Overlay resolution.** If `${overlay}` exists as a directory, optionally load its files when a command says "load overlay supplements":
+### Rule file resolution
 
-| File | Purpose |
-|---|---|
-| `${overlay}/CLAUDE-overlay.md` | Project identity + cardinal rules (loaded after generic CLAUDE.md as Tier 1 supplement) |
-| `${overlay}/anti-patterns.md` | Project-specific bug patterns (loaded by `/debug`, `debugger` skill) |
-| `${overlay}/routing-supplements.md` | Project-specific routing matrix rows (loaded by `/prime`, `/implement`) |
-| `${overlay}/verify-supplements.md` | Project-specific smoke tests (loaded by `/verify`) |
-| `${overlay}/layer-map.md` | Project-specific layer map (loaded by `planning` skill) |
-| `${overlay}/seo-supplement.md` | Project-specific SEO routes/locale (loaded by `performance-optimization`) |
-| `${overlay}/debugger-domain-rules.md` | Project anti-pattern catalog (loaded by `debugger` skill if overlay configured) |
-| `${overlay}/protected-files.json` | Extra protected paths (loaded by `protect_files.py` hook) |
-| `${overlay}/project-snapshot.md` | Project orientation: architecture map, commands, data model, design summary (on-demand reference) |
-
-If overlay directory missing → commands run with generic defaults.
-
-### Rule file resolution (overlay-first)
-
-Whenever a command or skill says "read `.claude/rules/<file>.md`", the agent **MUST** resolve it as:
-
-1. If `${overlay}/rules/<file>.md` exists → read **that** (project authority, concrete stack rules)
-2. Else → fall back to `.claude/rules/<file>.md` (generic template)
-
-This applies to all six rule files: `backend.md`, `database.md`, `frontend.md`, `integrations.md`, `stability.md`, `DESIGN.md`.
+Rules live at `.claude/rules/<file>.md` and are project-authoritative. When a command or skill says "read `.claude/rules/<file>.md`", read it directly:
 
 ```bash
-# Resolution helper pattern
-RULE=backend.md
-if [ -f "${overlay}/rules/$RULE" ]; then
-  cat "${overlay}/rules/$RULE"           # project authority (concrete)
-else
-  cat ".claude/rules/$RULE"              # generic template (scaffold)
-fi
+RULE=frontend.md
+cat ".claude/rules/$RULE"
 ```
 
-The generic templates exist as scaffolds for projects without an overlay. **Never read both at once** — pick one, in this order. The overlay version is authoritative when present.
+Available rules: `frontend.md`, `DESIGN.md`, `stability.md`, `seo.md`. See `.claude/rules/README.md` for scope of each.
 
 ---
 
@@ -121,6 +92,8 @@ ${tooling.packageManager} run test                       # only when test runner
 | Architecture consultation | `evaluator` (Mode 3) | Caller decides |
 
 Read-only agents (`explorer`, `librarian`) **must** use `run_in_background: true`.
+
+> **Spawn contract:** every `Agent()` / `Task()` invocation MUST inject the 5 mandatory context fields from `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md § 1`. Do not duplicate the field list in command bodies — link only.
 
 **Explorer vs Librarian:**
 
@@ -176,7 +149,8 @@ Single source of truth — used by `/implement`, `/design`, `/verify`, `/debug a
 | Domain / task signal | Primary skill | Supporting skills |
 |---|---|---|
 | Bug fix / runtime error / regression | `debugger` | `evolution-core` (post-fix capture) |
-| Plan / decompose / architecture decision | `planning` | `senior-prompt-engineer` (if AI feature) |
+| Plan / decompose / architecture decision | `planning` | `senior-prompt-engineer` (mandatory when plan spawns ≥2 agents) |
+| Multi-agent orchestration / handoff schema / agent file authoring | `senior-prompt-engineer` | `planning` (if planning involved) |
 | UI / component / page / design system | `ui-ux-pro-max` + `frontend-design` | `debugger` (if mid-fix) |
 | Performance / SEO / security baseline / Core Web Vitals / bundle | `performance-optimization` | `supabase-postgres-best-practices` (DB perf) |
 | Postgres query / schema / RLS perf | `supabase-postgres-best-practices` | `supabase` |
@@ -202,6 +176,16 @@ When invoking 2+ agents in parallel:
 6. **Maximum 5 spawns per user request** (per CLAUDE.md stopping conditions). At 5 → checkpoint with user.
 
 Anti-pattern: spawning agents serially across multiple messages → loses parallelism + multiplies overhead.
+
+---
+
+## Section 7.5: Handoff Contract Schema
+
+All agents — single, parallel-batch, or coordinator-managed — return findings using the canonical schema in `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md`. Parallel batches additionally conform to `.claude/skills/senior-prompt-engineer/references/parallel-batch-contracts.md` (shared columns + severity scale + consolidation rules).
+
+The 5 mandatory context fields injected on every spawn live in the same skill (`agent-handoff-contracts.md § 1`). Commands MUST link to the SSOT — do not redeclare the field list in command bodies.
+
+Coordinator failure recovery (max 2 resubmissions per task on `REVISION_REQUIRED` before `BLOCKED` → `/debug recover`): see `agent-handoff-contracts.md § 4`.
 
 ---
 
@@ -282,12 +266,12 @@ Hard limit: 3 cycles. After 3 unresolved → flag to user as a research blocker.
 | Guardrail | Canonical location | Trigger |
 |---|---|---|
 | Stability checklist A-L | `.claude/rules/stability.md` | Any code change |
-| DB FK index requirement | `.claude/rules/database.md` | Schema changes |
 | Render mode declaration | `.claude/rules/frontend.md` | Page/route changes |
-| RLS / auth model | `.claude/rules/database.md` + `.claude/rules/backend.md` | Auth/data changes |
-| Webhook idempotency | `.claude/rules/integrations.md` | Webhook handlers |
+| Content Collections SSOT | `.claude/rules/frontend.md` | Product/team copy edits |
+| External redirect tri-sync | `.claude/rules/frontend.md` | externalSiteUrl change |
+| WhatsApp SSOT | `.claude/rules/frontend.md` | WhatsApp URL/CTA edits |
 | Design tokens / no hex | `.claude/rules/DESIGN.md` | Style changes |
-| Project-specific anti-patterns | `${overlay}/anti-patterns.md` | Per-project bugs |
+| Anti-patterns + debug triage | `.claude/rules/stability.md` | Per-project bugs |
 | Pre-commit formatter/linter | `${tooling.linter}` per AGENTS.md | Every commit |
 
 ---

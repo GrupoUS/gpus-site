@@ -10,7 +10,7 @@ workflow_type: prompt-chaining
 > **Invoke the `planning` skill now** (`.claude/skills/planning/SKILL.md`) before proceeding.
 > All methodology, output formats, layer stack, classification rules, and checklists are defined there.
 >
-> If `${overlay}/layer-map.md` exists (per `.claude/config.json`), the planning skill will load it for project-specific layer routing.
+> Project layer chain documented in `.claude/CLAUDE.md § Routing matrix (project-specific)` and root `AGENTS.md § Architecture Map`.
 
 ---
 

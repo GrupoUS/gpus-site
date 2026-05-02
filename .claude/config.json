@@ -39,7 +39,21 @@
     "inp": 100,
     "initialJsKb": 50
   },
-  "overlay": ".claude/overlay/gpus-site",
+  "protectedFiles": {
+    "exact": [
+      "astro.config.mjs",
+      "src/lib/whatsapp.ts",
+      "src/content.config.ts",
+      "package.json",
+      "tsconfig.json",
+      "biome.json",
+      "lefthook.yml"
+    ],
+    "segments": [],
+    "contains": [
+      "bun.lockb"
+    ]
+  },
   "rulesDir": ".claude/rules",
   "templatesDir": ".claude/templates",
   "agentsFile": "AGENTS.md",

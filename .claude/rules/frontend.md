@@ -1,129 +1,116 @@
-# Frontend Rules (Tier 2 — Generic Template)
+---
+globs: src/pages/**, src/components/**, src/layouts/**, src/styles/**, src/content/**
+---
 
-> Replace placeholders with project specifics, or override entirely via `${overlay}/rules/frontend.md`.
+# Frontend — Universal Tier 2 Rules
 
-## Purpose
-
-Operational guardrails for pages, components, layouts, styling, hydration boundaries.
+> Universal frontend do/don't. Portable to any project.
+> Stack-specific patterns (Astro, Next.js, Remix, SvelteKit, etc.) live in the matching tech-stack skill — Claude auto-loads via skill description match.
+> Project-specific tokens / brand voice / SSOT helpers live in project skills.
+> Visual canon: `.claude/rules/DESIGN.md`.
 
 ---
 
-## Render mode (when framework supports multiple modes)
+## Do
 
-Astro / Next.js / Remix / Nuxt all support multiple rendering strategies. Every route declares its mode:
+### Component placement
 
-| Path category | Typical mode |
+- Layout shells (header, footer, page wrappers) live separately from feature components — never co-located with product-specific code.
+- Feature components live in a single domain folder per feature, not split across the tree.
+- Shared primitives (Button, Card, SectionHeading) live in a `shared/` folder consumed everywhere — never duplicated per route.
+- Page files only compose; logic + markup belong in components.
+
+### Hydration philosophy
+
+- **Default to static / server rendering.** Hydrate islands only when interactivity is genuinely required.
+- Below-fold islands hydrate on visibility (intersection-based directive).
+- Above-fold pure-visual islands hydrate when browser is idle — never block first paint.
+- Persistent floating UI (chat widget, sticky CTA) is the only justified case for immediate hydration.
+- Every island must be able to SSR — avoid `client-only` directives unless component literally references `window` / `document` at module-top scope.
+
+> Exact directive names + escape hatches → load matching tech-stack skill.
+
+### Content data SSOT
+
+- Content (product copy, FAQ, testimonials, team bios, pricing) lives in a typed data layer — JSON / YAML / MD with schema validation, or a CMS.
+- Components read fields from the data layer, never as string literals.
+- Schema validation is a build gate — type-check / framework check re-runs validation on data edits.
+- Adding a content field: update schema + data files + component reading the field. All three move together.
+
+### Forms
+
+- Every input has `<label for="...">` (or wraps the input).
+- Required fields visually marked **and** `aria-required="true"`.
+- Error messages use color **+ icon + text** — never color alone.
+- Loading state via local pending flag (or pure CSS) — never block input.
+- Submit handler in try / catch with user-facing fallback (toast, redirect). Never silently swallow.
+- Validate at the boundary (Zod / Yup / Valibot) — never trust un-validated input.
+
+### External surfaces
+
+- HTTPS only. Reject mixed-content.
+- `target="_blank"` always pairs with `rel="noopener noreferrer"`.
+- Treat external URLs as untrusted UI text — author copy via data fields, never raw URLs in components.
+- Build-time secrets via deploy env. No `.env` committed.
+- Never hardcode provider versions / base URLs in components — extract to config or service module.
+
+### Performance
+
+- Hoist static arrays, objects, regex, formatters (`Intl`, `Date.format`) to module scope — never re-create per render.
+- Memoize hot list items only when rendering > 30 items.
+- `Set` / `Map` over repeated `.find()` / `.includes()` on hot paths.
+- No heavy libraries (>50KB) in main bundle. Per-island imports only.
+- Initial JS budget: < 50KB on prerendered pages.
+- LCP / above-fold images: explicit priority hint (`fetchpriority="high"`, eager loading).
+- Below-fold images: lazy loading + low priority.
+- Always set explicit `width` + `height` on images (CLS = 0).
+
+### Accessibility plumbing
+
+- Skip link is the **first focusable element** on every page. Targets `<main>` with `tabindex="-1"`.
+- Semantic landmarks: one `<h1>` per page, `<main>`, `<nav>`, `<footer>`. No skipped heading levels.
+- Focus rings always visible on `:focus-visible` (never `outline: none` without replacement).
+- Icon-only buttons require `aria-label`. Decorative icons: `aria-hidden="true"`.
+- `prefers-reduced-motion` honored on every animation (CSS + JS islands).
+- `<noscript>` fallback when reveal-on-scroll patterns hide content via opacity / transform.
+- FAQ / disclosure: native `<details>` or CSS grid `0fr ↔ 1fr` rows pattern. **Never** animate height.
+
+---
+
+## Don't
+
+| Don't | Why |
 |---|---|
-| Public marketing / blog | Static / prerendered |
-| Public listing with frequently-changing data | SSR or ISR |
-| Authenticated app surfaces | SSR |
-| API / webhook routes | SSR (always) |
-| Admin dashboard | SSR (always) |
-
-Never SPA when the framework offers SSR/SSG — full client-side rendering hurts SEO + first-paint.
+| `href="#"` for actions | Use `<button type="button">` for actions, real `<a href="...">` for navigation |
+| Mix icon libraries | One library per project — choose and stick with it |
+| `import * as Icons from '<lib>'` | Defeats tree-shaking — named imports only |
+| Emoji as UI icons | Inconsistent rendering; not accessible. SVG icons only |
+| Animate layout properties (`width`, `height`, `top`, `left`, `padding`, `margin`) | Forces layout / paint; janks INP. Use `transform` + `opacity` only |
+| `transition: all` | Animates unintended properties; perf overhead. Name properties explicitly |
+| Hardcode landing copy in components | Bypasses schema validation; drifts from data |
+| Inline secrets / API keys / auth tokens | Use deploy env, never commit |
+| Initial JS bundle > 50KB on prerendered pages | LCP / INP regression. Audit and split |
+| Skip link removed or repositioned past first focusable | Breaks keyboard navigation |
+| `<noscript>` reveal fallback dropped | JS-off users see blank sections |
+| FAQ panel height tween | Use CSS grid `0fr/1fr` or native `<details>` |
+| `client-only` directive on SSR-able islands | Pre-render every island that can be pre-rendered |
+| `setState` / mutation in render path | Re-render loops, hydration mismatch |
 
 ---
 
-## Component placement
+## Stack signals
 
-| Layer | Path |
+When the task touches framework-specific patterns, **load the matching tech-stack skill** (Claude auto-triggers via skill description match):
+
+| Surface | Load |
 |---|---|
-| Primitives (buttons, inputs, dialogs) | `${paths.componentsRoot}/ui/` |
-| Domain composites (per feature) | `${paths.componentsRoot}/<feature>/` |
-| Layouts | `${paths.frontendRoot}/layouts/` |
-| Pages | `${paths.frontendRoot}/pages/` (or `app/`, `routes/`) |
+| `*.astro` files, Astro Content Collections, `client:*` directives, `astro.config.mjs`, View Transitions, Astro `<Image>` | `astro` skill |
+| `*.tsx` / `*.jsx` (React), hooks, JSX patterns, React 19+ features | `react` skill (or stack skill if present) |
+| Next.js App Router, Server Components, route handlers | `nextjs` skill |
+| Remix loaders / actions, `app/routes/`, Remix conventions | `remix` skill |
+| SvelteKit `+page.svelte`, `+layout.svelte`, load functions | `sveltekit` skill |
 
-Default to framework's static template (`.astro`, `.tsx` server component, `.vue`, `.svelte`). Promote to client/island/interactive only when interactivity is required.
-
----
-
-## Hydration / interactivity directives (when framework supports)
-
-| Directive | When |
-|---|---|
-| `client:visible` / lazy-hydrate-on-visible | Default for islands below the fold |
-| `client:idle` / lazy-hydrate-on-idle | Background islands (toast root, analytics) |
-| `client:load` / hydrate-immediately | **Avoid** unless strictly above-the-fold and required for LCP |
-| `client:only` | Only when the component cannot SSR (uses `window` at top level) |
-
----
-
-## Styling
-
-- All design tokens in `${paths.stylesRoot}/global.css` (or framework equivalent: `theme.css`, `tailwind.config.ts`, `styled-system.config`).
-- **No hardcoded hex** outside the token file.
-- Custom utilities defined after tokens.
-- Spacing uses a named scale, not arbitrary values.
-
----
-
-## Icons
-
-- Single icon library (Lucide / Heroicons / Material Symbols / Font Awesome — pick one).
-- Wrap in a single `<Icon name="…" />` component for consistency + tree-shaking.
-- **Never mix** icon libraries.
-- **Never use emoji** as UI icons in a professional product.
-
----
-
-## Forms
-
-- Validate with the same schema library the server uses (Zod / Valibot / Yup / equivalent).
-- Re-export schemas from a shared `validators/` module so client + server share them.
-- Form component handles:
-  - Client-side validation on submit
-  - `fetch` to server with explicit `Content-Type`
-  - Error display branched on `error.code` (never on `error` substrings)
-  - Loading state via `useTransition` or local `isPending`
-- Accessibility: every field has a `<label>`; required fields visually marked; error messages use color **plus** icon **plus** text (never color alone).
-- For PII/consent: explicit copy + boolean stored.
-
----
-
-## Performance discipline
-
-- `staleTime` on data fetching equals `refetchInterval` (avoid double-fetch).
-- Memoize hot list items (`React.memo` / `Vue computed` / `Svelte $derived`) when rendering > 30 cards.
-- Stabilize callbacks passed to memoized children.
-- Hoist static arrays, objects, regex, formatters (`Intl`, `Date.format`) to module scope.
-- Don't create expensive objects inside render bodies.
-- Prefer `Set` / `Map` over repeated `.find()` / `.includes()` on hot paths.
-- Use immutable array methods; never mutate state in place.
-- Avoid nested scroll containers unless layout pattern requires.
-
----
-
-## Images
-
-- Static art (hero photo, logo) → framework's image component (`<Image>`, `next/image`, `<picture>`) with `loading="eager"` + `fetchpriority="high"` for LCP, otherwise `loading="lazy"` + `fetchpriority="low"`.
-- User-uploaded → plain `<img>` with explicit `width` + `height` (CLS = 0).
-- Below the fold: always lazy.
-- Decorative: `alt=""` + `aria-hidden="true"`.
-- Meaningful: descriptive `alt` in project locale.
-
----
-
-## Accessibility
-
-- One `<h1>` per page. Sectioning via `<section>` / `<article>` / `<nav>` / `<main id="…" tabindex="-1">`.
-- All icon-only buttons require `aria-label`.
-- Focus rings: 2px outline + offset on every interactive element. Visible always.
-- Skip link is the first focusable element on every page.
-- `<noscript>` block forces revealed content visible (so animation gating never hides content).
-- Accordion / expand-collapse uses CSS `grid-template-rows: 0fr ↔ 1fr` — never animate `height`.
-- Respect `prefers-reduced-motion` in every animation block.
-
----
-
-## Negative constraints
-
-- One package manager (npm OR pnpm OR yarn OR bun) — pick one in `.claude/config.json::tooling.packageManager`.
-- No `href="#"`. `<button>` for actions; real `<a>` for navigation.
-- No mixing icon libraries.
-- No hardcoded hex outside token file.
-- No layout property animations (`width`, `height`, `top`, `left`).
-- No dropping into SPA when framework offers SSR/SSG.
-- No global CSS overrides bypassing tokens.
+When the task touches **project-specific** tokens / brand voice / SSOT helpers, **load the matching project skill**.
 
 ---
 
@@ -131,14 +118,9 @@ Default to framework's static template (`.astro`, `.tsx` server component, `.vue
 
 | Need | Load |
 |---|---|
-| API contract / validators / server logic | `backend.md` |
-| Schema / type generation | `database.md` |
-| External provider UI integration | `integrations.md` |
-| Universal stability checklist | `stability.md` |
-| Design tokens, components, accessibility detail | `DESIGN.md` |
-
----
-
-## Project-specific authority
-
-If `${overlay}/rules/frontend.md` exists, prefer it — it captures framework specifics (Astro hybrid / Next.js App Router / Remix / Nuxt), UI library choice, and project-specific render-mode rules.
+| Universal stability checklist + smoke tests + anti-patterns + debug triage | `.claude/rules/stability.md` |
+| Tokens, typography, glass / glow, motion | `.claude/rules/DESIGN.md` |
+| SEO + JSON-LD + sitemap | `.claude/rules/seo.md` |
+| Cardinal rules + routing matrix + project layer chain | `.claude/CLAUDE.md` + root `AGENTS.md` |
+| Framework-specific patterns | matching tech-stack skill (auto-triggers) |
+| Project tokens / brand voice / SSOT helpers | matching project skill |

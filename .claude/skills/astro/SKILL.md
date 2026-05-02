@@ -16,8 +16,10 @@ Astro renders pages to static HTML by default with zero client-side JavaScript. 
 When this repo is the **Grupo US** static site (see root `AGENTS.md` and `.claude/CLAUDE.md`):
 
 - **Routing:** Multi-page app — normal `<a>` links and full page reload. **Do not** add `<ClientRouter />`, client-side app routers, or SPA-style navigation unless the user **explicitly** overrides `AGENTS.md`.
-- **Islands:** Prefer `.astro` and zero JS; add React (or other) islands only with clear justification and minimal `client:*` usage.
+- **Islands:** Prefer `.astro` and zero JS; add React (or other) islands only with clear justification and minimal `client:*` usage. `client:load` is forbidden outside `WhatsAppFloatingButton`.
 - **Conflict rule:** If generic Astro documentation (including sections below on View Transitions / `ClientRouter`) conflicts with `AGENTS.md`, **the repo wins**.
+
+> **Full project rules:** `references/gpus-overlay.md` — render-mode invariants, redirect tri-sync (`externalSiteUrl` ↔ `redirects` ↔ sitemap `filter()`), Layout.astro contracts (skip link, `<noscript>` reveal, IntersectionObserver, Google Fonts preconnect), Content Collections SSOT, smoke commands.
 
 ## When to Use
 
@@ -164,13 +166,14 @@ import { ClientRouter } from 'astro:transitions';
 | Reference | Content |
 |-----------|---------|
 | `references/core-concepts.md` | Components, pages, layouts, slots, props, expressions |
-| `references/content-collections.md` | Defining, querying, schemas, JSON data, Astro 5/6 changes |
+| `references/content-collections.md` | Defining, querying, schemas, JSON data, Astro 5/6 changes, SSOT pattern |
 | `references/islands-architecture.md` | Client directives, React islands, hydration, server islands, FAQ accordion (grid `0fr`/`1fr`) |
 | `references/styling-tailwind.md` | Scoped CSS, global styles, Tailwind v4, @theme, class:list |
 | `references/configuration.md` | astro.config.mjs, TypeScript, integrations, Vite plugins |
 | `references/performance.md` | LCP, CLS, INP, images, fonts, bundle optimization |
 | `references/view-transitions.md` | ClientRouter, transition directives, persist, animations |
 | `references/troubleshooting.md` | Common errors, build failures, hydration, Content Collections |
+| `references/gpus-overlay.md` | **GPUS site only** — render-mode invariants, hydration project rules, redirect tri-sync, Layout.astro contracts, smoke commands |
 
 ## Common Mistakes
 
@@ -186,3 +189,9 @@ import { ClientRouter } from 'astro:transitions';
 | Using wrong path `src/content/config.ts` when the project has root `content.config.ts` | Align with Astro version + repo: Na Mesa Certa → `src/content.config.ts` |
 | Forgetting `width`/`height` on images | Always set dimensions to prevent CLS |
 | Framer Motion animating accordion **panel height** | Use CSS grid `grid-template-rows: 0fr` ↔ `1fr`; Motion only for chevron (`rotate`/`opacity`). See `references/islands-architecture.md` → *Known case: FAQ accordion* |
+| `client:load` on pure-visual hero islands (steals LCP from text-first hero) | Use `client:idle` so SSR text paints first; `client:load` only for persistent floating UI (e.g., chat widget) |
+| Setting `prerender = false` in static-only project | Static projects: never override; cardinal in repo overlay |
+| Adding `<ClientRouter />` to MPA repo | Static MPA: no SPA router; full reload on navigation. See `references/gpus-overlay.md` |
+| Hardcoding landing copy in `.astro` / `.tsx` instead of Content Collection | Move strings to `src/content/<collection>/<slug>.json` and Zod-validate via `src/content.config.ts` |
+| Below-fold hero image with `loading="eager"` + `fetchpriority="high"` | Confirm position vs fold; below-fold → `lazy` + `low`. Wrong priority steals LCP from text hero |
+| Adding redirect to `astro.config.mjs::redirects` without sitemap `filter()` exclusion | Tri-sync: JSON `externalSiteUrl` + `redirects` + `filter()` move together. See `references/gpus-overlay.md` |

@@ -27,13 +27,9 @@ Then structure the delegation prompt with ALL 7 sections:
 4. REQUIRED TOOLS: [explicit whitelist]
 5. MUST DO: [exhaustive requirements - nothing implicit]
 6. MUST NOT DO: [forbidden actions]
-7. CONTEXT: *(agents without context rediscover what you already know — fill every field)*
-   - **Original request:** [verbatim user message that triggered this delegation]
-   - **User decisions:** [choices the user made before this delegation — approach selected, alternatives rejected]
-   - **Prior agent findings:** [key outputs from agents that ran before this one — 1-2 sentences each, skip redundancy]
-   - **Current plan state:** [which phase/task in the plan this agent is executing — e.g., "Wave 1, Task 2 of 3"]
-   - **Do NOT redo:** [what prior agents already covered — prevents duplicated work and wasted tokens]
-   - **Files and constraints:** [exact file paths, repo patterns, constraints from AGENTS.md]
+7. CONTEXT: inject the 5 mandatory context fields verbatim from `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md § 1` (Original request · User decisions · Prior agent findings · Current plan state · Do NOT redo). Add a 6th line — **Files and constraints:** exact file paths, repo patterns, constraints from AGENTS.md.
+
+The agent's return MUST conform to the Context Handoff schema in the same reference (§ 2). Verify schema compliance before claiming the delegation succeeded.
 
 After delegation completes, VERIFY:
 

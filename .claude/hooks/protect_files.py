@@ -4,7 +4,7 @@ Trigger: PreToolUse (Edit|Write)
 
 Generic defaults block .env, lockfiles, and .git/ directory.
 Project-specific protected paths read from .claude/config.json::protectedFiles
-(extends each list) or from ${overlay}/protected-files.json if present.
+(extends each list).
 """
 import json
 import os
@@ -38,9 +38,8 @@ PROTECTED_CONTAINS_DEFAULT = [
 
 
 def load_extra_protections() -> tuple[set[str], set[str], list[str]]:
-    """Read .claude/config.json::protectedFiles and ${overlay}/protected-files.json
-    to extend the generic protections. Returns (exact, segments, contains).
-    Each project can add stack-specific protected paths (e.g. migration dirs).
+    """Read .claude/config.json::protectedFiles to extend generic protections.
+    Returns (exact, segments, contains).
     """
     extra_exact: set[str] = set()
     extra_segments: set[str] = set()
@@ -49,7 +48,6 @@ def load_extra_protections() -> tuple[set[str], set[str], list[str]]:
     project_dir = os.environ.get("CLAUDE_PROJECT_DIR", os.getcwd())
     config_path = Path(project_dir) / ".claude" / "config.json"
 
-    overlay_path: str | None = None
     if config_path.is_file():
         try:
             cfg = json.loads(config_path.read_text(errors="replace"))
@@ -57,20 +55,8 @@ def load_extra_protections() -> tuple[set[str], set[str], list[str]]:
             extra_exact.update(pf.get("exact", []) or [])
             extra_segments.update(pf.get("segments", []) or [])
             extra_contains.extend(pf.get("contains", []) or [])
-            overlay_path = cfg.get("overlay") or None
         except Exception:
             pass
-
-    if overlay_path:
-        overlay_file = Path(project_dir) / overlay_path / "protected-files.json"
-        if overlay_file.is_file():
-            try:
-                ov = json.loads(overlay_file.read_text(errors="replace"))
-                extra_exact.update(ov.get("exact", []) or [])
-                extra_segments.update(ov.get("segments", []) or [])
-                extra_contains.extend(ov.get("contains", []) or [])
-            except Exception:
-                pass
 
     return extra_exact, extra_segments, extra_contains
 

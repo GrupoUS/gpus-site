@@ -1,226 +1,245 @@
 ---
 name: senior-prompt-engineer
-description: World-class prompt engineering skill for LLM optimization, prompt patterns, structured outputs, and AI product development. Expertise in Claude, GPT-4, prompt design patterns, few-shot learning, chain-of-thought, and AI evaluation. Includes RAG optimization, agent design, and LLM system architecture. Use when building AI products, optimizing LLM performance, designing agentic systems, or implementing advanced prompting techniques.
+description: Canonical contract for Claude Code subagent design, handoff schemas, orchestrator spawn templates, parallel-batch return contracts, and coordinator failure-recovery rules. Use when authoring or editing .claude/agents/*.md, designing multi-agent commands in .claude/commands/, building handoff schemas, or when a parallel batch needs a shared return contract. Also covers prompt engineering for application-level LLM features (RAG, structured outputs, eval harnesses).
 ---
 
-# Senior Prompt Engineer
+# Senior Prompt Engineer — Claude Code Agent Orchestration SSOT
 
-World-class senior prompt engineer skill for production-grade AI/ML/Data systems.
+> Single source of truth for **how Claude Code agents talk to each other**.
+> Anchored to Anthropic official docs (sub-agents, skills) — see `references/agentic_system_design.md`.
+> Project-agnostic: examples use placeholders. Host project supplies stack-specific rules via `.claude/CLAUDE.md` + `.claude/rules/`.
 
-## Quick Start
+---
 
-### Main Capabilities
+## 1. Purpose & scope
 
-```bash
-# Core Tool 1
-python scripts/prompt_optimizer.py --input data/ --output results/
+This skill governs three things:
 
-# Core Tool 2  
-python scripts/rag_evaluator.py --target project/ --analyze
+1. **Subagent design** — what every `.claude/agents/*.md` file must look like (frontmatter + body sections).
+2. **Inter-agent handoff** — the canonical structured shape every agent returns and the 5 mandatory context fields every spawn injects.
+3. **Multi-agent orchestration** — parallel-batch return contracts, coordinator failure-recovery, escalation paths.
 
-# Core Tool 3
-python scripts/agent_orchestrator.py --config config.yaml --deploy
+Out of this skill's scope: domain knowledge (lives in project-specific skills — framework, design system, brand voice, debugger, performance, etc.). Application-level prompt engineering (RAG / few-shot / CoT / evals) is documented here only as a pointer to references.
+
+---
+
+## 2. Subagent file contract
+
+Every `.claude/agents/<name>.md` must follow this shape:
+
+```markdown
+---
+name: <unique-lowercase-hyphens>
+description: <when Claude should delegate — front-load use case>
+tools: <allowlist>                    # OR `disallowedTools` — see references/agentic_system_design.md § 4
+model: opus | sonnet | haiku | inherit
+skills: [<skill-name>, …]             # optional preload — see § 8 below
+permissionMode: default | plan | …    # optional — Anthropic spec
+maxTurns: <int>                       # optional cap
+isolation: worktree                   # optional sandbox
+color: <ui hint>
+---
+
+# <Agent Name>
+
+## Role
+[One paragraph — who the agent is, what it owns.]
+
+## Iron Laws
+[Non-negotiable invariants — bullet list, ≤ 7 items.]
+
+## Phases
+[Numbered execution flow. Each phase produces a checkpoint artifact.]
+
+## Handoff Format
+[ONE LINE pointer to `references/agent-handoff-contracts.md`. Do not redeclare schema.]
+
+## Stopping Conditions
+[Explicit triggers for `BLOCKED` / escalation. Always include max-attempts limit.]
 ```
 
-## Core Expertise
+**Required fields:** `name`, `description`. Everything else has a default per Anthropic spec.
 
-This skill covers world-class capabilities in:
+**Forbidden in body:**
+- Re-declaring the Context Handoff schema (it lives in `references/agent-handoff-contracts.md`).
+- Re-declaring the 5-field spawn template (same).
+- Repeating content from a preloaded skill (waste of context budget).
+- Hardcoded project-specific values that belong in `.claude/CLAUDE.md` / `.claude/rules/` / `.claude/config.json` — agents inherit the same project rules as commands.
 
-- Advanced production patterns and architectures
-- Scalable system design and implementation
-- Performance optimization at scale
-- MLOps and DataOps best practices
-- Real-time processing and inference
-- Distributed computing frameworks
-- Model deployment and monitoring
-- Security and compliance
-- Cost optimization
-- Team leadership and mentoring
+---
 
-## Tech Stack
+## 3. Description guidelines (auto-trigger reliability)
 
-**Languages:** Python, SQL, R, Scala, Go
-**ML Frameworks:** PyTorch, TensorFlow, Scikit-learn, XGBoost
-**Data Tools:** Spark, Airflow, dbt, Kafka, Databricks
-**LLM Frameworks:** LangChain, LlamaIndex, DSPy
-**Deployment:** Docker, Kubernetes, AWS/GCP/Azure
-**Monitoring:** MLflow, Weights & Biases, Prometheus
-**Databases:** PostgreSQL, BigQuery, Snowflake, Pinecone
+Per Anthropic skills doc, descriptions are loaded into context so Claude knows what's available. They power both:
 
-## Reference Documentation
+1. **Auto-invocation** — Claude reads descriptions to decide when to delegate.
+2. **The `/agents` Library tab** — humans browse by description.
 
-### 1. Prompt Engineering Patterns
+Rules:
 
-Comprehensive guide available in `references/prompt_engineering_patterns.md` covering:
+- **Front-load the key use case.** Anthropic doc: "Front-load the key use case: the combined `description` and `when_to_use` text is truncated at 1,536 characters."
+- **Include trigger phrases** — "Use when…", "Triggers on…", literal user-language tokens.
+- **Be specific.** Generic descriptions ("World-class X for Y") don't auto-trigger — Anthropic explicitly warns this in the troubleshooting section.
+- **Stay under 1,536 chars** combined with `when_to_use`.
+- **Distinguish similar agents** — `explorer` (codebase-only) vs. `librarian` (external-only) must have descriptions that prevent overlap.
 
-- Advanced patterns and best practices
-- Production implementation strategies
-- Performance optimization techniques
-- Scalability considerations
-- Security and compliance
-- Real-world case studies
+Bad: `"Powerful research agent."`
+Good: `"Internal codebase researcher. Use proactively when planning any feature, investigating code structure, or needing to understand existing patterns and conventions. Triggers automatically on research, discovery, impact analysis. NEVER searches the internet."`
 
-### 2. Llm Evaluation Frameworks
+---
 
-Complete workflow documentation in `references/llm_evaluation_frameworks.md` including:
+## 4. Spawn template (5 mandatory context fields)
 
-- Step-by-step processes
-- Architecture design patterns
-- Tool integration guides
-- Performance tuning strategies
-- Troubleshooting procedures
+Every `Agent()` / `Task()` invocation MUST inject these fields. Promoted from `orchestrator.md` to canonical SSOT.
 
-### 3. Agentic System Design
-
-Technical reference guide in `references/agentic_system_design.md` with:
-
-- System design principles
-- Implementation examples
-- Configuration best practices
-- Deployment strategies
-- Monitoring and observability
-
-## Production Patterns
-
-### Pattern 1: Scalable Data Processing
-
-Enterprise-scale data processing with distributed computing:
-
-- Horizontal scaling architecture
-- Fault-tolerant design
-- Real-time and batch processing
-- Data quality validation
-- Performance monitoring
-
-### Pattern 2: ML Model Deployment
-
-Production ML system with high availability:
-
-- Model serving with low latency
-- A/B testing infrastructure
-- Feature store integration
-- Model monitoring and drift detection
-- Automated retraining pipelines
-
-### Pattern 3: Real-Time Inference
-
-High-throughput inference system:
-
-- Batching and caching strategies
-- Load balancing
-- Auto-scaling
-- Latency optimization
-- Cost optimization
-
-## Best Practices
-
-### Development
-
-- Test-driven development
-- Code reviews and pair programming
-- Documentation as code
-- Version control everything
-- Continuous integration
-
-### Production
-
-- Monitor everything critical
-- Automate deployments
-- Feature flags for releases
-- Canary deployments
-- Comprehensive logging
-
-### Team Leadership
-
-- Mentor junior engineers
-- Drive technical decisions
-- Establish coding standards
-- Foster learning culture
-- Cross-functional collaboration
-
-## Performance Targets
-
-**Latency:**
-- P50: < 50ms
-- P95: < 100ms
-- P99: < 200ms
-
-**Throughput:**
-- Requests/second: > 1000
-- Concurrent users: > 10,000
-
-**Availability:**
-- Uptime: 99.9%
-- Error rate: < 0.1%
-
-## Security & Compliance
-
-- Authentication & authorization
-- Data encryption (at rest & in transit)
-- PII handling and anonymization
-- GDPR/CCPA compliance
-- Regular security audits
-- Vulnerability management
-
-## Common Commands
-
-```bash
-# Development
-python -m pytest tests/ -v --cov
-python -m black src/
-python -m pylint src/
-
-# Training
-python scripts/train.py --config prod.yaml
-python scripts/evaluate.py --model best.pth
-
-# Deployment
-docker build -t service:v1 .
-kubectl apply -f k8s/
-helm upgrade service ./charts/
-
-# Monitoring
-kubectl logs -f deployment/service
-python scripts/health_check.py
+```markdown
+## MANDATORY CONTEXT
+**Original request:** <verbatim user message>
+**User decisions:** <approach choices made so far>
+**Prior agent findings:** <1-2 sentence summary per completed agent>
+**Current plan state:** <phase N, task X of Y>
+**Do NOT redo:** <what prior agents already covered>
 ```
 
-## Resources
+**Why:** agents without context rediscover what the parent already knows — wastes tokens, conflicts with prior decisions, multiplies parallel-spawn overhead.
 
-- Advanced Patterns: `references/prompt_engineering_patterns.md`
-- Implementation Guide: `references/llm_evaluation_frameworks.md`
-- Technical Reference: `references/agentic_system_design.md`
-- Automation Scripts: `scripts/` directory
+Full semantics + edge cases: `references/agent-handoff-contracts.md § 1`.
 
-## Senior-Level Responsibilities
+**Commands MUST link to that file** rather than duplicating the field list — single SSOT.
 
-As a world-class senior professional:
+---
 
-1. **Technical Leadership**
-   - Drive architectural decisions
-   - Mentor team members
-   - Establish best practices
-   - Ensure code quality
+## 5. Handoff Contract Schema
 
-2. **Strategic Thinking**
-   - Align with business goals
-   - Evaluate trade-offs
-   - Plan for scale
-   - Manage technical debt
+Every agent returns the canonical Context Handoff block (markdown) — and a JSON variant for `/verify` consolidator tooling.
 
-3. **Collaboration**
-   - Work across teams
-   - Communicate effectively
-   - Build consensus
-   - Share knowledge
+Full schema, status semantics, invariants, anti-patterns: **`references/agent-handoff-contracts.md`**.
 
-4. **Innovation**
-   - Stay current with research
-   - Experiment with new approaches
-   - Contribute to community
-   - Drive continuous improvement
+Quick reference:
 
-5. **Production Excellence**
-   - Ensure high availability
-   - Monitor proactively
-   - Optimize performance
-   - Respond to incidents
+```markdown
+## Context Handoff
+- **Status:** COMPLETED | BLOCKED | REVISION_REQUIRED
+- **Confidence:** 1-5
+- **Artifacts:** [{ path, lines, action }]
+- **Quality gates:** [{ name, status, evidence }]
+- **Decisions:** [{ what, why }]
+- **Risks:** [{ desc, mitigation }]
+- **Next agent:** <name> | NONE
+- **Resume hint:** <one sentence>
+```
+
+Hard rules:
+1. `confidence < 3` on critical finding → status MUST be `BLOCKED`.
+2. `BLOCKED` requires `risks[].mitigation` (or `mitigation: "ESCALATE"`).
+3. `REVISION_REQUIRED` is reviewer-only.
+4. `Quality gates: []` is a defect on `COMPLETED` (no evidence = no claim).
+
+---
+
+## 6. Parallel-batch shared contract
+
+When ≥2 agents spawn in one message (parallel pattern, `_shared.md § 7`), every member returns the standard Context Handoff PLUS a shared **findings table** with these exact columns:
+
+```markdown
+| # | Finding | Confidence (1-5) | Source | Impact (Low/Med/High) |
+```
+
+Review batches add a 6th column: `Severity (P0-P3)`.
+
+Full consolidation rules, severity scale, tool-precedence, max batch size: **`references/parallel-batch-contracts.md`**.
+
+Hard rules:
+1. Same column order across all batch members — consolidation must be mechanical.
+2. Each agent investigates a non-overlapping area (otherwise merge into one).
+3. Max 5 spawns per user request (per `CLAUDE.md § Stopping conditions`).
+
+---
+
+## 7. Coordinator failure recovery
+
+When an agent-team coordinator (`/implement § 6`) receives `REVISION_REQUIRED` from a specialist:
+
+1. **Iteration 1:** forward reviewer failures to specialist; specialist resubmits.
+2. **Iteration 2:** if still `REVISION_REQUIRED`, forward once more — last attempt.
+3. **Would-be iteration 3:** coordinator does NOT retry. Returns `BLOCKED: <criterion>` to main agent. Main invokes `/debug recover`.
+
+**Never escalate to user mid-loop.** `/debug recover` triages first.
+
+Same rule applies recursively if a coordinator delegates to another coordinator (rare in this repo).
+
+Full recovery semantics: `references/agent-handoff-contracts.md § 4`.
+
+---
+
+## 8. Skill preload pattern (`skills:` frontmatter)
+
+> Anthropic doc: "Subagents don't inherit skills from the parent conversation; you must list them explicitly. The full content of each skill is injected into the subagent's context, not just made available for invocation."
+
+Two ways for an agent to use a skill:
+
+| Pattern | When | Cost |
+|---|---|---|
+| **Preload** (`skills: [<name>]` in frontmatter) | Skill **always** needed (every invocation). Process skills (planning, debugging methodology, agent-orchestration). | Body injected once at startup |
+| **Body-level `Skill()` call** | Skill **conditionally** needed (depends on routing). Domain skills (framework-specific, design system, brand voice). | Body loaded only when invoked |
+
+**Rule of thumb:** if removing the skill would break >50% of the agent's invocations → preload it.
+
+**Precondition for preloading:** target skill must NOT have `disable-model-invocation: true` in its frontmatter (Anthropic constraint — silently skipped otherwise).
+
+**Default assignments (adapt per host project):**
+
+| Agent role | Preloaded skills (typical) |
+|---|---|
+| Orchestrator (multi-agent coordinator) | `senior-prompt-engineer`, `planning`, plus any session-memory skill |
+| Project planner | `senior-prompt-engineer`, `planning` |
+| Evaluator / reviewer | `senior-prompt-engineer` |
+| Debugger | project's debugging methodology skill, `senior-prompt-engineer` |
+
+Domain / leaf agents (frontend, backend, perf, code-review, verification, oracle, librarian, codebase explorer) typically keep body-level `Skill()` calls — they're routing-dependent and would waste context preloading prompt-engineering content. Audit per-agent: if removing the skill would break >50% of invocations, preload it.
+
+---
+
+## 9. Application-level prompt engineering
+
+When the host project gains an AI feature (copy gen, RAG over docs, structured extraction):
+
+- **Patterns** (XML structuring, few-shot, CoT, structured output via tool-use, prompt caching, eval-driven prompting): `references/prompt_engineering_patterns.md`.
+- **Eval harnesses** (frozen test sets, graders, Karpathy autoresearch loop, RAG-specific metrics): `references/llm_evaluation_frameworks.md`.
+
+For Karpathy-style optimize loops over a target prompt / skill, prefer a project-bound autoresearch skill (frozen harness, append-only `experiments.tsv`, crash discipline) over rolling custom scaffolding.
+
+For migrating Claude API code or building new Anthropic SDK apps, prefer the `claude-api` skill (it auto-triggers on `@anthropic-ai/sdk` imports).
+
+---
+
+## 10. References
+
+| File | Scope |
+|---|---|
+| `references/agent-handoff-contracts.md` | Spawn template + Context Handoff schema + status invariants + coordinator recovery |
+| `references/parallel-batch-contracts.md` | Findings table schema + severity scale + consolidation rules + tool precedence |
+| `references/agentic_system_design.md` | Subagent vs. agent team · file contract · skill preload vs. body-level · isolation · model selection · anti-patterns |
+| `references/prompt_engineering_patterns.md` | Application-level patterns (XML, few-shot, CoT, tool-use schemas, prompt caching, anti-patterns) |
+| `references/llm_evaluation_frameworks.md` | Eval harness patterns + RAG metrics + project conventions for `evals/` |
+
+`scripts/` (`prompt_optimizer.py`, `rag_evaluator.py`, `agent_orchestrator.py`) are dormant stubs reserved for future eval harness automation. Do not extend without a concrete use case.
+
+---
+
+## 11. Anti-patterns
+
+| Anti-pattern | Symptom | Fix |
+|---|---|---|
+| Vague description | Skill/agent never auto-triggers | Front-load use case + trigger phrases |
+| SKILL.md > 500 lines | Context budget waste; Anthropic doc warns "Keep SKILL.md under 500 lines" | Move detail to `references/<topic>.md` |
+| Re-declared Context Handoff in agent body | Drift between agents | Link to `references/agent-handoff-contracts.md` |
+| `disable-model-invocation: true` on a skill listed in `skills:` preload | Silently skipped | Remove the flag (or invoke skill manually only) |
+| Subagent spawning subagent | Doesn't work — Anthropic spec | Use coordinator + agent team |
+| Coordinator without max-iteration | Infinite REVISION_REQUIRED loops | § 7 rule (max 2 resubmits) |
+| `confidence ≤ 2` proceeding without `[ASSUMED]` flag | Plans built on speculation | Per `CLAUDE.md § Stopping conditions` — flag and ask user |
+| Parallel batch with ad-hoc per-agent table shape | Manual consolidation, missed findings | Single shared findings schema (§ 6) |
+
+---
+
+Owner: project-scoped (`.claude/skills/`).
