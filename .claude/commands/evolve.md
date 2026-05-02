@@ -123,16 +123,11 @@ Categorize:
 
 ---
 
-## 5. Improve AGENTS.md (project-level)
+## 5. Append to learnings log
 
-Identify the target AGENTS.md from the modified file path:
+Project chronological learnings live in **`docs/learnings-log.md`** (append-only, new entries on top). Subdirectory `AGENTS.md` files (when present in `${paths.backendRoot}` / `${paths.frontendRoot}` / `${paths.schemaRoot}`) carry domain-specific learnings only; otherwise route everything to `docs/learnings-log.md`.
 
-- Edits in `${paths.backendRoot}/**` → backend AGENTS.md if it exists
-- Edits in `${paths.frontendRoot}/**` → frontend AGENTS.md if it exists
-- Edits in `${paths.schemaRoot}/**` → schema AGENTS.md if it exists
-- Otherwise → root `AGENTS.md`
-
-Add a new section:
+Append at the **top** of the log (under the header):
 
 ```markdown
 ### [YYYY-MM-DD] [Learning Title]
@@ -142,7 +137,10 @@ Add a new section:
 **Problem:** [description]
 **Cause:** [root cause]
 **Solution:** [fix applied]
+**Validation:** [commands run]
 ```
+
+Also surface the new entry as a one-liner in the root `AGENTS.md § Recent learnings (last 3)` section — replace the oldest of the three with the new entry.
 
 ---
 
@@ -193,7 +191,8 @@ Memory: evolution-core updated
 Mode: [capture | auto | optimize | handoff]
 Run dir (if optimize): evals/<skill-slug>/runs/<run-id>
 Skills improved: [list]
-AGENTS.md updated: [list]
+Learnings log: docs/learnings-log.md (entry [YYYY-MM-DD] [title])
+AGENTS.md recent-learnings refreshed: [yes/no]
 ```
 
 ---

@@ -40,7 +40,7 @@ python .claude/skills/evolution-core/scripts/memory_manager.py stats
 
 ## /evolve integration
 
-`/evolve` (no token) → §1–5 capture flow → calls CLI `capture` to persist learning, then updates skills + AGENTS.md.
+`/evolve` (no token) → §1–5 capture flow → calls CLI `capture` to persist learning, then appends to `docs/learnings-log.md` and refreshes the last-3 summary in root `AGENTS.md § Recent learnings`.
 
 ## Portability
 

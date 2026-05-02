@@ -26,7 +26,7 @@ Given `<area>` (or open-ended `evolve`):
 3. Implement **smallest** diff.
 4. Re-measure. Compare delta.
 5. **keep** if metrics/rules improve or stay neutral with clear win elsewhere; **discard** on regression; **investigate** if inconclusive.
-6. Append `Learning log` block to `AGENTS.md` under `## Learnings log (evolve)` after **keep** (or when user wants persistence).
+6. Append `Learning log` block to `docs/learnings-log.md` (top of file) after **keep** (or when user wants persistence). Surface a one-line entry in root `AGENTS.md § Recent learnings`.
 7. Update `evals/site/<area-slug>/compound.md` after any meaningful result.
 8. **Loop policy:** single chat turn = one full experiment unless user explicitly asks batch. "Loop forever" only on explicit unattended runs.
 
@@ -84,7 +84,7 @@ Do not default to technical polish if a stronger sales-language or SEO experimen
     <decision>keep | discard | investigate</decision>
   </validation>
   <log_entry>
-    Markdown snippet ready to paste under AGENTS.md Learnings log:
+    Markdown snippet ready to paste under docs/learnings-log.md:
     ### [YYYY-MM-DD] [slug]
     **Hypothesis:** …
     **Result:** metric before → after | decision
@@ -99,7 +99,7 @@ Do not default to technical polish if a stronger sales-language or SEO experimen
 
 | Phase | Action |
 |---|---|
-| **Discover** | Read `AGENTS.md`, touched routes/components, prior learnings log, prior `evals/site/**/compound.md`. |
+| **Discover** | Read `AGENTS.md`, touched routes/components, `docs/learnings-log.md`, prior `evals/site/**/compound.md`. |
 | **Research** | Load `grupo-us` early for voice, journey, product hierarchy, sales logic. Browser MCP for SERP/UX review. `astro` / Context7 for implementation truth. |
 | **Plan** | One hypothesis. List files. Success metric: commercial proxy first, technical proxy second. |
 | **Implement** | Minimal patch. Conventional commits if committing. |

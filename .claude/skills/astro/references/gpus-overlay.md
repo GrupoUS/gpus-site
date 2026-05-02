@@ -148,7 +148,7 @@ Already covered in sibling `references/performance.md`, but project rules:
 - Always explicit `width` + `height` (CLS = 0).
 - Decorative: `alt=""` + `aria-hidden="true"`.
 - Meaningful: descriptive `alt` in pt-BR (who + role + context).
-- `NeonStory` image is **below-fold** on Mentoria Black NEON landing → keep `loading="lazy"` + `fetchpriority="low"` (per AGENTS.md learnings log [2026-03-26]).
+- `NeonStory` image is **below-fold** on Mentoria Black NEON landing → keep `loading="lazy"` + `fetchpriority="low"` (per `docs/learnings-log.md` entry [2026-03-26]).
 
 ---
 

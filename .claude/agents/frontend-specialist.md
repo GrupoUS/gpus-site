@@ -234,7 +234,7 @@ When invoked for refactoring (not new feature work), follow this priority order 
 ### Post-Refactor
 
 - [ ] Run quality gates per `_shared.md` § 1
-- [ ] If a non-obvious pattern was discovered, append to project learnings (`AGENTS.md § Learnings log` or `docs/frontend-learnings.md`)
+- [ ] If a non-obvious pattern was discovered, append to `docs/learnings-log.md` (top, append-only) and surface a one-liner in `AGENTS.md § Recent learnings`
 
 ---
 

@@ -7,7 +7,7 @@ This tree is **mandatory** whenever `/evolve` runs **Fase 1** (autoresearch with
 | Path | Status | Purpose |
 |---|---|---|
 | `README.md` | active | this file (layout SSOT) |
-| `site/<area-slug>/` | **active** | GPUS site copy/SEO/CTA autoresearch — `compound.md` + `runs/` (cited by AGENTS.md learnings log) |
+| `site/<area-slug>/` | **active** | GPUS site copy/SEO/CTA autoresearch — `compound.md` + `runs/` (cited by `docs/learnings-log.md`) |
 | `<skill-slug>/runs/<id>/` | active (write target) | new `/evolve optimize <slug>` runs land here |
 | `_archive/` | **read-only** | frozen `2026-03-26` skill-autoresearch snapshots (wins promoted to skills) — see [`_archive/README.md`](_archive/README.md) |
 
@@ -97,6 +97,6 @@ After a **keep** decision, update `compound.md` with what should be preserved in
 
 Performance-focused site batches may live under `evals/site/performance-batch-<date>/` with the same structure (see `performance-batch-2026-03-26/`).
 
-Primary human-readable log still remains **`AGENTS.md`** → `## Learnings log (evolve)`, but `compound.md` is the area-level memory for future autoresearch.
+Primary human-readable log lives at **`docs/learnings-log.md`** (root `AGENTS.md § Recent learnings` carries the last 3 as a one-line summary). `compound.md` is the area-level memory for future autoresearch.
 
 Sub-skill: `.claude/skills/evolution-core/references/gpus-profile.md` (loaded by `/evolve optimize site:<area>` or whenever `<input><area>` appears).

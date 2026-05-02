@@ -165,6 +165,7 @@ Codebase search (`Grep` / `Read` / `Glob`) is the **fallback for internal questi
 
 ### Audit trail / governance
 
-- root `AGENTS.md` — cardinal rules + architecture map + commands + pre-delivery checklist + chronological learnings log.
+- root `AGENTS.md` — behavioral + orchestrator (commands / agents / skills / MCPs / terminal / authority precedence). Cardinals + routing remain here in `CLAUDE.md`.
+- `docs/learnings-log.md` — chronological project decisions (append-only, on-demand).
 - `evals/` — autoresearch audit trail. `evals/README.md` for layout. `evals/site/<area>/compound.md` is durable brand-area memory between `/evolve` runs (consult before re-running same area). New skill autoresearch lands in `evals/<skill-slug>/runs/` with frozen harness + grades. `evals/_archive/` holds frozen 2026-03-26 skill-autoresearch snapshots already promoted to live skills (read-only).
 - `docs/` — product specs, design canon, implementation plans.
