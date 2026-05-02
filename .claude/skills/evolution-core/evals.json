@@ -48,7 +48,7 @@
       "id": "A07",
       "description": "Output references hooks for automatic capture",
       "type": "behavioral",
-      "check": "contains_one_of: [\"hook\", \"session_context\", \"task_completed\", \"subagent_log\", \"PostToolUse\", \"SessionStart\"]",
+      "check": "contains_one_of: [\"hook\", \"session_context\", \"task_completed\", \"subagent_stop\", \"PostToolUse\", \"SessionStart\"]",
       "critical": false
     },
     {
