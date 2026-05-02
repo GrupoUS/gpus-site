@@ -93,6 +93,8 @@ ${tooling.packageManager} run test                       # only when test runner
 
 Read-only agents (`explorer`, `librarian`) **must** use `run_in_background: true`.
 
+> **Spawn contract:** every `Agent()` / `Task()` invocation MUST inject the 5 mandatory context fields from `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md § 1`. Do not duplicate the field list in command bodies — link only.
+
 **Explorer vs Librarian:**
 
 | Question | Agent |
@@ -147,7 +149,8 @@ Single source of truth — used by `/implement`, `/design`, `/verify`, `/debug a
 | Domain / task signal | Primary skill | Supporting skills |
 |---|---|---|
 | Bug fix / runtime error / regression | `debugger` | `evolution-core` (post-fix capture) |
-| Plan / decompose / architecture decision | `planning` | `senior-prompt-engineer` (if AI feature) |
+| Plan / decompose / architecture decision | `planning` | `senior-prompt-engineer` (mandatory when plan spawns ≥2 agents) |
+| Multi-agent orchestration / handoff schema / agent file authoring | `senior-prompt-engineer` | `planning` (if planning involved) |
 | UI / component / page / design system | `ui-ux-pro-max` + `frontend-design` | `debugger` (if mid-fix) |
 | Performance / SEO / security baseline / Core Web Vitals / bundle | `performance-optimization` | `supabase-postgres-best-practices` (DB perf) |
 | Postgres query / schema / RLS perf | `supabase-postgres-best-practices` | `supabase` |
@@ -173,6 +176,16 @@ When invoking 2+ agents in parallel:
 6. **Maximum 5 spawns per user request** (per CLAUDE.md stopping conditions). At 5 → checkpoint with user.
 
 Anti-pattern: spawning agents serially across multiple messages → loses parallelism + multiplies overhead.
+
+---
+
+## Section 7.5: Handoff Contract Schema
+
+All agents — single, parallel-batch, or coordinator-managed — return findings using the canonical schema in `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md`. Parallel batches additionally conform to `.claude/skills/senior-prompt-engineer/references/parallel-batch-contracts.md` (shared columns + severity scale + consolidation rules).
+
+The 5 mandatory context fields injected on every spawn live in the same skill (`agent-handoff-contracts.md § 1`). Commands MUST link to the SSOT — do not redeclare the field list in command bodies.
+
+Coordinator failure recovery (max 2 resubmissions per task on `REVISION_REQUIRED` before `BLOCKED` → `/debug recover`): see `agent-handoff-contracts.md § 4`.
 
 ---
 

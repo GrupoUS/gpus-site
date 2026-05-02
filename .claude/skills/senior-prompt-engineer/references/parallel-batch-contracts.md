@@ -74,7 +74,7 @@ Add severity as a 6th column for review batches only:
 ```markdown
 | # | Finding | Confidence | Source | Impact | Severity |
 |---|---------|------------|--------|--------|----------|
-| 1 | XSS in `LandingCTA.astro:34` via `set:html` | 5 | code | High | P0 |
+| 1 | XSS in `<src>/<file>:<line>` via raw HTML injection | 5 | code | High | P0 |
 ```
 
 ---
@@ -131,4 +131,4 @@ Per `CLAUDE.md § Stopping conditions`: max 5 agent spawns per user request. A p
 
 If the natural fan-out exceeds 5, **cluster** by root cause (see `/perf` § 2.5 pattern) before spawning.
 
-Last updated: 2026-05-01. Owner: `senior-prompt-engineer` skill.
+Owner: `senior-prompt-engineer` skill.

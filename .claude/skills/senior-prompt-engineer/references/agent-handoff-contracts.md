@@ -1,6 +1,6 @@
 # Agent Handoff Contracts
 
-> Canonical structured handoff schema returned by every Claude Code subagent in this repo.
+> Canonical structured handoff schema returned by every Claude Code subagent.
 > Loaded by `senior-prompt-engineer` skill. Cited by `.claude/commands/_shared.md § 7.5`.
 
 ---
@@ -60,19 +60,19 @@ Every agent returns this block at the end of its response. Single canonical shap
   "status": "COMPLETED",
   "confidence": 4,
   "artifacts": [
-    { "path": "src/components/landing/Hero.astro", "lines": "12-45", "action": "modified" }
+    { "path": "<src>/<module>/<file>.<ext>", "lines": "12-45", "action": "modified" }
   ],
   "qualityGates": [
-    { "name": "bunx astro check", "status": "PASS", "evidence": "0 errors" }
+    { "name": "<type-check command>", "status": "PASS", "evidence": "0 errors" }
   ],
   "decisions": [
-    { "what": "kept FAQ as native <details>", "why": "CSS grid 0fr/1fr already shipped; native is simpler" }
+    { "what": "<decision>", "why": "<rationale>" }
   ],
   "risks": [
-    { "desc": "skip link tabindex regression risk", "mitigation": "verified via Tab smoke test in Phase 6" }
+    { "desc": "<risk>", "mitigation": "<how it was or will be mitigated>" }
   ],
   "nextAgent": "verification",
-  "resumeHint": "Run E2E flow on /mentoria-black-neon to confirm CTA dedup still works."
+  "resumeHint": "<one sentence telling the next agent where to pick up>"
 }
 ```
 
@@ -137,4 +137,4 @@ When ≥2 agents run in a single message (parallel spawn pattern, `_shared.md §
 
 This schema **replaces** ad-hoc `## Context Handoff` blocks scattered through `debugger.md`, `frontend-specialist.md`, `mobile-developer.md`. Those files reference this schema rather than re-declaring it.
 
-Last updated: 2026-05-01. Owner: `senior-prompt-engineer` skill.
+Owner: `senior-prompt-engineer` skill.

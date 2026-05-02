@@ -5,6 +5,8 @@ model: opus
 color: red
 role_type: evaluator
 effort: high
+skills:
+  - senior-prompt-engineer
 tools:
   - Read
   - Glob

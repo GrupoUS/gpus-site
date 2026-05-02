@@ -1,7 +1,7 @@
 # Agentic System Design (Claude Code)
 
 > Subagent vs. agent team, skill preload vs. body-level invocation, isolation modes, model selection.
-> Anthropic-anchored. Project-scoped to `.claude/agents/` and `.claude/skills/`.
+> Anthropic-anchored. Scoped to `.claude/agents/` and `.claude/skills/` in any host project.
 
 References:
 - Subagents: https://code.claude.com/docs/en/sub-agents
@@ -63,10 +63,10 @@ isolation: worktree                                # optional sandbox
 
 > **Anthropic doc:** "Subagents don't inherit skills from the parent conversation; you must list them explicitly. The full content of each skill is injected into the subagent's context, not just made available for invocation."
 
-| Pattern | When | Cost | Precedent in this repo |
+| Pattern | When | Cost | Typical example |
 |---|---|---|---|
-| **Preload** (`skills: [<name>]` in frontmatter) | The agent **always** needs the skill — every invocation. Process skills (`planning`, `debugger`, `evolution-core`, `senior-prompt-engineer`). | Skill body injected at startup; counts against subagent context budget once. | After Sprint 2 of this rewire: `orchestrator`, `project-planner`, `evaluator`, `debugger`. |
-| **Body-level `Skill()` call** | The agent **conditionally** needs the skill (depends on routing). Domain skills (`gpus-theme`, `ui-ux-pro-max`, `astro`). | Skill body loaded only when invoked; cheaper if skill is unused. | `frontend-specialist` calling `Skill("ui-ux-pro-max")` only on UI tasks. |
+| **Preload** (`skills: [<name>]` in frontmatter) | The agent **always** needs the skill — every invocation. Process skills (planning methodology, debugging methodology, agent-orchestration). | Skill body injected at startup; counts against subagent context budget once. | Orchestrator preloads `senior-prompt-engineer` + `planning`; debugger preloads its methodology skill. |
+| **Body-level `Skill()` call** | The agent **conditionally** needs the skill (depends on routing). Domain skills (framework-specific, design system, brand voice). | Skill body loaded only when invoked; cheaper if skill is unused. | A frontend specialist calling a UI/design-system skill only on UI tasks. |
 
 **Rule of thumb:** if removing the skill would break >50% of the agent's invocations, preload it. Otherwise body-level.
 
@@ -83,22 +83,22 @@ isolation: worktree                                # optional sandbox
 | **Denylist** | `disallowedTools: Write, Edit` | Inherits all minus writes |
 | **Restricted Agent spawn** | `tools: Agent(worker, researcher), Read` | Coordinator can only spawn specific agents |
 
-**Project rules:**
-- `explorer` allowlists Read/Grep/Glob/Bash; forbids WebFetch/Tavily.
-- `librarian` allowlists WebFetch/Tavily/Context7; forbids local filesystem read.
-- `oracle` allowlists Read/Grep/Glob (read-only consultant).
-- All write-capable agents inherit all tools (e.g., `frontend-specialist`, `debugger` in fix mode).
+**Typical splits:**
+- A codebase researcher allowlists Read/Grep/Glob/Bash; forbids WebFetch/external search MCPs.
+- A docs/web researcher allowlists WebFetch + external search/docs MCPs; forbids local filesystem read.
+- A read-only consultant allowlists Read/Grep/Glob.
+- Write-capable specialists (frontend, debugger fix mode) inherit all tools.
 
 ---
 
 ## 5. Model selection
 
-| Model | When | Examples in this repo |
+| Model | When | Typical agents |
 |---|---|---|
-| `opus` | Architecture, ambiguous reasoning, multi-lens evaluation | `orchestrator`, `evaluator`, `oracle`, `debugger`, `frontend-specialist`, `performance-optimizer`, `project-planner`, `mobile-developer`, `verification` |
-| `sonnet` | Code review, structured analysis with clear rubric | `code-reviewer` |
-| `haiku` | Fast read-only search, low-stakes lookups | `explorer-agent`, `librarian` |
-| `inherit` | When agent should match parent's capability tier | rare in this repo |
+| `opus` | Architecture, ambiguous reasoning, multi-lens evaluation | orchestrator, evaluator, oracle, debugger, write-capable specialists, planner, verification |
+| `sonnet` | Code review, structured analysis with clear rubric | code reviewer |
+| `haiku` | Fast read-only search, low-stakes lookups | codebase explorer, docs/web librarian |
+| `inherit` | When agent should match parent's capability tier | rare |
 
 **Cost guidance:** prefer `haiku` for read-only research agents; tokens add up across parallel batches.
 
@@ -114,7 +114,7 @@ isolation: worktree
 
 Anthropic doc: "Run the subagent in a temporary git worktree, giving it an isolated copy of the repository. The worktree is automatically cleaned up if the subagent makes no changes."
 
-**Use case in this repo:** `/perf fix` mode spawns `performance-optimizer` per cluster with `isolation: "worktree"` so multiple optimization experiments can run in parallel without merge conflicts.
+**Typical use case:** a fix-mode command that spawns one optimizer/refactorer per cluster with `isolation: "worktree"` so multiple experiments run in parallel without merge conflicts.
 
 ---
 
@@ -126,7 +126,7 @@ Anthropic doc: "Run the subagent in a temporary git worktree, giving it an isola
 | **Subagent preloads skill (`skills:` field)** | Subagent's markdown body | User-provided | Skill content injected at startup |
 | **Skill runs in forked subagent (`context: fork` in skill frontmatter)** | Subagent type's body (e.g., `Explore`) | The skill's own content | The skill drives the agent |
 
-The third pattern is **not used** in this repo — we keep skills as content (loaded by agents) and use built-in `Explore`/`Plan` for ad-hoc forking.
+The third pattern is **not the default** here — keep skills as content (loaded by agents) and use built-in `Explore`/`Plan` for ad-hoc forking, unless a host project explicitly opts into `context: fork` skills.
 
 ---
 
@@ -139,7 +139,7 @@ The third pattern is **not used** in this repo — we keep skills as content (lo
 | **Re-declared schemas** | Three agents define their own "Context Handoff" block | Single SSOT in this skill; agents link only |
 | **Auto-trigger on `disable-model-invocation: true`** | Skill listed in `skills:` preload silently skipped | Remove the flag; or invoke manually only |
 | **Subagent spawning subagent** | Doesn't work — Anthropic spec | Use coordinator + agent team for nested orchestration |
-| **`client:load` parallel for subagent reasoning** | Wasted parallelism (mixed metaphor for this repo's hydration rules — but the principle applies: don't pay startup cost when you don't need immediate output) | Use `run_in_background: true` for read-only agents per `_shared.md § 7` |
+| **Spawning eagerly when result not yet needed** | Wasted parallelism — agent finishes idle while parent works on something else | Use `run_in_background: true` for read-only agents per `_shared.md § 7` |
 
 ---
 
@@ -150,4 +150,4 @@ The third pattern is **not used** in this repo — we keep skills as content (lo
 - Application-level prompt patterns (RAG, few-shot, CoT): `prompt_engineering_patterns.md`
 - LLM eval harness: `llm_evaluation_frameworks.md`
 
-Last updated: 2026-05-01. Owner: `senior-prompt-engineer` skill.
+Owner: `senior-prompt-engineer` skill.

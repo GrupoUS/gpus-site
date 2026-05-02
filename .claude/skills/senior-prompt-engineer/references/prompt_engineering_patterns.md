@@ -1,7 +1,7 @@
 # Prompt Engineering Patterns (application-level)
 
 > Patterns for building Claude API / LLM features INSIDE the product (not Claude Code subagent design — see `agentic_system_design.md` for that).
-> Use when the GPUS site or a related app gains an AI feature: copy generation, RAG over manuals, structured output extraction, eval-driven iteration.
+> Use when a host project gains an AI feature: text generation, RAG over docs, structured output extraction, eval-driven iteration.
 
 References:
 - Anthropic prompt design: https://docs.claude.com/en/docs/build-with-claude/prompt-engineering
@@ -14,21 +14,20 @@ References:
 Claude follows XML tags reliably. Use them to delimit roles, context, and instructions when a prompt has ≥2 distinct parts.
 
 ```xml
-<role>You are a copywriter for a Brazilian aesthetic-medicine brand.</role>
+<role>You are a {role specific to the host product}.</role>
 
-<brand_voice>
-Sentence case · Olhar de dono · Excelência com entrega real
-Avoid: ed-tech tropes, exclamation marks, English jargon.
-</brand_voice>
+<voice_constraints>
+{tone rules · forbidden patterns · required phrases — sourced from the host project's brand/voice skill}
+</voice_constraints>
 
-<task>Write 3 hero headline variants for the product below.</task>
+<task>{One sentence describing what to produce.}</task>
 
-<product>
-{json_dump(product)}
-</product>
+<input>
+{json_dump(input_data)}
+</input>
 
 <output_format>
-Return a JSON array of 3 strings. Each ≤ 90 characters. No emoji.
+{Exact format Claude must return — JSON shape, max length, language, etc.}
 </output_format>
 ```
 
@@ -43,16 +42,16 @@ When a task has subjective output (copy, classification with edge cases, format 
 ```xml
 <examples>
 <example>
-  <input>{ "product": "Curso de Aurículo", "audience": "esteticistas" }</input>
-  <output>["Em 3 dias presenciais, técnica que vira protocolo na sua cabine.", …]</output>
+  <input>{ ... }</input>
+  <output>{ ... }</output>
 </example>
 <example>
-  <input>{ "product": "Mentoria Black NEON", "audience": "donos de clínica" }</input>
-  <output>["6 meses para sair de operadora a dona de operação.", …]</output>
+  <input>{ ... }</input>
+  <output>{ ... }</output>
 </example>
 </examples>
 
-<input>{ "product": "TRINTAE3", "audience": "iniciantes" }</input>
+<input>{ ... }</input>
 ```
 
 Examples should span the **decision boundary** (one easy case, one hard case, one tricky case). Not 5 trivial cases.
@@ -61,22 +60,22 @@ Examples should span the **decision boundary** (one easy case, one hard case, on
 
 ## 3. Pattern: Chain-of-thought scaffold
 
-For multi-step reasoning (debugging copy, explaining tradeoffs, applying brand rules):
+For multi-step reasoning (debugging output, explaining tradeoffs, applying domain rules):
 
 ```xml
-<task>Decide whether this hero copy passes the brand voice gate.</task>
+<task>Decide whether this output passes the gate.</task>
 
-<input>{copy}</input>
+<input>{output}</input>
 
 <reasoning_steps>
-1. Identify the 5 brand anchors used.
-2. List violations (anchors absent + anti-patterns present).
+1. Identify the N criteria that apply.
+2. List violations (criteria absent + anti-patterns present).
 3. Verdict: PASS | REVISION_REQUIRED.
 4. If REVISION_REQUIRED: propose minimal edits.
 </reasoning_steps>
 
 <output_format>
-Return JSON: { "anchors": [...], "violations": [...], "verdict": "...", "edits": [...] }
+Return JSON: { "criteria": [...], "violations": [...], "verdict": "...", "edits": [...] }
 </output_format>
 ```
 
@@ -92,25 +91,25 @@ Use Claude's tool-use API to enforce schemas instead of asking for "JSON in a co
 
 ```python
 tools = [{
-  "name": "submit_headlines",
-  "description": "Submit 3 hero headline variants",
+  "name": "submit_result",
+  "description": "Submit the structured result",
   "input_schema": {
     "type": "object",
     "properties": {
-      "headlines": {
+      "items": {
         "type": "array",
         "items": { "type": "string", "maxLength": 90 },
         "minItems": 3, "maxItems": 3
       }
     },
-    "required": ["headlines"]
+    "required": ["items"]
   }
 }]
 
 response = client.messages.create(
   model="claude-opus-4-7",
   tools=tools,
-  tool_choice={"type": "tool", "name": "submit_headlines"},
+  tool_choice={"type": "tool", "name": "submit_result"},
   messages=[...]
 )
 ```
@@ -129,7 +128,7 @@ client.messages.create(
   system=[
     {
       "type": "text",
-      "text": brand_manual_50kb,
+      "text": stable_context_50kb,
       "cache_control": {"type": "ephemeral"}
     }
   ],
@@ -139,7 +138,7 @@ client.messages.create(
 
 **Cost:** cache hits ~10× cheaper, ~2× faster. TTL 5 min (refresh on every hit).
 
-**Use cases in this repo (hypothetical):** `grupo-us` manual cache for copy generators, FAQ corpus cache for RAG retrievers.
+**Typical use cases:** brand/voice manuals for copy generators, doc corpus for RAG retrievers, schema reference for extraction.
 
 ---
 
@@ -149,7 +148,7 @@ Don't iterate prompts on vibes. Build a small eval harness:
 
 ```python
 test_cases = [
-  {"input": {...}, "expected_traits": ["mentions Laura", "≤ 90 chars", "no emoji"]},
+  {"input": {...}, "expected_traits": [...]},
   ...
 ]
 
@@ -161,7 +160,7 @@ def grade(output, traits):
 
 Each prompt mutation gets scored against the same fixed harness. Pick the highest-scoring variant — not the one that "feels best".
 
-See `llm_evaluation_frameworks.md` for the full eval pattern + repo conventions for storing test cases under `evals/`.
+See `llm_evaluation_frameworks.md` for the full eval pattern + repo conventions for storing test cases.
 
 ---
 
@@ -178,10 +177,10 @@ See `llm_evaluation_frameworks.md` for the full eval pattern + repo conventions 
 
 ---
 
-## 8. Project-specific notes
+## 8. Project hookup
 
-- This repo (gpus-site) ships **no runtime AI** — it's a static Astro site. These patterns apply when adding AI features (e.g., a content-collection generator, FAQ semantic search).
-- For copy/conversion experiments at build time, prefer the `evolve-autoresearch` skill + Karpathy autoresearch loop over ad-hoc prompting.
-- Brand voice constraints + product taxonomy live in the `grupo-us` skill — preload it when building copy generators.
+- Brand voice / domain taxonomy / forbidden terms live in the host project's domain skill (e.g., `<brand>` skill, `<product>` skill). Preload that skill when building generators or judges.
+- For Karpathy-style optimize loops over prompts/skills, use a project-bound autoresearch skill — frozen harness, append-only `experiments.tsv`, crash discipline.
+- For migrations between Claude API model versions or new SDK apps, route through the `claude-api` skill.
 
-Last updated: 2026-05-01. Owner: `senior-prompt-engineer` skill.
+Owner: `senior-prompt-engineer` skill.

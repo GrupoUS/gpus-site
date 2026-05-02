@@ -135,7 +135,7 @@ Every iteration logged, including baseline (`candidate_id=baseline`, no mutation
 
 ## `evals/` tree (mandatory)
 
-Every run: `evals/<skill-slug>/runs/<run-id>/`
+Every new run: `evals/<skill-slug>/runs/<run-id>/` (top-level — never inside `_archive/`).
 
 | File | Purpose |
 |---|---|
@@ -145,7 +145,7 @@ Every run: `evals/<skill-slug>/runs/<run-id>/`
 
 Put run path in `<next_actions>`. Fill `applied.md`/`backlog.md` after scoring — never empty if response had substance.
 
-Layout: [`evals/README.md`](../../../../evals/README.md).
+Layout: [`evals/README.md`](../../../../evals/README.md). Frozen historical snapshots from prior promotions live in [`evals/_archive/`](../../../../evals/_archive/README.md) (read-only — do not write).
 
 ## Python toolchain
 

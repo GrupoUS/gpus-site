@@ -54,6 +54,7 @@ Details and alternate framing → `references/manual-resumo.md`.
 | `references/cultura-activa.md` | A.C.T.I.V.A. culture table and anti-patterns |
 | `references/produtos-e-rotas.md` | ID ↔ slug ↔ institutional route ↔ external URLs |
 | `references/conflitos-fontes.md` | OTB location, TRINTAE3 duration, Neon Dash gap, pricing rules |
+| `references/whatsapp-ssot.md` | SDR Laura WhatsApp SSOT — `WHATSAPP_SDR_E164`, `whatsappUrlWithText`, `isWhatsAppDestination`, "Olá, Laura!" prefix, dedup pattern, smoke commands |
 
 ## Quick grep (references)
 

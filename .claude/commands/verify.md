@@ -109,6 +109,19 @@ If FAIL → STOP. Surface exact error. Do NOT continue. Suggest user fix gates f
 
 In `spec-only` mode, skip Phase 0 entirely.
 
+### 0.2 Codex plugin pre-check (full + paranoid modes only)
+
+Before any phase that uses `/codex:review` or `/codex:adversarial-review` (Phases 5-6), confirm the plugin is available:
+
+```bash
+# Pre-flight check — do NOT silently fall back to bash if missing
+which codex >/dev/null 2>&1 && echo "codex available" || echo "MISSING"
+```
+
+If MISSING and mode is `full` or `paranoid`: ask the user to choose `[skip codex phases]`, `[escalate to evaluator Mode 3 instead]`, or `[abort and install codex first]`. Do NOT silently skip — that hides ship-blocker findings.
+
+In `quick` and `spec-only` modes: codex phases are off by default, no pre-check needed.
+
 ---
 
 ## 3. Phase 1 — resolve inputs

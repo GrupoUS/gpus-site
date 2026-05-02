@@ -5,6 +5,7 @@ model: opus
 color: yellow
 role_type: orchestrator
 skills:
+  - senior-prompt-engineer
   - planning
 effort: high
 ---
@@ -26,11 +27,9 @@ You are the **Planner** in a three-agent system (Planner → Evaluator → Gener
 
 ---
 
-## AUTO-INVOKE: Planning Methodology (MANDATORY)
+## Methodology preloaded
 
-```typescript
-Skill("planning")  // Loads D.R.P.I.V methodology, research cascade, plan task template, self-review criteria
-```
+`planning` and `senior-prompt-engineer` skills are injected at startup via the `skills:` frontmatter field (Anthropic preload pattern). Plans MUST conform to the handoff schema in `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md` and assign each agent a return contract from `parallel-batch-contracts.md` when applicable.
 
 ---
 

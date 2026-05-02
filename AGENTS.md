@@ -1,407 +1,165 @@
-# Grupo US — Agent Rules & Project Specification
+# Grupo US — AGENTS.md
 
-> **Single source of truth for ALL AI agent behavior AND project-level technical context.**
+> Behavioral guide for AI agents working in this repo. Follows the [agents.md](https://agents.md/) spec.
+> Authoritative technical rules live in `.claude/rules/`. This file complements Claude Code's `.claude/CLAUDE.md` and is also picked up by Cursor / Aider / Codex / Continue / any agents.md-aware tool.
 
 ---
 
-## Cardinal Rules (Non-Negotiable)
+## Subdirectory overrides
+
+Subdirectory `AGENTS.md` files **override or supplement** this file when editing files inside that directory. Always check for one before acting on a task scoped to a subtree, and respect its rules over this root file.
+
+This root file is for repo-wide behavior. Don't put subtree-only rules here.
+
+---
+
+## What this project is
+
+Static institutional landing for **Grupo US** (saúde estética avançada, negócios, mentalidade) at `https://grupous.com.br`. pt-BR. No backend, no auth, no payments. Conversion via WhatsApp SDR Laura + external product hubs (`drasacha.com.br`, `namesacerta.com.br`, `ota-dubai.lovable.app`, `neondash.com.br`, `trintae3.drasacha.com.br`, Kiwify).
+
+Stack / paths / tooling / quality gates → `.claude/config.json`. Layer chain + routing matrix → `.claude/CLAUDE.md`. Domain rules → `.claude/rules/`.
+
+---
+
+## Cardinal rules (non-negotiable)
 
 > [!CAUTION]
-> These rules apply to **every** interaction, regardless of domain or workflow.
+> Apply to **every** interaction. Detail per rule lives in `.claude/CLAUDE.md § Routing matrix`.
 
-1. **Never Assume Correctness.** Verify against official docs, API responses, or runtime tests **before** applying changes.
-2. **Always Debug After Changes.** Every modification must be followed by a verification step. Never mark a task as done without evidence that it works.
-3. **NEVER use emojis as UI icons.** Use Lucide React SVGs exclusively.
-4. **NEVER use SPA approach.** This site MUST be statically generated via Astro.
+1. **Never assume correctness.** Verify against official docs, runtime build, or `bun run check:external-urls` before applying changes.
+2. **Always debug after changes.** Every modification ends with `bun run lint && bunx astro check && bun run build`. Never mark a task done without evidence.
+3. **NEVER use emojis as UI icons.** Lucide React SVG only.
+4. **NEVER use SPA.** Astro static MPA only — no `ClientRouter`, no `prerender = false`, no SSR adapter.
+5. **NEVER hardcode product / team / landing copy** in `.astro` or `.tsx`. Always `getCollection()` from `src/content/`.
+6. **NEVER inline `wa.me/...` URLs.** Always go through `src/lib/whatsapp.ts`.
+7. **NEVER hardcode hex** outside `src/styles/global.css` `@theme` block. Semantic tokens or named navy/gold utilities only.
+8. **NEVER animate layout properties** (`width`, `height`, `top`, `left`, `padding`, `margin`). FAQ uses CSS grid `grid-template-rows: 0fr ↔ 1fr`. Other animations: `transform` + `opacity` only.
+
+---
 
 ## Behavior
 
-- Implement directly, don't just suggest
-- Follow project code conventions strictly
-- Reference applied rules when relevant
-- Environment: Windows with WSL Ubuntu.
-- Always run terminal commands using: wsl -e bash -c "COMMAND"
-- Never use cmd /c — this is a WSL environment.
-- Prefer non-interactive, self-terminating commands.
-- After any shell command, do not wait for further output.
-- Always run commands with timeout to avoid stuck
-
-# SYSTEM ROLE & BEHAVIORAL PROTOCOLS
-
-**ROLE:** Senior Frontend Architect & Avant-Garde UI Designer.
-**EXPERIENCE:** 15+ years. Master of visual hierarchy, whitespace, and UX engineering.
-
-## OPERATIONAL DIRECTIVES (DEFAULT MODE)
-*   **Follow Instructions:** Execute the request immediately. Do not deviate.
-*   **Stay Focused:** Concise answers only. No wandering.
-*   **Output First:** Prioritize code and visual solutions.
-*   **Maximum Depth:** You must engage in exhaustive, deep-level reasoning.
-*   **Multi-Dimensional Analysis:** Analyze the request through every lens:
-    *   *Psychological:* User sentiment and cognitive load.
-    *   *Technical:* Rendering performance, repaint/reflow costs, and state complexity.
-    *   *Accessibility:* WCAG AAA strictness.
-    *   *Scalability:* Long-term maintenance and modularity.
-*   **Prohibition:** **NEVER** use surface-level logic. If the reasoning feels easy, dig deeper until the logic is irrefutable.
-
-## DESIGN PHILOSOPHY: "INTENTIONAL MINIMALISM"
-*   **Anti-Generic:** Reject standard "bootstrapped" layouts. If it looks like a template, it is wrong.
-*   **Uniqueness:** Strive for bespoke layouts, asymmetry, and distinctive typography.
-*   **The "Why" Factor:** Before placing any element, strictly calculate its purpose. If it has no purpose, delete it.
-*   **Minimalism:** Reduction is the ultimate sophistication.
-
-## Core Principles
-
-```yaml
-CORE_STANDARDS:
-  mantra: "Think → Research → Plan → Decompose with atomic tasks → Implement → Validate"
-  mission: "Research first, think systematically, implement flawlessly with cognitive intelligence"
-  research_driven: "Multi-source validation for all complex implementations"
-  vibecoder_integration: "Constitutional excellence with one-shot resolution philosophy"
-  KISS_Principle: "Simple systems that work over complex systems that don't. Choose the simplest solution that meets requirements. Prioritize readable code over clever optimizations. Reduce cognitive load and avoid over-engineering"
-  YAGNI_Principle: "Build only what requirements specify. Resist "just in case" features. Refactor when requirements emerge. Focus on current user stories and remove unused, redundant and dead code immediately"
-  Chain_of_Thought: "Break problems into sequential steps and atomic subtasks. Verbalize reasoning process. Show intermediate decisions. Validate against requirements"
-  preserve_context: "Maintain complete context across all agent and thinking transitions"
-  incorporate_always: "Incorporate what we already have, avoid creating new files, enhance the existing structure"
-  always_audit: "Never assume the error is fixed, always audit and validate"
-  COGNITIVE_ARCHITECTURE:
-  meta_cognition: "Think about the thinking process, identify biases, apply constitutional analysis"
-  multi_perspective_analysis:
-    - "user_perspective: Understanding user intent and constraints"
-    - "developer_perspective: Technical implementation and architecture considerations"
-    - "business_perspective: Cost, timeline, and stakeholder impact analysis"
-    - "security_perspective: Risk assessment and compliance requirements"
-    - "quality_perspective: Standards enforcement and continuous improvement"
-```
+- **Implement directly, don't just suggest.** Code-first responses.
+- **Reference applied rules** when relevant (e.g., "per `.claude/rules/frontend.md` redirect tri-sync").
+- **Run terminal commands in the provided shell.** POSIX syntax, forward slashes, with timeouts. Never wrap in `wsl`, `cmd /c`, or any OS-specific launcher — the shell is bash regardless of host OS.
+- **Bun-only.** `bun install`, `bun run`, `bunx`. Never `npm` / `yarn` / `pnpm`.
+- **Prefer non-interactive, self-terminating commands.** Don't wait for further output after a shell command.
+- **Single source of truth.** Never duplicate rule content into this file — edit the rule, point here.
 
 ---
 
-## Project Snapshot
+## Decision authority
 
-| Field        | Value                                                              |
-| ------------ | ------------------------------------------------------------------ |
-| **Type**     | Multi-product Institutional Website (Static Site)                  |
-| **Stack**    | Astro 6 + Tailwind CSS v4 + React 19 (Islands) + Framer Motion      |
-| **Runtime**  | **Bun** (package manager + runtime)                                |
-| **Language** | TypeScript (strict mode)                                           |
-| **Deploy**   | **Railway** (static site via GitHub integration)                   |
-| **Theme**    | GPUS Theme (Navy/Gold) — `gpus-theme` skill                       |
-| **Fonts**    | Playfair Display (headings) + Inter (body) via Google Fonts        |
-| **Icons**    | Lucide React (SVG only — no emojis)                                |
-| **Purpose**  | Institutional site for Grupo US with landing pages per product     |
+| Action | Authority |
+|---|---|
+| L1-L2 fixes, style/lint/type fixes | Autonomous |
+| File deletion, new dependency, schema-shape change | **Confirm first** |
+| Production config, deploy, destructive operations, force push | **Always ask** |
 
 ---
 
-## Architecture Map
+## Where rules live (don't duplicate)
 
-```text
-gpus/
-├── src/
-│   ├── components/
-│   │   ├── layout/         # Header.astro, Footer.astro
-│   │   ├── home/           # Hero, ProductsGrid, StatsSection, AboutPreview, CTASection
-│   │   ├── about/          # Mission, Values, TeamGrid
-│   │   ├── landing/        # Reusable product landing sections (9 components)
-│   │   │   ├── LandingHero.astro
-│   │   │   ├── PainPoints.astro
-│   │   │   ├── Pillars.astro
-│   │   │   ├── Benefits.astro
-│   │   │   ├── Differentials.astro
-│   │   │   ├── Testimonials.astro    # Pure Astro (NOT React)
-│   │   │   ├── FAQ.astro             # Pure Astro — details/summary
-│   │   │   ├── LandingCTA.astro
-│   │   │   └── MobileCTABar.astro
-│   │   └── shared/         # SectionHeading, Card, Button
-│   ├── content/            # Content Collections (JSON data)
-│   │   ├── products/       # 7 product JSON files (rich schema); opcional `externalSiteUrl`
-│   │   └── team/           # 13 team member JSON files
-│   ├── content.config.ts   # Zod schemas + glob loaders
-│   ├── layouts/
-│   │   └── Layout.astro    # Base layout (SEO, JSON-LD, fonts, skip link, reveal)
-│   ├── pages/              # 10 rotas .astro; /otb e /na-mesa-certa = redirect estatico (astro.config)
-│   │   ├── index.astro
-│   │   ├── sobre.astro
-│   │   ├── trintae3.astro
-│   │   ├── mentoria-black-neon.astro
-│   │   ├── comunidade-us.astro
-│   │   ├── curso-auriculo.astro
-│   │   ├── neon-dash.astro
-│   │   ├── contato.astro
-│   │   ├── termos.astro
-│   │   └── politica-de-privacidade.astro
-│   └── styles/
-│       └── global.css      # Tailwind v4 @theme + custom utilities
-├── public/
-│   └── images/             # Static assets (products/, team/)
-├── astro.config.mjs
-├── tsconfig.json
-├── biome.json
-├── lefthook.yml
-└── package.json
-```
+| Need | File |
+|---|---|
+| Cardinal rules detail + routing matrix + layer chain | `.claude/CLAUDE.md` |
+| Universal frontend do/don't (component placement, hydration philosophy, content data SSOT, forms, external surfaces, perf, a11y) | `.claude/rules/frontend.md` |
+| Universal design do/don't (color tokens, typography, components, layout, iconography, motion, imagery, depth, focus) | `.claude/rules/DESIGN.md` |
+| Universal stability checklist · smoke template · anti-patterns · debug triage · escalation triggers | `.claude/rules/stability.md` |
+| Universal SEO meta · JSON-LD shape · sitemap · CWV thresholds · AI citation (GEO) | `.claude/rules/seo.md` |
+| Project metadata (paths, tooling, gates, protected files) | `.claude/config.json` |
+| Astro patterns (render mode, hydration, Content Collections, View Transitions, `<Image>`, troubleshooting) | `astro` skill — auto-triggers on `*.astro` / `astro.config.mjs` / `src/content.config.ts` |
+| **Astro project overlay** (render-mode invariants, redirect tri-sync, hydration project rules, Layout.astro contracts, smoke commands) | `.claude/skills/astro/references/gpus-overlay.md` |
+| Brand voice · product IDs · student journey · CTAs | `grupo-us` skill |
+| **WhatsApp SDR Laura SSOT** (`WHATSAPP_SDR_E164`, `whatsappUrlWithText`, `isWhatsAppDestination`, "Olá, Laura!" prefix, dedup, smoke) | `grupo-us/references/whatsapp-ssot.md` |
+| Theme tokens canon (HSL · light/dark portable) | `gpus-theme` skill |
+| Autoresearch audit trail · per-area `compound.md` brand memory · `/evolve` run records | `evals/README.md` (layout) + `evals/site/<area>/compound.md` |
+
+If a topic is missing from the table above, add it to the matching rule file or skill and link from here — never paste content into this `AGENTS.md`.
 
 ---
 
-## Tech Stack Quick Reference
+## MCP servers (always use `serverIdentifier`)
 
-| Layer          | Technology                | Version |
-| -------------- | ------------------------- | ------- |
-| Framework      | Astro                     | 6.x     |
-| Styling        | Tailwind CSS              | v4.x    |
-| Interactivity  | React (Islands only)      | 19.x    |
-| Animations     | motion (Framer Motion)    | 12.x    |
-| Icons          | Lucide React              | latest  |
-| Build Tool     | Vite (integrated in Astro)| 6.x     |
-| Deploy         | Railway                   | —       |
-| Theme System   | GPUS Theme (adapted)      | —       |
+When MCP is available, prefer it over CLI / web guess. Read each tool's schema before calling it.
 
----
+| `serverIdentifier` | Use |
+|---|---|
+| `plugin-tavily-tavily` | Web search, URL extract, crawl, research with citations |
+| `plugin-compound-engineering-context7` | Up-to-date library docs (Astro, Tailwind v4, React 19, etc.) |
+| `cursor-ide-browser` | Page navigation / snapshot for UI verification (lock → act → unlock) |
+| `user-shadcn` | shadcn/ui component patterns (when UI requires) |
+| `user-sequentialthinking` | Multi-step reasoning for L4+ ambiguous / high-risk problems |
 
-## Commands
-
-| Task                 | Command              |
-| -------------------- | -------------------- |
-| Install dependencies | `bun install`        |
-| Start development    | `bun run dev`        |
-| Build                | `bun run build`      |
-| Preview build        | `bun run preview`    |
-| Check types          | `bunx astro check`   |
-| URLs produtos externos | `bun run check:external-urls` |
+Don't use external MCP for purely local ops (git, `bun run build`, repo file reads). Don't introduce backend / DB / payments servers (`clerk`, `neon`, `stripe`) without an explicit product requirement.
 
 ---
 
-## Cursor: plugins, MCP e skills
+## Commit format
 
-Agentes neste projeto **devem** usar integrações do Cursor de forma explícita e consistente. **Skills** são instruções (quando acionar, boas práticas); **MCP** expõe ferramentas tipadas; **CLI** é fallback ou tarefas só-terminal.
-
-### Regras MCP (obrigatórias)
-
-1. **Antes de `call_mcp_tool`:** ler o schema do tool em  
-   `~/.cursor/projects/home-mauricio-gpus/mcps/<serverIdentifier>/tools/<nome>.json`  
-   (argumentos obrigatórios, tipos, defaults).
-2. **Nome do servidor na chamada:** usar sempre **`serverIdentifier`**, não o `serverName` curto.  
-   Ex.: Tavily → `plugin-tavily-tavily` (chamar `tavily` costuma falhar neste ambiente).
-3. **Ordem de preferência:** MCP habilitado → skill relevante → CLI/script → evitar “adivinhar” conteúdo da web sem fonte.
-
-### Servidores MCP — IDs para chamadas (`serverIdentifier`)
-
-| ID (`call_mcp_tool`)                    | Uso típico |
-| --------------------------------------- | ---------- |
-| `plugin-tavily-tavily`                  | Busca na web, extração de URL, crawl, pesquisa com citações (`tavily_search`, `tavily_extract`, `tavily_crawl`, `tavily_research`, `tavily_map`, `tavily_skill`). |
-| `plugin-compound-engineering-context7`  | Documentação e exemplos atualizados de bibliotecas (consulta oficial). |
-| `user-shadcn`                           | Componentes e padrões shadcn/ui alinhados ao projeto. |
-| `cursor-ide-browser`                    | Navegação, snapshot e interação na UI (fluxo: abas → **lock** → ações → **unlock**). |
-| `user-sequentialthinking`             | Decomposição encadeada de raciocínio para problemas ambíguos ou de alto risco. |
-| `plugin-clerk-clerk`                    | Auth Clerk (só se a tarefa pedir explicitamente). |
-| `plugin-neon-postgres-neon`             | Postgres Neon (só se a tarefa pedir explicitamente). |
-| `plugin-stripe-stripe`                  | Stripe (só se a tarefa pedir explicitamente). |
-
-### Tavily: MCP vs CLI vs skills
-
-| Canal | Quando usar |
-| ----- | ----------- |
-| **MCP** `plugin-tavily-tavily` | Tarefas no Cursor: fatos atuais, conteúdo de URLs, crawl, research. Primeira opção. |
-| **Skills** `tavily-search`, `tavily-extract`, `tavily-crawl`, `tavily-research`, `tavily-cli`, `tavily-best-practices` | Escolha de fluxo (search → extract → map → crawl → research), parâmetros (`--json`), limites. Ler a skill quando a tarefa envolver web **fora** do repositório. |
-| **CLI** `tvly` | Fallback sem MCP, automações em shell, ou quando o usuário pedir comando explícito. Garantir `tvly` no `PATH` (`~/.local/bin` e/ou symlink em `~/.bun/bin`). Checagem: `tvly --status`. |
-
-Não usar Tavily para operações puramente locais (git, `bun run build`, arquivos do repo) salvo para pesquisar erro/documentação externa.
-
-### Escopo deste repositório (site estático Astro)
-
-- **Alto uso:** Context7, shadcn (se UI exigir), browser MCP para verificar páginas, Tavily para pesquisa/copy/docs externos.
-- **Baixo uso / sob demanda:** Clerk, Neon, Stripe — apenas se o pedido for explícito; **não** introduzir backend ou pagamentos no site institucional sem requisito de produto.
+Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `perf:`. One logical change per commit. Reference the touched rule (e.g., `fix(frontend): WhatsApp SSOT — drop inline wa.me`).
 
 ---
 
-## Package Manager (Bun-only)
+## Learnings log
 
-> [!CAUTION]
-> This project uses **`bun`** as package manager and runtime.
-> ✅ `bun install`, `bun run`, `bunx`
-> ❌ Do NOT use `npm`, `yarn`, or `pnpm`
+Append-only chronological project decisions. Each entry: **date · area · problem · solution · validation**. New entries on top.
 
----
+### [2026-05-02] `.claude/rules/` generified — universal do/don't, Astro-specific to skill, project SSOT to grupo-us
 
-## Design System (GPUS Theme + Liquid Glass Premium)
+**Problem:** As 5 regras em `.claude/rules/` (`frontend.md` 165 hits, `DESIGN.md` 114, `stability.md` 139, `seo.md` 32, `README.md` 10) carregavam mistura pesada de: (1) sintaxe Astro project-specific (`client:idle`/`client:load`/`client:visible`, `getCollection`, `astro.config.mjs::redirects`, `<ClientRouter />` proibido, `<Image>` discipline, `prerender = false` cardinal); (2) tokens hardcoded do projeto (Navy `#1a1a2e`, Gold `#d4af37`, Playfair Display, Inter, semantic HSL com valores específicos, `bg-whatsapp` `#25d366`); (3) operacional do projeto (WhatsApp SDR Laura SSOT — `WHATSAPP_SDR_E164`, `whatsappUrlWithText`, `isWhatsAppDestination`, "Olá, Laura!" prefix; redirect tri-sync; `Layout.astro` skip-link / `<noscript>` reveal / `<main id="conteudo-principal">`; brand voice "Olhar de dono"; product list TRINTAE3/Mentoria Black NEON/etc.); (4) tooling Bun-only (`bun run lint`, `bunx astro check`, `bun run build`). Quem copiasse `.claude/rules/` para outro projeto herdaria nomes de produto, comandos Bun, regras de hidratação Astro e SSOT do funil drasacha.
 
-> **Source:** GPUS Theme (`gpus-theme` skill) adapted for Na Mesa Certa.
-> Uses CSS custom properties with HSL values. Dark mode is the **default and only** mode.
-> Semantic tokens via `--primary`, `--background`, `--foreground`, etc.
+**Solution:** Auditoria 3-coluna em `docs/plans/2026-05-02-rules-generic-migration.md`. **Generic rules** rewrite (Sprint 3): `frontend.md` (~140 linhas) — universal frontend do/don't (component placement, hydration philosophy, content data SSOT, forms, external surfaces baseline, perf budget, a11y plumbing); `DESIGN.md` (~230 linhas) — universal color/typography/components/layout/iconography/motion/imagery/depth/focus do/don't sem hex específicos; `stability.md` (~210 linhas) — A–L checklist universal + render-mode invariants + CWV gates + smoke template com `${tooling.*}` placeholders + anti-patterns + debug triage cross-framework; `seo.md` (~140 linhas) — locale/routes/sitemap/robots/OG/JSON-LD shape sem URLs específicas; `README.md` rewrite — cross-project portability + tech-stack/project signal patterns. Cada regra termina com seção "Stack & project signals" apontando para skills.
 
-### Color Palette (Dark Mode — Always Active)
+**Astro skill expansion** (Sprint 2): novo `.claude/skills/astro/references/gpus-overlay.md` (~200 linhas) carregando render-mode invariants do site, redirect tri-sync (`externalSiteUrl` + `astro.config.mjs::redirects` + sitemap `filter()`), hydration project rules (`client:load` só `WhatsAppFloatingButton`, hero islands `client:idle`), `Layout.astro` contracts (skip link first focusable, `<main id="conteudo-principal" tabindex="-1">`, `<noscript>` reveal, `[data-reveal]` IntersectionObserver, Google Fonts preconnect), Content Collections SSOT crossref, image discipline (NeonStory below-fold), smoke commands (`bun run check:external-urls`). `astro/SKILL.md` ganhou linha `references/gpus-overlay.md` na tabela Detailed References + 6 novas linhas em Common Mistakes (client:load creep, prerender override, ClientRouter forbidden, hardcoded landing copy, image priority drift, redirect tri-sync). `astro/references/content-collections.md` ganhou seção SSOT pattern com anti-pattern vs SSOT example + Quick edit paths table.
 
-| CSS Variable         | HSL Value         | Hex Equivalent | Usage                |
-| -------------------- | ----------------- | -------------- | -------------------- |
-| `--background`       | `211 49% 10%`    | `#0d1b2a`     | Page background      |
-| `--foreground`       | `39 44% 65%`     | `#c9a66b`     | Default text (gold)  |
-| `--card`             | `212 48% 13%`    | ~`#112240`     | Card backgrounds     |
-| `--card-foreground`  | `39 44% 65%`     | `#c9a66b`     | Card text            |
-| `--primary`          | `39 44% 65%`     | `#c9a66b`     | CTAs, gold accents   |
-| `--primary-foreground`| `48 10% 80%`    | ~`#d1ccc0`    | Text on primary      |
-| `--muted`            | `39 29% 54%`     | ~`#b09a6d`    | Muted elements       |
-| `--muted-foreground` | `48 10% 80%`     | ~`#d1ccc0`    | Muted text           |
-| `--accent`           | `26 5% 27%`      | ~`#474340`    | Accent highlights    |
-| `--border`           | `26 6% 21%`      | ~`#383533`    | Borders              |
-| `--ring`             | `39 29% 54%`     | ~`#b09a6d`    | Focus rings          |
-| `--destructive`      | `0 84% 60%`      | ~`#ef4444`    | Error states         |
+**Project SSOT migration** (Sprint 4): novo `.claude/skills/grupo-us/references/whatsapp-ssot.md` (~170 linhas) consolidando WhatsApp SDR Laura — `WHATSAPP_SDR_E164` valor + `whatsappUrlWithText` + `WHATSAPP_DEFAULT_SITE_MESSAGE` + `isWhatsAppDestination` dedup + "Olá, Laura!" convention + `aria-label` includes "Laura" + 4 anti-patterns + 3 smoke commands + debug triage. `grupo-us/SKILL.md` ganhou linha `whatsapp-ssot.md` em Bundled references. CLAUDE.md routing matrix reescrita: 14 das 17 rows agora apontam para (generic rule + relevant skill); novo header "Tech-stack skills auto-trigger" + Pointers section reorganizada em 3 grupos (Generic universal rules / Tech-stack skills / Project skills). AGENTS.md "Where rules live" table igualmente atualizado com linhas separadas para gpus-overlay + whatsapp-ssot.
 
-#### Extended Na Mesa Certa Tokens
+**Pattern:** **Skills cross-project** carregam universal do/don't + ponteiros para skills tech-stack ou project; **tech-stack skills** carregam framework patterns + opcional `references/<project>-overlay.md` para overrides do projeto host; **project skills** carregam SSOT operacional (helpers como WhatsApp builder, CTA dedup, brand voice). Anthropic skills auto-trigger (description match) + progressive disclosure: ~100 tokens/skill no startup, body load só sob demanda — net token equivalente ou menor que regras monolíticas. **Universal substance** (hydration philosophy, content SSOT concept, layout-property animation forbidden, semantic tokens > hex, ONE icon library, WCAG AA minimums, skip-link first focusable, `prefers-reduced-motion`, `<noscript>` fallback, FAQ grid `0fr/1fr`, `href="#"` forbidden) preservada nas rules. **Project specifics** (`client:idle` vs `client:load` exact directive names, `WHATSAPP_SDR_E164` specific value, redirect tri-sync exact code paths, Navy/Gold hex values, "Olá, Laura!" exact phrase) migrada para skills. **Cardinals (8)** ficam em CLAUDE.md tier-1 sempre carregados — skills carregam *implementação detail*, cardinais carregam *invariante*.
 
-| Tailwind Class       | Hex       | Usage                         |
-| -------------------- | --------- | ----------------------------- |
-| `navy` / `navy-DEFAULT` | `#1a1a2e` | Legacy navy background     |
-| `navy-light`         | `#2A2A40` | Glass card backgrounds        |
-| `navy-lighter`       | `#3D3D5C` | Hover states                  |
-| `gold` / `gold-DEFAULT` | `#D4AF37` | Bright gold CTAs, headlines |
-| `gold-light`         | `#E8C96A` | Gold hover states             |
-| `gold-dark`          | `#B8960C` | Gold active/pressed states    |
-| Text primary         | `#FAFAF9` | Main readable text            |
-| Text muted           | `#94A3B8` | Subtitles, metadata           |
-| WhatsApp (CTA)     | via `--color-whatsapp` / `--color-whatsapp-hover` in `@theme` | Botão secundário estilo WhatsApp (`bg-whatsapp`, `hover:bg-whatsapp-hover`) — **não** usar `bg-[#25D366]` solto |
+**Validation:** `bunx astro check` → 0 errors / 0 warnings / 92 hints; `bun run build` → 9 pages built clean (2.72s). Lint failures pré-existentes (CRLF em `src/styles/global.css`) — esta PR só toca `.claude/rules/`, `.claude/CLAUDE.md`, `AGENTS.md`, `.claude/skills/{astro,grupo-us}/`. Grep verification: `grep -E "(?i)\bAstro\b|\bbun\b|\bbunx\b|client:|getCollection|getEntry|@theme|tailwind|playfair|inter\b|lucide|whatsapp|wa\.me|laura|sacha|drasacha|grupous|gpus|grupo us|navy|gold|mentoria|trintae3|comunidade-us|otb-dubai|namesa|kiwify|black neon|<Image|prerender|ClientRouter|data-reveal|conteudo-principal|pt-BR|grupous\.com\.br" .claude/rules/` retorna apenas hits intencionais em "Stack signals" tables (e.g., "load `astro` skill quando `*.astro`") e exemplos de mixing libraries (`Lucide + Material Symbols`) — todas como teaching anchors, não como rules project-specific.
 
-### Tipografia
+### [2026-05-02] planning + senior-prompt-engineer skills — generic / portable
 
-| Usage        | Font             | Weights         | Tailwind Class |
-| ------------ | ---------------- | --------------- | -------------- |
-| Headings     | Playfair Display | 400, 600, 700   | `font-serif`   |
-| Body, UI     | Inter            | 300, 400, 500, 600, 700 | `font-sans` |
+**Problem:** Após o slim de `planning`, ambas as skills carregavam exemplos hardcoded do gpus-site (Astro Content Collections, `bunx astro check`, `bun run build`, `client:load`/`client:idle`, `wa.me`, Lucide, Navy/Gold, hex outside `@theme`, redirect tri-sync, "Olá, Laura!", brand voice manual). Isso travava o reuso em outros projetos — quem copiasse `.claude/skills/planning/` ou `.claude/skills/senior-prompt-engineer/` herdaria nomes de produtos, comandos Bun, regras de hidratação Astro e sample data do funil drasacha.
 
-### Custom Utilities (from GPUS Theme)
+**Solution:** Generificadas para serem portáveis. **`planning`:** SKILL.md restaurou referência a `${overlay}/layer-map.md` como fonte project-specific da layer chain; layer template fallback voltou genérico (Data → Service → Router → Client → Presentation → Cross-cutting → Verification); auth scope marcado opcional ("skip when project has no auth"); `Self-Review Checklist` referencia "host project's cardinal rules" em vez de listar os 8 do gpus-site; comandos verify usam `${tooling.packageManager} run ${tooling.typeChecker}` em vez de `bunx astro check`. `references/02-plan.md` reescrito com placeholders `<src>/<module>/<file>.<ext>`, `${tooling.testRunner}`. `references/03-risk.md` reescrito com falhas genéricas (build/logic/integration/data/auth/perf/security/a11y/SEO/cross-cutting) e remete falhas project-specific ao host `.claude/rules/stability.md` ou `${overlay}/layer-map.md`. **`senior-prompt-engineer`:** SKILL.md tagline "any host project"; agent-assignments table abstrata (orchestrator / planner / evaluator / debugger por *role*, não por nome); body-forbidden list trocou "wa.me URLs, hex codes, product copy" por "project-specific values that belong in `.claude/CLAUDE.md` / `.claude/rules/`". `references/agent-handoff-contracts.md` JSON example com placeholders. `references/parallel-batch-contracts.md` example trocou `LandingCTA.astro` por `<src>/<file>:<line>`. `references/agentic_system_design.md` removeu nomes hardcoded de agentes (`explorer`, `librarian`, `oracle`, `frontend-specialist`) — substituiu por descrições funcionais. `references/prompt_engineering_patterns.md` reescrito sem voice anchors do grupo-us / produtos / Laura. `references/llm_evaluation_frameworks.md` reescrito sem links para `.claude/skills/evolve-autoresearch/` (skill exclusiva ao gpus-site).
 
-| Class             | Effect                                |
-| ----------------- | ------------------------------------- |
-| `.bg-mesh`        | Radial gradient mesh background       |
-| `.glass-card`     | Glassmorphism (blur + semi-transparent) |
-| `.bg-noise`       | Subtle noise texture overlay          |
+**Pattern:** Skills cross-project SSOT (orquestração de agentes, planejamento) devem usar **placeholders + ponteiros para `${overlay}/layer-map.md` e `.claude/CLAUDE.md` host**, nunca exemplos hardcoded. Scripts utilitários e voice anchors específicos do projeto ficam em skills domain do host (e.g., `grupo-us`, `gpus-theme`, `evolution-core`) — não vazam para skills genéricas. Validação: `grep -E "GPUS|Astro|bunx|bun run|WhatsApp|wa\.me|Lucide|Navy|Gold|drasacha|grupo-us|Laura|Sacha|@theme" .claude/skills/{planning,senior-prompt-engineer}/` → empty.
 
-### Visual Effects
+**Validation:** `bunx astro check` → 0 errors / 0 warnings / 92 hints; `bun run build` → 9 pages built clean. Grep cross-check para tokens project-specific em ambas as skills retorna vazio.
 
-- **Gold glow CTAs:** `box-shadow: 0 0 20px hsl(var(--primary) / 0.3)`
-- **Glassmorphism cards:** `glass-card` utility OR `bg-navy-light/80 backdrop-blur-md border border-gold/20`
-- **Animations:** `transform` and `opacity` only (never `width`, `height`, `top`, `left`)
-- **`prefers-reduced-motion`:** disable all Framer Motion animations via `useReducedMotion()`
+### [2026-05-02] planning skill — slim, project-aware, orphan cleanup
 
-### Styling Rules
+**Problem:** Auditoria do `.claude/skills/planning/`: (1) `${overlay}/layer-map.md` referenciado 3× — overlay nunca configurado, fallback caía no template genérico DB→API→UI errado para Astro estático; (2) `references/02-plan.md` e `03-risk.md` com falhas de stack obsoletas (Drizzle / tRPC / Clerk / Neon / Stripe) sem qualquer presença no projeto; (3) `02-plan.md` com exemplos `bun test` apesar de `tooling.testRunner` vazio em `.claude/config.json`; (4) `crawl4ai-sdk.md` (230 KB) órfão — não referenciado por nenhum SKILL.md / agente / comando; (5) cluster `notebooklm.md` + `notebooklm-cli.md` + `notebooklm-hooks.md` + `planning-skill-from-notebooklm-prompt.md` + `optional-tools.md` (~27 KB) órfãos — Tavily MCP cobre o caso; (6) `scripts/` Python (Crawl4AI) nunca invocados pelo repo; (7) `evals.json` órfão — `/evolve` usa `evals/` na raiz, não local; (8) `02-plan.md` duplicava muito do `SKILL.md` (complexity table, parallel/sequential phases); (9) zero cross-ref ao `senior-prompt-engineer/references/agent-handoff-contracts.md` apesar de `orchestrator` e `project-planner` carregarem ambas as skills via `skills:` frontmatter.
 
-- **ALWAYS** use semantic tokens (`bg-background`, `text-foreground`, `bg-primary`) or custom navy/gold utilities
-- **NEVER** hardcode hex values (no `bg-[#0f4c75]`)
-- **ALWAYS** use Tailwind CSS v4 `@theme` directive for custom tokens
-- GPUS theme tokens are imported via `theme-tokens.css` adapted for this project
+**Solution:** SKILL.md reescrito (~180 linhas) com layer chain inline para Astro estático (`Content Collection JSON → schema → component → page → SEO → a11y → perf → smoke`), drop do `${overlay}/layer-map.md` morto, seção "Auth scope" removida (projeto é anônimo), `Self-Review Checklist` ancorada nos 8 cardinals, cross-ref explícito ao handoff schema do `senior-prompt-engineer`. `references/02-plan.md` reescrito com exemplos Astro Content Collection + `LandingHero.astro` + `bunx astro check` (não `bun test`). `references/03-risk.md` reescrito com 12 falhas reais do stack (Zod schema drift, `client:load` creep, hex outside `@theme`, redirect tri-sync broken, sitemap não excluindo redirect, Framer height tween, etc.). Deletados 10 arquivos órfãos (`crawl4ai-sdk.md` + cluster notebooklm + `optional-tools.md` + `evals.json` + 3 scripts Python) e diretório `scripts/`. Layout final: `SKILL.md` + `references/{01-discover,02-plan,03-risk,04-harness-patterns}.md`. ~257 KB removidos.
 
----
+**Pattern:** Skills devem inline o layer chain do projeto quando overlay nunca foi criado — fallback genérico engana mais do que ajuda. Process skills com cross-ref explícito a outras skills preloadeadas (`senior-prompt-engineer/references/*`) reduzem drift quando dois agents (`orchestrator` + `project-planner`) carregam ambas via `skills:` frontmatter. References órfãos sem ponto de entrada no `SKILL.md` ou em comandos viram dead weight — deletar antes que cresçam.
 
-## Islands Architecture (Hard Gate)
+**Validation:** `bunx astro check` → 0 errors / 0 warnings / 92 hints; `bun run build` → 9 pages built clean; `ls .claude/skills/planning/` → SKILL.md (10 KB) + `references/` (4 files, ~27 KB total). Verificações: `grep -rln "Drizzle\|tRPC\|Clerk\|Neon\|Stripe" .claude/skills/planning/` → empty; `grep -l "\${overlay}" .claude/skills/planning/` → empty.
 
-```
-Static HTML (100%): All 22 components are .astro files (zero client JS)
-React Islands (0%): None currently exist. All interactivity uses:
-  - FAQ: native <details>/<summary> with CSS transitions
-  - Header mobile: inline <script> for hamburger toggle
-  - Animations: CSS data-reveal via IntersectionObserver (inline script in Layout)
-```
+### [2026-05-01] senior-prompt-engineer rewired as Claude Code agent-orchestration SSOT
 
-> [!CAUTION]
-> Do NOT add React Islands without explicit justification. Astro's zero-JS default is the performance advantage.
+> Registro: `docs/analise-as-melhores-praticas-vectorized-fog.md` + execução desta sessão.
 
----
+**Problem:** Auditoria contra docs oficiais Anthropic (sub-agents, skills) revelou: (1) **zero de 12 agents referenciava `senior-prompt-engineer`** — skill morta no sistema; (2) `SKILL.md` era boilerplate ML/MLOps genérico (Python K8s, Prometheus, latency targets) sem contratos de subagent / handoff schema; (3) os 4 agents que invocavam skills (`orchestrator`, `project-planner`, `evaluator` ad hoc, `debugger`) usavam `Skill()` no body em vez do campo `skills:` frontmatter (Anthropic-recommended preload pattern); (4) handoff contracts eram prosa markdown variando entre `debugger`, `frontend-specialist`, `mobile-developer` — consolidação manual; (5) coordinator do `/implement § 6` sem max-iteration → REVISION_REQUIRED loops infinitos; (6) `/perf fix` spawn 1 agente por rota sem clusterizar por root cause; (7) `/verify` Phases 5-6 com fallback silencioso quando codex plugin ausente.
 
-## Content Collections
+**Solution:** `senior-prompt-engineer` reescrito como SSOT canônico para subagent design + handoff. SKILL.md (244 linhas) com 11 seções (purpose, subagent file contract, description guidelines, spawn template, handoff schema, parallel-batch contract, coordinator failure recovery, skill preload pattern, application-level prompt eng, references, anti-patterns). Dois novos `references/`: `agent-handoff-contracts.md` (Context Handoff schema markdown+JSON, status invariants, coordinator recovery rule) e `parallel-batch-contracts.md` (findings table schema, severity P0-P3, consolidation rules, tool precedence). Os 4 agents `orchestrator`, `project-planner`, `evaluator`, `debugger` ganharam `skills: [senior-prompt-engineer, …]` em frontmatter — removidos calls duplicados de `Skill()` no body. `_shared.md § 7.5` insere link SSOT; § 6 marca skill como mandatory para tasks com ≥2 agents; nova row "Multi-agent orchestration / handoff design". CLAUDE.md routing matrix ganhou 2 rows (agent prompt + multi-agent command); stopping conditions ganhou regra "Coordinator max-iteration"; skill invocation note clarifica preload vs body-level. Commands: `/delegate` substitui o block manual de 5 fields por link SSOT; `/implement § 6` adiciona max-iteration coordinator (2 resubmissions → BLOCKED → main → /debug recover); `/research` injeta tool-precedence guidance no prompt do librarian (Context7 first → Tavily fallback) + linka `parallel-batch-contracts.md`; `/perf § 2.5` cluster-by-root-cause antes de spawnar; `/verify § 0.2` codex plugin pre-check (ask user antes de fall through silencioso).
 
-All dynamic content uses Astro Content Collections (`src/content/`) with Zod schemas in `src/content.config.ts`:
+**Pattern:** Process skills usados em todo invocação devem ser **preloaded via `skills:` frontmatter** (Anthropic-recommended); domain skills condicionais ficam em `Skill()` body. Handoff schema é SSOT único — agents linkam, não redeclaram. Parallel-batch returns conformam ao mesmo column shape para consolidação mecânica. Coordinators têm max-iteration explícito antes de escalar para `/debug recover`. Tool precedence (Context7 vs Tavily) é injetado no prompt do agente, não enforced pelo agent definition.
 
-- **products/** — 6 JSON files, one per product. Rich schema: name, slug, tagline, description, type, audience, icon (Lucide name), image, order, hero, painPoints[], pillars[], benefits[], differentials[], faqs[], cta, testimonials[].
-- **team/** — 13 JSON files. Schema: name, role, bio, photo, order, social.
+**Validation:** `bunx astro check && bun run build` clean (0 errors, 9 pages built). Lint failures (CRLF em CSS) são pré-existentes em `src/` — esta PR só toca `.claude/`. Verificações: `grep "senior-prompt-engineer" .claude/agents/*.md` → 4 hits (orchestrator, project-planner, evaluator, debugger); `grep "agent-handoff-contracts" .claude/commands/*.md` → 4+ hits; `grep -c "MANDATORY CONTEXT" .claude/` → 3 esperados (orchestrator spawn template, handoff-contracts SSOT, SKILL.md quick ref) — eliminado de delegate, implement, _shared.
 
-To add a new product: create JSON in `src/content/products/` + create `.astro` page in `src/pages/` following the landing template pattern (getCollection → find by slug → pass data to landing components). Se a experiencia canônica for um site externo, defina `externalSiteUrl` no JSON e adicione o mesmo destino em `redirects` em `astro.config.mjs` (e exclua a rota no `filter` do sitemap, se aplicável).
+### [2026-05-01] AGENTS.md slim — behavioral focus + .claude/rules SSOT
 
-> [!CAUTION]
-> **NEVER** hardcode content data inside `.astro` or `.tsx` components. Always use `getCollection()`.
-
----
-
-## Section Order — Product Landing Pages (Conversion Architecture)
-
-Each product landing page follows this flow (all components in `src/components/landing/`):
-
-| # | Section           | Component                | Purpose                     |
-|---|-------------------|-------------------------|-----------------------------|
-| 1 | Hero              | `LandingHero.astro`     | Capture attention + value prop |
-| 2 | Pain / publico    | `PainPoints.astro`      | Create empathy + fit        |
-| 3 | Pilares           | `Pillars.astro`         | Present the solution        |
-| 4 | Beneficios        | `Benefits.astro`        | Show transformation         |
-| 5 | Diferenciais      | `Differentials.astro`   | Why this product is unique  |
-| 6 | Depoimentos       | `Testimonials.astro`    | Social proof (pure Astro)   |
-| 7 | FAQ               | `FAQ.astro`             | Eliminate final doubts      |
-| 8 | CTA Final         | `LandingCTA.astro`      | Convert the visitor         |
-| — | Mobile sticky     | `MobileCTABar.astro`    | CTA persistente (mobile)    |
-
-## Section Order — Home Page
-
-| # | Section           | Component                | Purpose                     |
-|---|-------------------|-------------------------|-----------------------------|
-| 1 | Hero              | `home/Hero.astro`       | Brand + proposito           |
-| 2 | Produtos          | `home/ProductsGrid.astro`| Grid de 6 produtos         |
-| 3 | Numeros           | `home/StatsSection.astro`| Impacto em numeros         |
-| 4 | Sobre preview     | `home/AboutPreview.astro`| Dra. Sacha + CTA sobre     |
-| 5 | CTA Final         | `home/CTASection.astro`  | WhatsApp + contato         |
-
----
-
-## Performance Requirements (Hard Gates)
-
-- **Lighthouse:** ≥ 95 on Performance, Accessibility, Best Practices, SEO
-- **LCP < 2.5s:** Preload hero image, use Astro `<Image />` with `loading="eager"` + `fetchpriority="high"`
-- **CLS = 0:** ALL images must have explicit `width` and `height` via Astro Image
-- **INP < 100ms:** Defer non-critical JS with `client:visible` or `client:idle`; ilhas só visuais no Hero (`AuroraBackground`, `TextGenerateEffect`) usam `client:idle` em vez de `client:load` quando o SSR já exibe texto/layout legível.
-- **Initial JS bundle:** < 50KB (Astro zero-JS default for static sections)
-- **Font loading:** `display=swap` to prevent FOIT
-
----
-
-## Accessibility Requirements
-
-- Contrast ratio: minimum **4.5:1** for all text on navy background
-- `prefers-reduced-motion`: wrap ALL Framer Motion animations in `useReducedMotion()`
-- Focus states: visible gold outline (`outline: 2px solid #D4AF37`) on all interactive elements
-- Images: meaningful `alt` text describing the speaker and their role
-- Semantic HTML: `h1` in Hero, `h2` for sections, `h3` for items
-- Keyboard navigation: fully functional for FAQ and testimonial carousel
-- `aria-label` on all buttons without descriptive text
-- **Skip link:** classe `.skip-link` em `global.css` (só `transform`); link “Pular para o conteúdo” aponta para `main#conteudo-principal` (`tabindex="-1"`).
-- **Rodapé jurídico:** usar rotas reais (`/termos`, `/politica-de-privacidade`), nunca `href="#"` para Termos/Privacidade.
-- **JS desligado:** `<noscript>` força `[data-reveal]` visível para não esconder conteúdo estático.
-- **FAQ acordeão:** não animar altura do painel com Framer (`height: 0/auto`); preferir **CSS grid** `grid-template-rows: 0fr` ↔ `1fr` com transição em `grid-template-rows` (chevron pode usar só `rotate`).
-
----
-
-## Code Quality Standards
-
-### TypeScript
-- Strict mode enabled
-- `unknown` over `any`
-- Const assertions for immutable values
-
-### Component Placement
-- `components/` — All presentation components
-- `content/` — Data only (JSON Content Collections)
-- `layouts/` — Base layout wrapper
-- `pages/` — Route pages only
-
-### Negative Constraints
-- **NEVER** animate `width`, `height`, `top`, `left` in Framer Motion or layout-breaking ways — use `transform`/`opacity` for Motion; for expand/collapse panels, **CSS grid `0fr`/`1fr`** is the approved pattern (not `m.div` height tweens).
-- **NEVER** use emojis as icons — Lucide React SVG only
-- **NEVER** hardcode speaker/FAQ/testimonial data in components
-- **NEVER** use scroll-jacking or forced scroll effects
-- **NEVER** leave clickable elements without `cursor-pointer` and hover states
-- **NEVER** use generic box shadows — use subtle colored glows
-- **NEVER** import heavy libraries in the main bundle (> 50KB initial JS)
-
----
-
-## Learnings log (evolve)
+**Problem:** Root `AGENTS.md` (638 lines) duplicated `.claude/rules/{frontend,DESIGN,stability,seo}.md` and `.claude/CLAUDE.md` (architecture map, design tokens, section orders, accessibility specs, performance gates, negative constraints). Drift risk + every agent loaded redundant content.
+**Solution:** Trimmed to behavioral guide (~320 lines) per [agents.md](https://agents.md/) spec — kept cardinals (8 numbered), behavior, decision authority, MCP IDs, commit format, learnings log. Dropped duplicated tables (tech stack, architecture map, full design system, section orders, performance/accessibility specs). Added explicit subdirectory-override note.
+**Validation:** All rule content preserved at `.claude/rules/*` and `.claude/config.json`; `bun run lint && bunx astro check && bun run build` clean.
 
 ### [2026-05-01] evolution-core absorbs auto-research-gpus + evolve-autoresearch (skill consolidation)
 
-> Registro: plano `docs/plans/2026-05-01-consolidar-evolution-core.md` (a criar) + execução desta sessão.
+> Registro: `docs/plans/2026-05-01-consolidar-evolution-core.md` + execução desta sessão.
 
 **Problema:** Três skills sobrepostos (`evolution-core` para memória, `evolve-autoresearch` para Karpathy loop, `auto-research-gpus` para autoresearch comercial do site) duplicavam descrição de gatilho, dispersavam scripts em dois diretórios e obrigavam o agente a saber qual carregar para cada sub-task de `/evolve`.
 
@@ -422,41 +180,39 @@ Each product landing page follows this flow (all components in `src/components/l
 
 ### [2026-03-26] EVOLVE_AUTORESEARCH: ciclo real de autoaprimoramento da skill
 
-> Run: `evals/evolve-autoresearch-self-improve/runs/2026-03-26-self-skill-cycle/`.
+> Run: `evals/_archive/evolve-autoresearch-self-improve/runs/2026-03-26-self-skill-cycle/`.
 
 **Problema:** Mesmo após alinhar a skill ao `karpathy/autoresearch`, faltavam duas regras operacionais que o `program.md` upstream deixa mais nítidas: (1) em autoaprimoramento, **um único artefato pontuado por run**; qualquer sync do arquivo irmão é camada `program.md`; (2) disciplina explícita para **crash** com retry limitado e histórico append-only preservado.
 
-**Solução:** Rodado um ciclo local com `<evolve_request>` sobre a própria `SKILL.md` (3 amostras, 6 critérios binários). Baseline marcou **11/18**; `c_program_sync` subiu para **17/18**; vencedor `c_program_sync_crash` marcou **18/18**. Aplicadas à `.claude/skills/evolve-autoresearch/SKILL.md` as seções **Self-improvement runs (program.md-class)** e **Crash discipline**. `.claude/commands/evolve.md` ganhou a regra operacional equivalente: um alvo pontuado por run e `crash` com no máximo uma correção rápida antes de descartar.
+**Solução:** Rodado um ciclo local com `<evolve_request>` sobre a própria `SKILL.md` (3 amostras, 6 critérios binários). Baseline marcou **11/18**; `c_program_sync` subiu para **17/18**; vencedor `c_program_sync_crash` marcou **18/18**. Aplicadas à skill (agora `evolution-core/references/optimizer.md`) as seções **Self-improvement runs (program.md-class)** e **Crash discipline**. `.claude/commands/evolve.md` ganhou a regra operacional equivalente: um alvo pontuado por run e `crash` com no máximo uma correção rápida antes de descartar.
 
-**Validação:** `python3 .claude/skills/evolve-autoresearch/scripts/evolve_autoresearch_harness.py init-run ...`; `evolve_autoresearch_score.py score-candidate` para baseline + 2 candidatos; `evolve_autoresearch_report.py build-response`; `bun run lint`.
+**Validação:** `python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_harness.py init-run ...`; `evolve_autoresearch_score.py score-candidate` para baseline + 2 candidatos; `evolve_autoresearch_report.py build-response`; `bun run lint`.
 
 ### [2026-03-26] EVOLVE_AUTORESEARCH: toolchain local para harness, candidatos, scoring e response
 
-> Scripts Python stdlib criados em `.claude/skills/evolve-autoresearch/scripts/`.
+> Scripts Python stdlib em `.claude/skills/evolution-core/scripts/`.
 
 **Problema:** O workflow já documentava `<evolve_request>`, `experiments.tsv` e `evolve-response.xml`, mas na prática só existia o logger/importador TSV. Faltavam scripts para **congelar o harness**, **seedar candidatos**, **validar o orçamento fixo de grading** e **montar o XML final** sem trabalho manual excessivo.
 
-**Solução:** Adicionados `evolve_autoresearch_harness.py` (`init-run`), `evolve_autoresearch_mutate.py` (`seed-candidates`), `evolve_autoresearch_score.py` (`score-candidate`) e `evolve_autoresearch_report.py` (`build-response`), além de `scripts/README.md`. `SKILL.md`, `.claude/commands/evolve.md` e `evals/README.md` passaram a referenciar o fluxo novo: request → harness congelado → candidatos → grade sheets → `experiments.tsv` → `evolve-response.xml`.
+**Solução:** `evolve_autoresearch_harness.py` (`init-run`), `evolve_autoresearch_mutate.py` (`seed-candidates`), `evolve_autoresearch_score.py` (`score-candidate`), `evolve_autoresearch_report.py` (`build-response`) + `scripts/AUTORESEARCH_README.md`. `evolution-core/SKILL.md`, `.claude/commands/evolve.md` e `evals/README.md` referenciam o fluxo: request → harness congelado → candidatos → grade sheets → `experiments.tsv` → `evolve-response.xml`.
 
-**Validação:** `python3 -m py_compile` nos scripts; smoke test ponta a ponta com `<evolve_request>` mínimo em `/tmp`; `bun run lint`.
+**Validação:** `python3 -m py_compile` nos scripts; smoke ponta a ponta com `<evolve_request>` mínimo em `/tmp`; `bun run lint`.
 
 ### [2026-03-26] EVOLVE_AUTORESEARCH: alinhamento explícito ao karpathy/autoresearch
 
-> Documentação; sem `<evolve_request>` nem TSV desta vez.
-
 **Problema:** A meta-skill já citava Karpathy, mas não deixava explícito o modelo de **três superfícies** (`prepare.py` congelado, `train.py` = artefato único do agente, `program.md` = contexto humano) nem o paralelo **orçamento fixo** (lá: janela de treino; aqui: mesmo `samples_per_iteration` e pool por candidato).
 
-**Solução:** `.claude/skills/evolve-autoresearch/SKILL.md` ganhou a seção *Karpathy autoresearch — structural mapping*, regra *Fixed grading budget per candidate* e referência ao branch `master`. `.claude/commands/evolve.md` §1.2 e §1.5: paralelo resumido, link `tree/master`, correção da numeração duplicada (dois itens `3.` em §1.5).
+**Solução:** Seção *Karpathy autoresearch — structural mapping*, regra *Fixed grading budget per candidate* e referência ao branch `master` em `evolution-core/references/optimizer.md`. `.claude/commands/evolve.md` §1.2 e §1.5: paralelo resumido, link `tree/master`, correção da numeração duplicada.
 
-**Validação:** revisão textual; `bun run lint` na raiz do repo (escopo do projeto).
+**Validação:** revisão textual; `bun run lint`.
 
 ### [2026-03-25] Curso de Aurículo: checkout-first com Kiwify + FAQ de compra
 
 > Registro: `evals/site/curso-auriculo-conversion/runs/2026-03-25-checkout-cta/run.md`.
 
-**Problema:** A landing de `curso-auriculo` ainda levava para HubSpot, com CTA genérico e copy menos alinhada à oferta visível no checkout da Kiwify; title da página também seguia genérico (`name — Grupo US`).
+**Problema:** A landing de `curso-auriculo` ainda levava para HubSpot, com CTA genérico e copy menos alinhada à oferta visível no checkout da Kiwify; title da página também seguia genérico.
 
-**Solução:** `src/content/products/curso-auriculo.json` passou a vender explicitamente o **Curso de Aurículo com Técnica de Perfuração Auricular**, com `cta.url` para `https://pay.kiwify.com.br/kMXdriO`, label de compra direta, mensagem de WhatsApp para dúvidas pré-inscrição, FAQ orientada a objeção de compra e hero/meta mais próximos da intenção comercial. `src/pages/curso-auriculo.astro` ganhou title dedicado; `LandingCTA` ajusta a microcopy quando o primário é checkout externo, deixando WhatsApp como suporte.
+**Solução:** `src/content/products/curso-auriculo.json` passou a vender explicitamente o **Curso de Aurículo com Técnica de Perfuração Auricular**, com `cta.url` para `https://pay.kiwify.com.br/kMXdriO`, label de compra direta, mensagem de WhatsApp para dúvidas pré-inscrição, FAQ orientada a objeção de compra e hero/meta mais próximos da intenção comercial. `LandingCTA` ajusta a microcopy quando o primário é checkout externo, deixando WhatsApp como suporte.
 
 **Validação:** `bun run lint && bunx astro check && bun run build`.
 
@@ -464,19 +220,19 @@ Each product landing page follows this flow (all components in `src/components/l
 
 > Registro: `evals/site/curso-auriculo-conversion/runs/2026-03-25-10x-copy-loop/run.md`.
 
-**Problema:** Mesmo após alinhar o checkout, a página ainda podia ganhar clareza em transformação, qualificação do visitante, linguagem do botão e ordem de objeções. A promessa seguia parcialmente feature-first e faltava contexto operacional perto do CTA.
+**Problema:** Mesmo após alinhar o checkout, a página podia ganhar clareza em transformação, qualificação do visitante, linguagem do botão e ordem de objeções. A promessa seguia parcialmente feature-first e faltava contexto operacional perto do CTA.
 
-**Solução:** Batch de 10 loops com base em boas práticas de landing pages de curso: `LandingHero` agora mostra a `tagline`; `cta.helperText` opcional em `src/content.config.ts` permite colocar contexto operacional perto do botão; `curso-auriculo.json` recebeu headline com prazo, CTA “Garantir minha inscrição”, helper text, benefícios mais orientados a resultado e FAQ em ordem de decisão (fit, inclusão da técnica, formato, comparação com `TRINTAE3`, condições comerciais e suporte no WhatsApp). Title da rota também foi refinado.
+**Solução:** 10 loops com base em boas práticas de landing pages de curso: `LandingHero` mostra a `tagline`; `cta.helperText` opcional em `src/content.config.ts` permite contexto operacional perto do botão; `curso-auriculo.json` recebeu headline com prazo, CTA "Garantir minha inscrição", helper text, benefícios orientados a resultado e FAQ em ordem de decisão (fit, inclusão da técnica, formato, comparação com `TRINTAE3`, condições comerciais e suporte no WhatsApp). Title da rota refinado.
 
 **Validação:** `bun run lint && bunx astro check && bun run build`.
 
 ### [2026-03-26] Curso de Aurículo: EVOLVE_AUTORESEARCH em CTA e copy (âncora temporal + checkout explícito)
 
-> Registro: `evals/site/curso-auriculo-conversion/runs/2026-03-26-evolve-autoresearch-cta/run.md` e `evals/curso-auriculo-landing-copy/runs/2026-03-26-cta-copy-evolve/`.
+> Registro: `evals/site/curso-auriculo-conversion/runs/2026-03-26-evolve-autoresearch-cta/run.md`.
 
-**Problema:** H1 começava com benefício genérico (“Adicione…”), o que atrasava a leitura do prazo/formato; CTA “Garantir minha inscrição” era válido porém menos explícito em primeira pessoa; meta e helper podiam ser mais diretos sobre checkout vs Laura.
+**Problema:** H1 começava com benefício genérico ("Adicione…"), atrasava a leitura do prazo/formato; CTA "Garantir minha inscrição" era válido porém menos explícito em primeira pessoa; meta e helper podiam ser mais diretos sobre checkout vs Laura.
 
-**Solução:** Harness binário (7 critérios × 3 personas) na meta-skill `evolve-autoresearch`; candidato `c_timeframe_action` promovido. `hero.headline` passa a abrir com **“Em 3 dias presenciais,”**; `cta.label` **“Quero me inscrever agora”**; `helperText` e `description` nomeiam checkout/valores atualizados; FAQ de inscrição alinhada ao texto do CTA; title da rota com “inscrição” para SERP. Spec vencedora em `best_skill_prompt.txt` do run.
+**Solução:** Harness binário (7 critérios × 3 personas); candidato `c_timeframe_action` promovido. `hero.headline` abre com **"Em 3 dias presenciais,"**; `cta.label` **"Quero me inscrever agora"**; `helperText` e `description` nomeiam checkout/valores atualizados; FAQ de inscrição alinhada ao texto do CTA; title da rota com "inscrição" para SERP.
 
 **Validação:** `bun run lint && bunx astro check && bun run build`.
 
@@ -484,7 +240,7 @@ Each product landing page follows this flow (all components in `src/components/l
 
 > Registro: `evals/site/cta-whatsapp-dedup/runs/2026-03-26-dedup/run.md`.
 
-**Problema:** `LandingHero` e `LandingCTA` mostravam botão primário (ouro) e botão verde “Falar com a Laura” mesmo quando ambos apontavam para WhatsApp — redundante e confuso (ex.: Mentoria Black NEON).
+**Problema:** `LandingHero` e `LandingCTA` mostravam botão primário (ouro) e botão verde "Falar com a Laura" mesmo quando ambos apontavam para WhatsApp — redundante.
 
 **Solução:** `isWhatsAppDestination()` em `src/lib/whatsapp.ts` (`wa.me`, `api.whatsapp.com`, `wa.link`); se verdadeiro, o botão verde secundário não renderiza. `LandingCTA` ajusta o subtítulo quando só há um botão. Produtos com `cta.url` externa (HubSpot, site) mantêm os dois CTAs.
 
@@ -492,35 +248,33 @@ Each product landing page follows this flow (all components in `src/components/l
 
 ### [2026-03-26] `.planning/` e roadmap sincronizados com o repo
 
-> Registro: `evals/site/planning-docs-sync/runs/2026-03-26-planning-sync/run.md` e `compound.md`.
-
-**Problema:** `PROJECT.md` / `ROADMAP` / `REQUIREMENTS` citavam 11 páginas, View Transitions obrigatório, WhatsApp antigo em roadmap, e planos de fase sem refletir MPA + 8 páginas + 5 redirects + Laura.
+**Problema:** `PROJECT.md` / `ROADMAP` / `REQUIREMENTS` citavam 11 páginas, View Transitions obrigatório, WhatsApp antigo, e planos de fase sem refletir MPA + 8 páginas + 5 redirects + Laura.
 
 **Solução:** Atualizar estado validado (TECH-01/04 feitos; TECH-03 superseded); corrigir contagens de rotas; nota em `01-PLAN-1.3` **SUPERSEDED**; `STACK`/`STRUCTURE`/`CONVENTIONS` com `whatsapp.ts` e redirects; `gpus-company-info.md` com canal institucional vs legado.
 
-**Validação:** revisão textual; sem regressão de build (nenhuma alteração em `src/` neste commit de docs).
+**Validação:** revisão textual; sem regressão de build.
 
 ### [2026-03-25] WhatsApp institucional: SDR Laura (+55 62 9470-5081)
 
-> Registro: `evals/site/sdr-laura-whatsapp/runs/2026-03-25-sdr-whatsapp/run.md` e `compound.md`.
+> Registro: `evals/site/sdr-laura-whatsapp/runs/2026-03-25-sdr-whatsapp/run.md`.
 
 **Problema:** Vários `wa.me/5511920474028` hardcoded (Hero, LandingCTA, home CTA, contato, footer, JSON-LD); mentoria com `wa.link`; mensagens genéricas sem direcionar ao atendimento SDR.
 
-**Solução:** `src/lib/whatsapp.ts` como fonte única (`WHATSAPP_SDR_E164`, `whatsappUrlWithText`, `WHATSAPP_DEFAULT_SITE_MESSAGE`); landings e layout apontando para Laura; copy de CTA e `aria-label` com “Laura”; todos os `whatsappMessage` nos JSON com prefixo “Olá, Laura!”; mentoria `cta.url` em `wa.me` com texto alinhado; footer e Organization schema com telefone (62) e `wa.me/556294705081`.
+**Solução:** `src/lib/whatsapp.ts` como fonte única (`WHATSAPP_SDR_E164`, `whatsappUrlWithText`, `WHATSAPP_DEFAULT_SITE_MESSAGE`); landings e layout apontando para Laura; copy de CTA e `aria-label` com "Laura"; todos os `whatsappMessage` nos JSON com prefixo "Olá, Laura!"; mentoria `cta.url` em `wa.me`; footer e Organization schema com telefone (62) e `wa.me/556294705081`.
 
 **Validação:** `bun run lint && bunx astro check && bun run build`.
 
 ### [2026-03-25] Mentoria Black NEON: SEO, copy, CTA, FAQ de funil e LCP (NeonStory)
 
-> Registro: `evals/site/mentoria-black-neon-evolve/runs/2026-03-25-20x-loop/run.md` e `compound.md`.
+> Registro: `evals/site/mentoria-black-neon-evolve/runs/2026-03-25-20x-loop/run.md`.
 
-**Problema:** Title da página só repetia o nome do produto; H1 longo com destaque dourado na última palavra pouco memorável (“você”); meta e CTA menos alinhados a dono de clínica e qualificação no WhatsApp; FAQs sem objeção TRINTAE3 vs mentoria nem formato gravado vs vivo; `NeonStory` com `bg-[#fafaf9]` (hex solto) e imagem `eager`/`fetchpriority=high` competindo com hero texto-first.
+**Problema:** Title da página só repetia o nome do produto; H1 longo com destaque dourado na última palavra pouco memorável ("você"); meta e CTA menos alinhados a dono de clínica e qualificação no WhatsApp; FAQs sem objeção TRINTAE3 vs mentoria nem formato gravado vs vivo; `NeonStory` com `bg-[#fafaf9]` (hex solto) e imagem `eager`/`fetchpriority=high` competindo com hero texto-first.
 
-**Solução:** Title dedicado com keywords de escala + saúde estética; `description` com 6 meses, ICP e micro-CTA; hero reescrito terminando em **NEON**; story e highlight com “olhar de dono” e nome do produto; duas FAQs de funil; CTA alinhado à Laura (SDR) + mensagem pré-preenchida com vagas/ciclo; `ogImage={d.image}` na página; `NeonStory` com `bg-text-primary`, imagem `lazy`/`fetchpriority=low`, alt descritivo.
+**Solução:** Title dedicado com keywords de escala + saúde estética; `description` com 6 meses, ICP e micro-CTA; hero reescrito terminando em **NEON**; story e highlight com "olhar de dono" e nome do produto; duas FAQs de funil; CTA alinhado à Laura (SDR) + mensagem pré-preenchida com vagas/ciclo; `ogImage={d.image}` na página; `NeonStory` com `bg-text-primary`, imagem `lazy`/`fetchpriority=low`, alt descritivo.
 
 **Validação:** `bun run lint && bunx astro check && bun run build`.
 
-**Nota:** O lote anterior citava `NeonStory` com `eager`+`high` para outro contexto de prioridade; nesta rota o hero é texto-first e a imagem da story costuma ser abaixo da dobra — priorizar LCP com `lazy`+`low` aqui.
+**Nota:** O lote anterior citava `NeonStory` com `eager`+`high` para outro contexto; nesta rota o hero é texto-first e a imagem está abaixo da dobra — priorizar LCP com `lazy`+`low`.
 
 ### [2026-03-26] Lote 10× performance: debug off, idle hydration, preconnect, prioridades de imagem
 
@@ -534,9 +288,9 @@ Each product landing page follows this flow (all components in `src/components/l
 
 ### [2026-03-26] Lote 10× evolve: home institucional, CTA, meta de produtos e 404
 
-> Registro agregado: `evals/site/evolve-batch-2026-03-26/runs/2026-03-26-10x-loop/run.md` e `compound.md`.
+> Registro agregado: `evals/site/evolve-batch-2026-03-26/runs/2026-03-26-10x-loop/run.md`.
 
-**Escopo:** dez ciclos seguidos (copy/SEO/conversão): grid de produtos (sem `fetch` de debug em localhost), seção CTA, preview “Sobre”, stats com `h2` acessível, meta de contato e sobre, blurb do rodapé, campo `description` em `trintae3`, `curso-auriculo` e `mentoria-black-neon`, copy e meta da 404.
+**Escopo:** dez ciclos seguidos (copy/SEO/conversão): grid de produtos (sem `fetch` de debug em localhost), seção CTA, preview "Sobre", stats com `h2` acessível, meta de contato e sobre, blurb do rodapé, campo `description` em `trintae3`, `curso-auriculo` e `mentoria-black-neon`, copy e meta da 404.
 
 **Padrão:** `description` nos JSON de produto alimenta `<meta name="description">` nas landings que passam `description={d.description}` — tratar como **superfície SEO** junto com hero/tagline.
 
@@ -546,30 +300,25 @@ Each product landing page follows this flow (all components in `src/components/l
 
 > Run: `evals/site/home-narrative-seo/runs/2026-03-26-evolve-home/run.md`.
 
-**Problema:** Title/description da home e copy do Hero não guiavam com a mesma clareza a **intenção de busca** (formação + negócios em saúde estética) nem o **próximo passo**; a timeline da jornada tinha pt-BR sem acento e um subtítulo com vocabulário de implementação (“manual”, URLs).
+**Problema:** Title/description da home e copy do Hero não guiavam com clareza a **intenção de busca** (formação + negócios em saúde estética) nem o **próximo passo**; timeline da jornada com pt-BR sem acento e subtítulo com vocabulário de implementação ("manual", URLs).
 
-**Solução:** Title/meta da `index` e defaults do `Layout` (incl. JSON-LD Organization) com narrativa única; Hero com headline “referências na estética avançada”, subtítulo com pilares e trilha; CTA primário “Ver trilha de programas”; resumos da jornada revisados e subtítulo voltado ao visitante. Comando `/evolve`: **§1.0** passa a tratar pedidos em linguagem natural de evolução do site como `<area>evolve</area>`.
+**Solução:** Title/meta da `index` e defaults do `Layout` (incl. JSON-LD Organization) com narrativa única; Hero com headline "referências na estética avançada", subtítulo com pilares e trilha; CTA primário "Ver trilha de programas"; resumos da jornada revisados e subtítulo voltado ao visitante. Comando `/evolve`: **§1.0** trata pedidos em linguagem natural de evolução do site como `<area>evolve</area>`.
 
 **Validação:** `bun run lint && bunx astro check && bun run build`.
 
 ### [2026-03-25] Sincronizar roteiro de vendas e persona com o código
 
-> Após alinhar a landing ao copy oficial e à persona (Google Docs).
-
-**Contexto:** O roteiro prescreve blocos (hero, dor, pilares, vídeo, benefícios, palestrantes, cronograma, ingressos, hostess, FAQ, CTA). A persona reforça tom (mesa certa, luz/brilho, “você”, frases de impacto) e uso de emoji **no social** — não na UI do site.
+**Contexto:** O roteiro prescreve blocos (hero, dor, pilares, vídeo, benefícios, palestrantes, cronograma, ingressos, hostess, FAQ, CTA). A persona reforça tom (mesa certa, luz/brilho, "você", frases de impacto) e uso de emoji **no social** — não na UI do site.
 
 **Padrões:**
-
-- **Palestrante em destaque:** `src/content/speakers/sacha.json` (`bio`, `title`, `learn_text`) alimenta `SpeakersGrid` e o JSON-LD de `index.astro` para performers revelados. Manter nome de produtos consistente (ex.: **Mentoria BLACK NEON**, não só “NEON”).
+- **Palestrante em destaque:** `src/content/speakers/sacha.json` (`bio`, `title`, `learn_text`) alimenta `SpeakersGrid` e o JSON-LD de `index.astro`. Manter nome de produtos consistente (ex.: **Mentoria BLACK NEON**, não só "NEON").
 - **Preços (evento BR):** Exibir **parcela 12x em destaque** e valor à vista como linha secundária, quando o material de vendas assim definir.
-- **Countdown / checklist:** Data do evento no Hero, `CountdownTimer` e checklist deste arquivo devem coincidir (atual: **18–19/09/2026**).
-- **Pesquisa de copy em Docs:** Preferir export em texto (`/document/d/…/export?format=txt`) para comparar com o repo sem copiar manualmente parágrafo a parágrafo.
+- **Countdown / checklist:** Data do evento no Hero, `CountdownTimer` e checklist deste arquivo coincidem (atual: **18–19/09/2026**).
+- **Pesquisa de copy em Docs:** Preferir export em texto (`/document/d/…/export?format=txt`).
 
-**Validação após mudanças de copy:** `bunx astro check && bun run build`.
+**Validação:** `bunx astro check && bun run build`.
 
 ### [2026-03-25] Pós-auditoria: FAQ, a11y, jurídico, Lucide, rotas
-
-> Após rodada `/debug` e correções P1–P3.
 
 **Problema:** Acordeão com Framer animando altura do painel; placeholders `#` em links legais; ícone Lucide deprecado; CTA WhatsApp com hex solto; conteúdo `[data-reveal]` invisível sem JS.
 
@@ -582,56 +331,15 @@ Each product landing page follows this flow (all components in `src/components/l
 **Contexto:** Conteúdo canônico em apps separados; site institucional só encaminha.
 
 **Padrões:**
-
 - **`externalSiteUrl`** no JSON do produto: grid da home, header e footer apontam para o site externo (`target="_blank"`, `rel="noopener noreferrer"`); texto `sr-only` no card quando externo.
-- **`redirects` em `astro.config.mjs`:** mesma URL que `externalSiteUrl` para `/na-mesa-certa` e `/otb` — HTML estático com `noindex`, `canonical` para o destino e meta refresh (bookmarks e links antigos).
+- **`redirects` em `astro.config.mjs`:** mesma URL que `externalSiteUrl` para `/na-mesa-certa` e `/otb` — HTML estático com `noindex`, `canonical` para o destino e meta refresh.
 - **Sitemap:** `filter` em `@astrojs/sitemap` exclui essas duas rotas (evita indexar páginas só de redirect).
-- **Sincronizar destinos:** ao trocar URL de produção (ex.: sair do Lovable), atualizar `externalSiteUrl`, `cta.url`, `redirects` e o `filter` se o path mudar.
+- **Sincronizar destinos:** ao trocar URL de produção, atualizar `externalSiteUrl`, `cta.url`, `redirects` e o `filter` se o path mudar.
 
 **Validação:** `bun run check:external-urls && bunx astro check && bun run build` (ver [`docs/solutions/integration-issues/astro-static-external-product-routing.md`](docs/solutions/integration-issues/astro-static-external-product-routing.md)).
 
 ### [2026-03-25] Plugins Cursor: MCP, skills e Tavily
 
-**Contexto:** Alinhar agentes ao uso correto de MCP (`serverIdentifier`), skills do ecossistema e CLI onde fizer sentido.
+**Contexto:** Alinhar agentes ao uso correto de MCP (`serverIdentifier`), skills do ecossistema e CLI.
 
-**Padrões:** Ler descriptor JSON antes de `call_mcp_tool`; Tavily via servidor `plugin-tavily-tavily`; skills `tavily-*` para procedimento; `tvly` no terminal como fallback. Demais servidores conforme tabela em **Cursor: plugins, MCP e skills** — sem expandir escopo do site estático para auth/DB/pagamentos sem pedido explícito.
-
----
-
-## Commit Format
-
-Use Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
-
----
-
-## Debugging Protocol
-
-**When an error occurs:**
-
-1. **PAUSE** — Don't immediately retry
-2. **THINK** — Root Cause Analysis:
-   - What exactly happened?
-   - Why? (5 Whys)
-   - What are 3 possible fixes?
-3. **HYPOTHESIZE** — Formulate hypothesis + validation plan
-4. **EXECUTE** — Apply fix after understanding cause
-5. **VERIFY** — Confirm fix works, no regressions
-
----
-
-## Checklist Pre-Entrega
-
-- [ ] Lighthouse Performance >= 95
-- [ ] Lighthouse Accessibility >= 95
-- [ ] Lighthouse SEO >= 95
-- [ ] CLS = 0 (sem layout shift)
-- [ ] LCP < 2.5s
-- [ ] Responsivo em 375px, 768px, 1024px, 1440px
-- [ ] Sem emojis como icones (apenas Lucide SVG)
-- [ ] `prefers-reduced-motion` respeitado em todas as animacoes CSS
-- [ ] Links de CTA funcionais (WhatsApp, checkout externo)
-- [ ] Dados de produtos/equipe em Content Collections (zero hardcoding)
-- [ ] Sticky mobile CTA bar em todas as landing pages (oculta no desktop)
-- [ ] Todas as rotas (incl. redirects) gerando sem erros (`bun run build`)
-- [ ] Lint limpo (`bun run lint`)
-- [ ] Type check limpo (`bunx astro check`)
+**Padrões:** Ler descriptor JSON antes de `call_mcp_tool`; Tavily via servidor `plugin-tavily-tavily`; skills `tavily-*` para procedimento; `tvly` no terminal como fallback. Sem expandir escopo do site estático para auth/DB/pagamentos sem pedido explícito.

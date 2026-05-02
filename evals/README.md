@@ -2,6 +2,15 @@
 
 This tree is **mandatory** whenever `/evolve` runs **Fase 1** (autoresearch with `<evolve_request>`).
 
+## Top-level dirs
+
+| Path | Status | Purpose |
+|---|---|---|
+| `README.md` | active | this file (layout SSOT) |
+| `site/<area-slug>/` | **active** | GPUS site copy/SEO/CTA autoresearch — `compound.md` + `runs/` (cited by AGENTS.md learnings log) |
+| `<skill-slug>/runs/<id>/` | active (write target) | new `/evolve optimize <slug>` runs land here |
+| `_archive/` | **read-only** | frozen `2026-03-26` skill-autoresearch snapshots (wins promoted to skills) — see [`_archive/README.md`](_archive/README.md) |
+
 ## Layout
 
 ```text

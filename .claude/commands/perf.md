@@ -120,9 +120,10 @@ Call PSI API for the resolved URL with each selected strategy (mobile + desktop 
 
 1. Measure baseline against all key routes.
 2. Identify routes with Performance < threshold.
-3. Spawn 1 `performance-optimizer` agent per failing route, all in **single message**, each with `isolation: "worktree"`.
-4. Each agent prompt includes: route-specific scores, CWV, top opportunities, failing audits, scope (which files/components), task (read frontend rules from `.claude/rules/frontend.md`, fix top 3 opportunities by `savings_ms`, run quality gates per `_shared.md` § 1, report changes).
-5. After all agents return: re-measure and verify improvements.
+3. **Cluster failing routes by suspected shared root cause** before spawning agents (e.g., "all routes slow due to unoptimized hero image" → 1 cluster; "/sobre slow on team grid + /produto slow on testimonials" → 2 clusters). Spawn 1 `performance-optimizer` agent **per cluster, not per route** — saves the 5-spawn budget and re-measures all routes per cluster fix.
+4. Spawn agents in **single message**, each with `isolation: "worktree"` and the 5 mandatory context fields per `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md § 1`.
+5. Each agent prompt includes: cluster scope (which routes share this root cause), per-route scores/CWV/opportunities, failing audits, files/components in scope, task (read frontend rules from `.claude/rules/frontend.md`, fix top 3 opportunities by `savings_ms`, run quality gates per `_shared.md` § 1, return Context Handoff per `agent-handoff-contracts.md § 2`).
+6. After all agents return: re-measure ALL routes (cluster fixes often lift sibling routes); verify improvements; if a route is still failing, re-cluster on remaining root cause.
 
 Skip routes already at threshold.
 

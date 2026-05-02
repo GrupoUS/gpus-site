@@ -174,6 +174,44 @@ When syncing an external sales script or persona doc to this landing:
 **Stakeholder docs:** Google Docs plain text is often available at  
 `https://docs.google.com/document/d/<ID>/export?format=txt` for diffing against the repo.
 
+## SSOT pattern — never hardcode landing copy
+
+When a project has Content Collections, treat them as **single source of truth** for any field rendered on a page:
+
+- Never write product / team / FAQ / testimonial / CTA copy as string literals in `.astro` or `.tsx`. Read from `getCollection()` / `getEntry()`.
+- Component template = read `data` from collection, render JSX/Astro from data fields. No string literals from JSON in component file.
+- Schema validation gate: `bunx astro check` (or `astro check`) re-runs Zod on every JSON edit. Run before commit.
+- Adding a field: update Zod schema in `src/content.config.ts` + every JSON file + the component reading the field. All three move together.
+
+### Component anti-pattern vs SSOT
+
+```astro
+<!-- ❌ Hardcoded — copy drifts from JSON; bypasses Zod -->
+<section>
+  <h1>Mentoria Black NEON</h1>
+  <p>Para donas de clínica que querem escalar com estratégia.</p>
+</section>
+
+<!-- ✅ SSOT — single read; copy lives in JSON -->
+---
+import { getEntry } from 'astro:content';
+const product = await getEntry('products', Astro.params.slug);
+---
+<section>
+  <h1>{product.data.name}</h1>
+  <p>{product.data.tagline}</p>
+</section>
+```
+
+### Quick edit paths
+
+| Task | File |
+|---|---|
+| Change product CTA copy | `src/content/<collection>/<slug>.json::cta.label` |
+| Reorder grid | `<slug>.json::order` |
+| Update FAQ | `<slug>.json::faqs[]` |
+| Update hero headline | `<slug>.json::hero.headline` |
+
 ## Common Issues
 
 | Issue | Cause | Fix |
@@ -182,3 +220,4 @@ When syncing an external sales script or persona doc to this landing:
 | Type errors on `.data` | Schema mismatch | Check JSON matches expected structure |
 | Passing entries to React | CollectionEntry is not serializable | Map to `.data` before passing as props |
 | Schema validation fails | `content.config.ts` schema doesn't match data | Update schema or JSON to match |
+| Hardcoded copy in component | Bypasses Zod + drifts from JSON | Refactor to read from `getEntry()` |

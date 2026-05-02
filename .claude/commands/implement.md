@@ -135,7 +135,7 @@ Agent({ subagent_type: "debugger", prompt: "..." })
 Agent({ subagent_type: "explorer", prompt: "...", run_in_background: true })
 ```
 
-After all complete: parse each agent's `## Context Handoff` block, consolidate changes, run phase gate.
+After all complete: parse each agent's `## Context Handoff` block per `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md § 2`, consolidate parallel-batch findings per `parallel-batch-contracts.md § 5`, run phase gate.
 
 ### Sprint contract gate
 
@@ -159,10 +159,11 @@ TeamCreate({ team_name: "[feature-slug]" });
 
 Create a **coordinator task** assigned to `project-planner`. The coordinator:
 - Holds the full plan + sprint contracts
-- Delegates domain tasks via `SendMessage`
-- Validates `## Context Handoff` from each specialist against the contract
+- Delegates domain tasks via `SendMessage` — every spawn injects the 5 mandatory context fields per `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md § 1`
+- Validates each specialist's `## Context Handoff` against the contract using the schema in `agent-handoff-contracts.md § 2-3`
 - Gates sprints before advancing
 - Reports progress + blockers
+- **Max 2 agent resubmissions per task on `REVISION_REQUIRED`.** After the 2nd, coordinator returns `BLOCKED: <criterion>` to main agent (NOT user). Main invokes `/debug recover`. See `agent-handoff-contracts.md § 4`.
 
 ```typescript
 // Coordinator (foreground — must complete before team cleanup):
@@ -196,8 +197,8 @@ Responsibilities:
 2. Delegate UI tasks to frontend-specialist (only after API phase passes gate)
 3. Validate each agent's Context Handoff against contract Done Definition
 4. Run quality gate after each phase: ${tooling.packageManager} run ${tooling.typeChecker}
-5. If any criterion fails → return detailed feedback to the responsible agent, not the user
-6. Only report to user: SPRINT N COMPLETE (all criteria met) or BLOCKED: [specific failing criterion]
+5. If any criterion fails → return detailed feedback to the responsible agent, not the user. Max 2 resubmissions per task on REVISION_REQUIRED — on the 3rd would-be iteration, return BLOCKED to main agent (which calls /debug recover)
+6. Only report to user: SPRINT N COMPLETE (all criteria met) or BLOCKED: [specific failing criterion + last reviewer evidence]
 
 Do not implement yourself. Coordinate, validate, gate.
 ```

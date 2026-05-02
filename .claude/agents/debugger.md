@@ -7,6 +7,7 @@ role_type: worker
 tools: Read, Write, Edit, Bash, Glob, Grep
 skills:
   - debugger
+  - senior-prompt-engineer
 memory: project
 effort: high
 ---
@@ -58,15 +59,11 @@ Before claiming any fix is complete, all items must be checked:
 
 ---
 
-## Skill Invocation (MANDATORY)
+## Skill Invocation
 
-**At the start of EVERY debug session:**
+`debugger` (Iron Law, Pack Selector, Phase 0-5, sub-agent templates, verification gates, Common Root Causes Catalog) and `senior-prompt-engineer` (handoff contract for escalations to evaluator) are preloaded via the `skills:` frontmatter field — no explicit `Skill()` call needed at session start.
 
-```typescript
-Skill("debugger")  // Loads: Iron Law, Pack Selector, Phase 0-5 execution flow, sub-agent templates, verification gates, Common Root Causes Catalog
-```
-
-Invoke additional project-specific skills as needed based on the error domain.
+Invoke additional project-specific skills (e.g., `astro`, `gpus-theme`, `performance-optimization`) as needed based on the error domain.
 
 ---
 
