@@ -23,14 +23,20 @@ Load **minimum-viable** project context for the current task. Never eager-load e
 
 Tier model:
 - **Tier 1** (always loaded by harness): root `AGENTS.md` + `.claude/CLAUDE.md`
-- **Tier 2** (load on demand): `.claude/rules/*.md` (`frontend.md`, `DESIGN.md`, `stability.md`, `seo.md`)
+- **Tier 2** (load on demand): `.claude/rules/*.md` (`backend.md`, `database.md`, `DESIGN.md`, `integrations.md`, `stability.md`)
 - **Tier 3** (load only when justified): `docs/`, ADRs, learnings, design specs, spec docs
+
+Plus optional project supplements under `${rulesDir}` (routing supplements, anti-patterns, layer maps, project snapshot, Tier 3 docs).
 
 ---
 
 ## 0. Setup (every mode)
 
-Read `.claude/config.json`. Note `${paths.*}` and `${rulesDir}` for later loading.
+`/prime` is a context loader — it does not mutate code, so it does NOT invoke the superpowers bootstrap itself. Instead, surface a one-line recommendation at the end of the output (per `_shared.md` § 0.5): the **next** command should load `Skill("superpowers:using-superpowers")` as its first skill call.
+
+Read `.claude/config.json`. Note `${paths.*}`, `.claude/rules`, and `${rulesDir}` for later loading.
+
+If continuing a prior session (or a session handoff was written via `Skill("evolution-core")`): read `${rulesDir}/docs/evolution/HANDOFF.md` first if it exists; otherwise fall back to `.claude/HANDOFF.md` when present.
 
 Run:
 ```bash
@@ -38,7 +44,18 @@ git status --short
 git log --oneline -10
 ```
 
-Project routing matrix is in `.claude/CLAUDE.md § Routing matrix (project-specific)` — consult for stage 2 deep loading.
+If `.claude/rules/routing-supplements.md` exists, note it for stage 2 deep loading.
+
+### 0.1 Auto-research flag (default ON for L3+)
+
+If `$ARGUMENTS` contains `--no-auto-research` → skip. Otherwise on **L3+ intent** (per § Intent classification in `.claude/CLAUDE.md`), spawn discovery agents BEFORE returning prime output:
+
+```ts
+Agent({ subagent_type: "explorer",  run_in_background: true, prompt: "<scoped repo discovery>" })
+Agent({ subagent_type: "librarian", run_in_background: true, prompt: "<external doc lookup>" })
+```
+
+Both calls go in the SAME assistant turn (parallel). Non-blocking — return prime output while they run; their results merge on the next user turn.
 
 ---
 
@@ -67,6 +84,7 @@ Read user task description from `$ARGUMENTS` (after the mode token, if any). Cla
 | External provider / webhook / payment / email / monitoring | integration-heavy | § 3 (load `integrations.md` first) |
 | UI + API + schema | fullstack | § 5 |
 | Vague / exploratory | partial — see § 2.1 | — |
+| L3+ (any non-trivial) | spawn `explorer` + `librarian` in parallel before § 3/4/5 dispatch | — |
 
 ### 2.1 Vague task
 
@@ -112,7 +130,7 @@ If the task is unclear → ask one short clarifying question rather than load mo
 
 ### 3.3 Stage 2 — Targeted deep loading
 
-Load **only** the files justified by Stage 1. Consult `.claude/CLAUDE.md § Routing matrix (project-specific)` for project bindings (e.g., where Content Collections live, where WhatsApp SSOT lives).
+Load **only** the files justified by Stage 1. If `.claude/rules/routing-supplements.md` exists, also consult it for project-specific bindings (e.g., where the donation flow lives, where Pix providers live).
 
 ### 3.4 Loading rules
 
@@ -128,13 +146,11 @@ Load **only** the files justified by Stage 1. Consult `.claude/CLAUDE.md § Rout
 
 ### 4.1 Stage 1 — Baseline (always)
 
-Read `.claude/rules/frontend.md`.
+Read `.claude/rules/DESIGN.md` — the merged web-layer rule (visual tokens + React patterns + polling + mobile scroll owner). Former `frontend.md` content was incorporated 2026-05-18.
 
 ```bash
 git log --oneline -5 -- ${paths.frontendRoot}
 ```
-
-For UI work also read `.claude/rules/DESIGN.md` (or the project's design rule file if differently named) when the task involves layout, styling, or design tokens.
 
 Use Stage 1 only for: small UI fixes, className changes, simple component edits, light bug fixes with known patterns.
 
@@ -164,7 +180,7 @@ Also load: `${paths.frontendRoot}/AGENTS.md` if present.
 
 ### 4.5 Feature-specific spec loading
 
-If the task targets a specific UI surface (e.g., admin dashboard, donation form, checkout flow), load **only** the directly relevant spec from `docs/design-specs/` (or equivalent). Never load the full directory.
+If the task targets a specific UI surface (e.g., admin dashboard, donation form, checkout flow), load **only** the directly relevant reference from `Skill("gpus-theme")` (e.g., `references/design-foundation.md` for tokens, `references/implementation-handoff.md` for build pattern). Never load every reference.
 
 ### 4.6 Routing heuristic
 
@@ -186,9 +202,9 @@ When task spans multiple domains:
 
 - `.claude/rules/stability.md` (universal checklist)
 - Targeted Tier 2 rules per the routing matrix in CLAUDE.md, e.g.:
-  - API + UI → `backend.md` + `frontend.md`
-  - Schema + API + UI → `database.md` + `backend.md` + `frontend.md`
-  - Webhook + integration + UI status → `backend.md` + `integrations.md` + `frontend.md`
+  - API + UI → `backend.md` + `DESIGN.md`
+  - Schema + API + UI → `database.md` + `backend.md` + `DESIGN.md`
+  - Webhook + integration + UI status → `backend.md` + `integrations.md` + `DESIGN.md`
 
 ### 5.2 Tier 3 — load only what's justified
 
@@ -223,8 +239,10 @@ Project: ${project.name} | Mode: {auto|backend|frontend|fullstack} | Stage: {1-4
 Branch: {branch} | Recent: {summary of git log -5}
 Loaded:
   - {exact files actually loaded}
+Supplements applied: {yes/no — list `${rulesDir}` supplement files actually loaded}
 Next on demand: {only the most relevant additional files}
 Ready for: {task description or "awaiting task"}
+Reminder: next command should open with Skill("superpowers:using-superpowers").
 ```
 
 Keep summary under 120 words.

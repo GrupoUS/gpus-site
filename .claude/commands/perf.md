@@ -1,5 +1,5 @@
 ---
-description: Performance audits + optimization. Modes (positional arg) — default: runtime audit (PSI/Lighthouse) · build: bundle analysis, code splitting, build-tool tuning · db: pool audit, N+1 scan, index gaps, prepared-statement candidates. Pass URL/scope/strategy after the mode token.
+description: Performance audits + optimization. Modes (positional arg) — default: runtime audit (PSI/Lighthouse) · build: bundle analysis, code splitting, build-tool tuning · db: pool audit, N+1 scan, index gaps, prepared-statement candidates · vercel: real-user CWV + traffic from Vercel Speed Insights/Analytics. Pass URL/scope/strategy after the mode token.
 workflow_type: orchestrator-workers
 ---
 
@@ -14,6 +14,7 @@ workflow_type: orchestrator-workers
 > /perf strategy=mobile            # runtime, mobile only
 > /perf build                      # bundle/build-tool optimization
 > /perf db                         # database performance (N+1, indexes, pool)
+> /perf vercel                     # real-user CWV + traffic (Vercel Speed Insights/Analytics)
 > /perf compare baseline.json after.json    # compare two runs
 > ```
 > All modes use **Skill `performance-optimization`** + agent `performance-optimizer`.
@@ -23,7 +24,9 @@ workflow_type: orchestrator-workers
 ## 0. Setup (every mode)
 
 ```typescript
-Skill("performance-optimization");
+Skill("superpowers:using-superpowers");              // meta — bootstrap (per _shared.md § 0.5)
+Skill("superpowers:verification-before-completion"); // every PASS/FAIL claim must cite captured score / exit code
+Skill("performance-optimization");                    // NeonDash performance + security + SEO knowledge
 ```
 
 Read `.claude/config.json`:
@@ -31,8 +34,9 @@ Read `.claude/config.json`:
 - `${tooling.buildTool}` → build-tool selection (vite / webpack / esbuild / rollup / turbopack / astro / next / etc.)
 - `${tooling.typeChecker}` / `${tooling.testRunner}` / `${tooling.packageManager}`
 - `${gates.lighthouse}` / `${gates.lcp}` / `${gates.cls}` / `${gates.inp}` / `${gates.initialJsKb}` → pass thresholds
+- `${vercel.projectId}` / `${vercel.teamId}` / `${vercel.scope}` → Vercel Speed Insights / Analytics queries (used by § 2.7)
 
-Project SEO specifics: `.claude/rules/seo.md` (locale, JSON-LD, sitemap filter, CWV thresholds).
+If `.claude/rules` exists, also load `.claude/rules/seo-supplement.md` (project-specific SEO/route specifics).
 
 ---
 
@@ -45,6 +49,7 @@ Parse first positional token from `$ARGUMENTS`:
 | (none) / `runtime` / `routes` / `all` | § 2 (runtime audit) |
 | `fix` | § 2 + auto-fix loop (§ 2.5) |
 | `compare` | § 2.6 (compare two PSI runs) |
+| `vercel` / `rum` | § 2.7 (Vercel Speed Insights + Analytics) |
 | `build` / `bundle` | § 3 (build/bundle optimization) |
 | `db` / `database` | § 4 (database performance) |
 
@@ -70,7 +75,7 @@ Google PageSpeed Insights v5 (zero-dependency). Falls back to Lighthouse CLI whe
 ### 2.2 Default config
 
 ```yaml
-KEY_ROUTES: detect from router files (${PATHS_FRONTEND_ROOT}/routes/, app/, pages/) or use user-provided list
+KEY_ROUTES: detect from router files (${paths.frontendRoot}/routes/, app/, pages/) or use user-provided list
 THRESHOLDS:
   performance:    { pass: ${gates.lighthouse.performance}, warn: 50 }
   accessibility:  { pass: ${gates.lighthouse.accessibility}, warn: 70 }
@@ -118,18 +123,85 @@ Call PSI API for the resolved URL with each selected strategy (mobile + desktop 
 
 ### 2.5 Auto-fix loop (`/perf fix`)
 
+Before the batch spawn, invoke `Skill("superpowers:dispatching-parallel-agents")` to enforce distinct scope + shared return contract across the per-route agents.
+
 1. Measure baseline against all key routes.
 2. Identify routes with Performance < threshold.
-3. **Cluster failing routes by suspected shared root cause** before spawning agents (e.g., "all routes slow due to unoptimized hero image" → 1 cluster; "/sobre slow on team grid + /produto slow on testimonials" → 2 clusters). Spawn 1 `performance-optimizer` agent **per cluster, not per route** — saves the 5-spawn budget and re-measures all routes per cluster fix.
-4. Spawn agents in **single message**, each with `isolation: "worktree"` and the 5 mandatory context fields per `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md § 1`.
-5. Each agent prompt includes: cluster scope (which routes share this root cause), per-route scores/CWV/opportunities, failing audits, files/components in scope, task (read frontend rules from `.claude/rules/frontend.md`, fix top 3 opportunities by `savings_ms`, run quality gates per `_shared.md` § 1, return Context Handoff per `agent-handoff-contracts.md § 2`).
-6. After all agents return: re-measure ALL routes (cluster fixes often lift sibling routes); verify improvements; if a route is still failing, re-cluster on remaining root cause.
+3. Spawn 1 `performance-optimizer` agent per failing route, all in **single message**, each with `isolation: "worktree"`.
+4. Each agent prompt includes: route-specific scores, CWV, top opportunities, failing audits, scope (which files/components), task (read web rules from `.claude/rules/DESIGN.md`, fix top 3 opportunities by `savings_ms`, run quality gates per `_shared.md` § 1, report changes).
+5. After all agents return: re-measure and verify improvements via `Skill("superpowers:verification-before-completion")` — capture the new PSI scores as evidence before claiming "regression fixed".
 
 Skip routes already at threshold.
 
 ### 2.6 Compare (`/perf compare baseline.json after.json`)
 
 Load both JSON outputs. Display delta table: Δ score per category, Δ CWV per metric, regressions highlighted.
+
+### 2.7 Vercel mode — `/perf vercel`
+
+Cross-check synthetic PSI (§ 2) against real-user CWV from Vercel Speed Insights and Web Analytics. Run after every prod deploy.
+
+Full reference: `Skill("performance-optimization")` → `references/vercel-data.md`.
+
+**Important constraint**: Vercel's public CLI/REST API does NOT expose Speed Insights or Web Analytics query endpoints (verified against `bunx vercel api list`). The `<Analytics>` + `<SpeedInsights>` components POST to intake-only routes (`/_vercel/insights/*`); only the dashboard reads aggregated data. Programmatic options: Vercel Drains (Pro/Enterprise) or self-instrument with `web-vitals`. See `references/vercel-data.md § 5` and `§ 6`.
+
+**Pre-flight**
+
+```bash
+bunx vercel whoami
+```
+
+If not authed → fail with: "Run `bunx vercel login` (or set VERCEL_TOKEN)."
+
+Read `${vercel.projectId}` / `${vercel.teamId}` / `${vercel.scope}` from `.claude/config.json`. If empty → fail with: "Run `bunx vercel link` then copy IDs from `.vercel/project.json` into `.claude/config.json::vercel`."
+
+**Step 1 — Print dashboard links + run synthetic baseline**
+
+```bash
+SCOPE="$(jq -r '.vercel.scope' .claude/config.json)"
+PROJECT_NAME=$(jq -r '.projectName' .vercel/project.json)
+
+echo "Speed Insights: https://vercel.com/${SCOPE}/${PROJECT_NAME}/speed-insights"
+echo "Web Analytics:  https://vercel.com/${SCOPE}/${PROJECT_NAME}/analytics"
+```
+
+Open both. Note p75 LCP/INP/CLS per route + top pages.
+
+In parallel, run § 2 (PSI mobile + desktop) on the same prod URL for synthetic lab data. Provides cross-check baseline.
+
+**Step 2 — Build comparison table**
+
+```markdown
+## Vercel + PSI Cross-check Report
+
+### Per-route p75
+| Route | RUM LCP (Vercel) | Lab LCP (PSI) | RUM INP | RUM CLS | Samples | Status |
+|---|---|---|---|---|---|---|
+
+(Fail RUM when LCP > ${gates.lcp}ms, INP > ${gates.inp}ms, CLS > ${gates.cls})
+```
+
+If `<SpeedInsights>` not yet aggregating (< 24h since deploy), skip RUM column and note "no data yet, retry after 24h".
+
+**Step 3 — CSV export option**
+
+When > 5 routes need analysis, dashboard "Export" button → CSV → `/tmp/vercel-cwv.csv`. Parse:
+
+```bash
+awk -F',' 'NR>1 && ($2+0>2500 || $3+0>200 || $4+0>0.1) {
+  printf "%-40s LCP=%s INP=%s CLS=%s n=%s\n", $1, $2, $3, $4, $5
+}' /tmp/vercel-cwv.csv
+```
+
+**Step 4 — Failing routes → fix path**
+
+For each FAIL row: map `routeId` → file (`apps/web/src/routes/<...>.tsx`) → recommend lazy-load / image dimensions / virtualization / third-party defer.
+
+Optionally chain into `/perf fix` scoped to those routes for auto-remediation.
+
+**Cross-check rule**: PSI good + RUM bad → device mix / network conditions issue (real users on slower connections than PSI's "Slow 4G"). PSI bad + RUM good → PSI config aggressive; investigate but don't act on lab alone.
+
+**For programmatic CWV access** (CI gates, automated reporting): see `references/vercel-data.md § 5` (Drains, Pro/Ent) or `§ 6` (`web-vitals` self-instrumentation).
 
 ---
 
@@ -158,8 +230,8 @@ time ${tooling.packageManager} run build
 time ${tooling.packageManager} run ${tooling.typeChecker}
 
 # Output sizes — adapt path per build tool
-ls -lh ${PATHS_FRONTEND_ROOT}/dist/assets/ 2>/dev/null \
-  || ls -lh ${PATHS_FRONTEND_ROOT}/.output/public/ 2>/dev/null \
+ls -lh ${paths.frontendRoot}/dist/assets/ 2>/dev/null \
+  || ls -lh ${paths.frontendRoot}/.output/public/ 2>/dev/null \
   || ls -lh build/ 2>/dev/null \
   | sort -k5 -hr | head -20
 ```
@@ -271,7 +343,7 @@ Generic across SQL databases (Postgres / MySQL / SQLite).
 
 ### 4.1 Connection pool audit
 
-Locate the connection / pool initialization (`${PATHS_LIB_ROOT}/db.*`, `lib/database.*`, etc.). Verify:
+Locate the connection / pool initialization (`${paths.libRoot}/db.*`, `lib/database.*`, etc.). Verify:
 - Pool size appropriate for serverless vs long-running
 - Idle timeout configured (avoid orphan connections)
 - Max lifetime / recycle settings
@@ -279,7 +351,7 @@ Locate the connection / pool initialization (`${PATHS_LIB_ROOT}/db.*`, `lib/data
 
 ### 4.2 N+1 scan
 
-Grep across `${PATHS_BACKEND_ROOT}` and service layer:
+Grep across `${paths.backendRoot}` and service layer:
 - `for (...) { await db.query(...) }` — classic N+1
 - Loops over arrays calling `findOne` / `select` per item
 - Missing `IN (...)` batch queries
@@ -290,7 +362,7 @@ Report each hit with file:line + suggested batched alternative.
 ### 4.3 SELECT * scan
 
 ```bash
-grep -rn "select \*" ${PATHS_BACKEND_ROOT} --include="*.ts" --include="*.js" --include="*.sql" | head -50
+grep -rn "select \*" ${paths.backendRoot} --include="*.ts" --include="*.js" --include="*.sql" | head -50
 ```
 
 For each: verify whether all columns are actually used in the call site. Suggest column projection.
@@ -349,7 +421,7 @@ Flag: seq scans on big tables, sort spilling to disk, nested loops over many row
 [3 worst queries with annotations]
 ```
 
-For Supabase / Postgres-specific deeper guidance, defer to skill `supabase-postgres-best-practices`.
+For database-specific deeper guidance, defer to the host database/performance skill declared in project rules.
 
 ---
 

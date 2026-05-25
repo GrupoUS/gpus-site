@@ -1,6 +1,6 @@
 ---
 name: gpus-theme
-description: Use when applying GPUS branding (Portal Grupo US) to other projects, setting up shadcn/ui with Navy/Gold palette, or copying the complete light/dark theme configuration. Includes CSS variables, Tailwind v4 theme, and shadcn configuration.
+description: Use when applying GPUS branding (Portal Grupo US) to other projects, setting up shadcn/ui with Navy/Gold palette, or copying the complete light/dark theme configuration. Includes CSS variables, Tailwind v4 theme, and shadcn configuration. Project canon resolves from references/values/<project>-canon.md.
 ---
 
 # GPUS Theme
@@ -8,14 +8,16 @@ description: Use when applying GPUS branding (Portal Grupo US) to other projects
 Portable design system from the Portal Grupo US project featuring a Navy/Gold color palette with complete light and dark theme support.
 
 > **Identity:** Navy backgrounds + Gold accents. Professional, premium, educational.
+> **Project canon:** `references/values/gpus-canon.md` (HSL palette, typography, custom utilities).
+> **Schema for new projects:** `references/template.md` (theme canon section structure).
 
-## Institutional site (`gpus` repo) vs portable theme
+## Institutional site (`gpus-site`) vs portable theme
 
-Portable assets in this skill support **light and dark** (see palette table and toggle tips below). The **Grupo US Astro institutional site** in this repository uses **dark navy / gold only** per root `AGENTS.md` — **no light/dark product toggle** unless product scope changes.
+Portable assets in this skill support **light and dark** (see palette table in `references/values/gpus-canon.md`). The **Grupo US Astro institutional site** in this repository uses **dark navy / gold only** per root `AGENTS.md` — **no light/dark product toggle** unless product scope changes.
 
 When editing **that** site:
 
-- Use `src/styles/global.css` `@theme` and project tokens (`navy`, `gold`, semantic `bg-background`, etc.).
+- Use `<themeSsot>` `@theme` block + project tokens — path from `config.json::cardinals.themeSsot` (currently `src/styles/global.css`). Tokens: `navy`, `gold`, semantic `bg-background`, etc.
 - Treat **Dark Mode Toggle** and **View Transition API** theme-toggle notes below as **for other consumers** of `theme-tokens.css`, not as defaults for the institutional build.
 
 ---
@@ -36,7 +38,7 @@ Copy `assets/theme-tokens.css` to your project's main CSS file.
 Copy `assets/components.json` to your project root:
 
 ```bash
-cp .agent/skills/gpus-theme/assets/components.json ./components.json
+cp .claude/skills/gpus-theme/assets/components.json ./components.json
 ```
 
 ### Option 3: Tailwind v3 Config
@@ -44,7 +46,7 @@ cp .agent/skills/gpus-theme/assets/components.json ./components.json
 Import theme tokens into `tailwind.config.ts`:
 
 ```typescript
-import { gpusTheme } from "./.agent/skills/gpus-theme/assets/tailwind-theme";
+import { gpusTheme } from "./.claude/skills/gpus-theme/assets/tailwind-theme";
 
 export default {
   theme: {
@@ -57,7 +59,7 @@ export default {
 
 ---
 
-## Theme Overview
+## Theme Overview (gpus-canon values)
 
 ### Color Palette
 
@@ -68,6 +70,8 @@ export default {
 | **primary**     | Gold `38 60% 45%`       | Gold `39 44% 65%`  | Main actions    |
 | **accent**      | Light gold `38 60% 95%` | Muted `26 5% 27%`  | Highlights      |
 | **destructive** | Red `0 84% 60%`         | Red `0 84% 60%`    | Errors          |
+
+Full token table → `references/values/gpus-canon.md`.
 
 ### Border Radius
 
@@ -92,7 +96,7 @@ export default {
 - **Style:** `new-york`
 - **Base color:** `zinc`
 - **CSS Variables:** Enabled
-- **Icon Library:** `lucide`
+- **Icon Library:** `config.json::cardinals.iconLibrary` (currently `lucide-react`)
 
 ### Extended Registries
 
@@ -111,13 +115,16 @@ export default {
 
 ## Files Reference
 
-| File                          | Purpose                         |
-| ----------------------------- | ------------------------------- |
-| `references/css-variables.md` | Complete CSS variable reference |
-| `references/shadcn-config.md` | shadcn/ui configuration details |
-| `assets/theme-tokens.css`     | Portable CSS file               |
-| `assets/tailwind-theme.ts`    | Tailwind v3 config export       |
-| `assets/components.json`      | shadcn configuration            |
+| File                                       | Purpose                              | Scope |
+| ------------------------------------------ | ------------------------------------ | ----- |
+| `references/template.md`                   | Section schema for any project canon | TEMPLATE — never edit per project |
+| `references/values/gpus-canon.md`          | gpus-site HSL palette + utilities    | VALUES — gpus-site |
+| `references/shadcn-config.md`              | shadcn/ui configuration details      | GENERIC mechanic |
+| `assets/theme-tokens.css`                  | Portable CSS file (gpus-canon)       | VALUES — fork per project if palette differs |
+| `assets/tailwind-theme.ts`                 | Tailwind v3 config export            | GENERIC mechanic |
+| `assets/components.json`                   | shadcn configuration                 | GENERIC mechanic |
+
+For a new Grupo US project with a different palette, fork `references/values/<new-project>-canon.md` from `template.md`.
 
 ---
 
@@ -145,4 +152,15 @@ body {
 
 ### View Transition API (portable / other projects)
 
-For animated theme toggle when using portable tokens, use the View Transition API selectors in `theme-tokens.css`. **Not applicable** to the institutional `gpus` site while it remains single-theme per `AGENTS.md`.
+For animated theme toggle when using portable tokens, use the View Transition API selectors in `theme-tokens.css`. **Not applicable** to the institutional gpus-site while it remains single-theme per `AGENTS.md`.
+
+---
+
+## When to load more
+
+- Schema for a new project's theme canon: `references/template.md`
+- Concrete canon (gpus-site): `references/values/gpus-canon.md`
+- shadcn methodology: `references/shadcn-config.md`
+- Tailwind v4 syntax + `@theme`: `Skill('${skills.stack}')` → `references/styling-tailwind.md`
+- Universal design rules: `.claude/rules/DESIGN.md`
+- Bootstrap new project: `.claude/scaffolding/BOOTSTRAP.md`

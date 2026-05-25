@@ -7,26 +7,30 @@ workflow_type: orchestrator-workers
 
 **ARGUMENTS**: $ARGUMENTS
 
-> **Plans come from:** `/plan` — format defined in `.claude/skills/planning/SKILL.md`
-> **Plan files:** `docs/plans/YYYY-MM-DD-<feature>.md` or active conversation context
+> **Plans come from:** `Skill("superpowers:writing-plans")` (canonical format, written to `docs/superpowers/plans/`) chained with `Skill("planning")` for NeonDash layer-map.
+> **Plan files:** `docs/superpowers/plans/YYYY-MM-DD-<feature>-plan.md` (per `_shared.md` § 0.7) or active conversation context. Legacy `docs/plans/*.md` accepted for back-compat.
 
 ---
 
 ## 0. Pre-flight
 
-```bash
-ls docs/plans/*.md 2>/dev/null
+```typescript
+Skill("superpowers:using-superpowers");   // meta — bootstrap (per _shared.md § 0.5)
 ```
+
+Use the file-search tool to locate `docs/superpowers/plans/*.md` (preferred) and `docs/plans/*.md` (legacy). Do not rely on shell globbing or stderr redirection for this check.
 
 | Source | Action |
 |---|---|
-| Plan file exists | Load from file |
-| Plan in chat context | Extract phases + tasks from conversation |
-| No plan found | Run `/plan` first — never implement without a plan |
+| Plan file exists | `Skill("superpowers:executing-plans")` — parse phases + TodoWrite seed |
+| Plan in chat context | `Skill("superpowers:executing-plans")` — extract phases + tasks from conversation |
+| No plan found | `Skill("superpowers:writing-plans")` → `Skill("planning")` — write plan to `docs/superpowers/plans/`. Never implement without a plan. |
 
 Parse from plan: **Complexity**, **Layers**, phase markers (`[SEQUENTIAL]` / `[PARALLEL]`), task list (`- [ ]`), verify commands, sprint contracts, `[ASSUMED]` items to validate before starting.
 
-Read `.claude/config.json` for tooling + paths. Project-specific layer/agent routing lives in `.claude/CLAUDE.md § Routing matrix (project-specific)`.
+For L4+ work (multi-domain or multi-file changes), invoke `Skill("superpowers:using-git-worktrees")` to isolate the workspace before any agent spawns. Skip for L1-L3 trivial work.
+
+Read `.claude/config.json` for tooling + paths. If `.claude/rules/routing-supplements.md` exists, also read it for project-specific layer/agent routing.
 
 **Flags:**
 
@@ -43,13 +47,13 @@ Read `.claude/config.json` for tooling + paths. Project-specific layer/agent rou
 Per `_shared.md` § 6 (Skill-to-Domain Matrix), load the skill matching the task domain **before spawning any agent for that phase**.
 
 If the plan touches:
-- Schema / migrations / data → load `debugger` skill (and `supabase-postgres-best-practices` for Postgres)
+- Schema / migrations / data → load `debugger` skill and any host database skill listed in `${rulesDir}/routing-supplements.md`
 - API / handlers / services → `debugger`
-- React / components / styling → `ui-ux-pro-max` + `frontend-design`
+- React / components / styling → `gpus-theme` or host design-system skill
 - Performance / SEO → `performance-optimization`
 - Spreadsheets / data files → `xlsx`
 - Skill creation / iteration → `skill-creator`
-- Supabase products → `supabase`
+- External provider/deployment/product API → host provider skill if configured; otherwise use `librarian` for docs
 
 Multiple skills may load. Process skills (`planning`, `debugger`) before implementation skills.
 
@@ -68,7 +72,7 @@ If plan doesn't specify `**Agent:**`, assign by file-path detection:
 | Cross-domain (3+ layers) | `project-planner` as coordinator |
 | Any failing task | `debugger` |
 
-Project-specific bindings in `.claude/CLAUDE.md § Routing matrix`.
+If `.claude/rules/routing-supplements.md` extends this table → respect those bindings.
 
 Background read-only agents (always `run_in_background: true`):
 
@@ -85,7 +89,7 @@ Background read-only agents (always `run_in_background: true`):
 |---|---|
 | L1-L2 | DIRECT — main agent executes |
 | L3-L5 | SUBAGENTS — `Agent()` per task/phase |
-| L6+ | AGENT TEAMS — `TeamCreate` + coordinator + `TaskCreate` |
+| L6+ | COORDINATED — coordinator + specialists; use Agent Team tools only when the runtime exposes them |
 
 ---
 
@@ -99,6 +103,13 @@ Background read-only agents (always `run_in_background: true`):
 ---
 
 ## 5. Mode B — SUBAGENTS (L3-L5)
+
+Method-layer skill load (single message at the top of Mode B):
+
+```typescript
+Skill("superpowers:subagent-driven-development");  // two-stage review (spec → quality), commit per task
+Skill("superpowers:dispatching-parallel-agents");  // distinct scope + shared return contract
+```
 
 ### Before any phase
 
@@ -116,10 +127,12 @@ Agent({
 
 Per `_shared.md` § 8 (Sequential Phase Gating).
 
+**Hard TDD gate (L3+):** Before each task that writes code, invoke `Skill("superpowers:test-driven-development")`. The skill requires a failing test before the implementation lands. L1-L2 trivial tasks (single-line fix, exact existing pattern) are exempt — note the exemption in the task log.
+
 ```
 Load domain skill
-→ Spawn agent for task 1 → wait → run verify command → gate
-→ Spawn agent for task 2 → wait → run verify command → gate
+→ Skill("superpowers:test-driven-development") gate → write failing test → wait → spawn agent for task 1 → wait → run verify command → Skill("superpowers:verification-before-completion") evidence → gate
+→ Skill("superpowers:test-driven-development") gate → write failing test → wait → spawn agent for task 2 → wait → run verify command → Skill("superpowers:verification-before-completion") evidence → gate
 → ...
 ```
 
@@ -135,7 +148,7 @@ Agent({ subagent_type: "debugger", prompt: "..." })
 Agent({ subagent_type: "explorer", prompt: "...", run_in_background: true })
 ```
 
-After all complete: parse each agent's `## Context Handoff` block per `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md § 2`, consolidate parallel-batch findings per `parallel-batch-contracts.md § 5`, run phase gate.
+After all complete: parse each agent's `## Context Handoff` block, consolidate changes, run phase gate, then invoke `Skill("superpowers:verification-before-completion")` to capture the gate output as evidence before marking the phase complete.
 
 ### Sprint contract gate
 
@@ -147,41 +160,18 @@ If plan includes sprint contracts, after all tasks in a sprint:
 
 ---
 
-## 6. Mode C — AGENT TEAMS (L6+)
-
-### Setup
-
-```typescript
-TeamCreate({ team_name: "[feature-slug]" });
-```
+## 6. Mode C — COORDINATED (L6+)
 
 ### Coordinator pattern
 
-Create a **coordinator task** assigned to `project-planner`. The coordinator:
+Create a **coordinator task** assigned to `project-planner` (or use native Agent Team tools when available). The coordinator:
 - Holds the full plan + sprint contracts
-- Delegates domain tasks via `SendMessage` — every spawn injects the 5 mandatory context fields per `.claude/skills/senior-prompt-engineer/references/agent-handoff-contracts.md § 1`
-- Validates each specialist's `## Context Handoff` against the contract using the schema in `agent-handoff-contracts.md § 2-3`
+- Delegates domain tasks via `SendMessage`
+- Validates `## Context Handoff` from each specialist against the contract
 - Gates sprints before advancing
 - Reports progress + blockers
-- **Max 2 agent resubmissions per task on `REVISION_REQUIRED`.** After the 2nd, coordinator returns `BLOCKED: <criterion>` to main agent (NOT user). Main invokes `/debug recover`. See `agent-handoff-contracts.md § 4`.
 
-```typescript
-// Coordinator (foreground — must complete before team cleanup):
-TaskCreate({ subject: "Coordinator — [feature]", owner: "project-planner" });
-
-// Domain specialists (spawned by coordinator or in parallel where contracts allow):
-TaskCreate({ subject: "Schema + API — Sprint N", owner: "debugger" });
-TaskCreate({
-  subject: "UI Layer — Sprint N",
-  owner: "frontend-specialist",
-  addBlockedBy: ["[schema-task-id]"]
-});
-TaskCreate({
-  subject: "Integration — Sprint N",
-  owner: "debugger",
-  addBlockedBy: ["[api-task-id]"]
-});
-```
+If native team tools exist, create the coordinator and dependent specialist tasks there. Otherwise, spawn the coordinator as a foreground subagent and have the main agent enforce phase gates between specialist calls.
 
 ### Coordinator prompt template
 
@@ -193,12 +183,12 @@ Sprint contract: [paste Sprint N contract]
 Skill loaded: [skill name for this domain]
 
 Responsibilities:
-1. Delegate schema/API tasks to debugger agent via SendMessage
-2. Delegate UI tasks to frontend-specialist (only after API phase passes gate)
+1. Delegate data/API tasks to debugger agent through the available runtime mechanism
+2. Delegate UI tasks to frontend-specialist only after required upstream gates pass
 3. Validate each agent's Context Handoff against contract Done Definition
 4. Run quality gate after each phase: ${tooling.packageManager} run ${tooling.typeChecker}
-5. If any criterion fails → return detailed feedback to the responsible agent, not the user. Max 2 resubmissions per task on REVISION_REQUIRED — on the 3rd would-be iteration, return BLOCKED to main agent (which calls /debug recover)
-6. Only report to user: SPRINT N COMPLETE (all criteria met) or BLOCKED: [specific failing criterion + last reviewer evidence]
+5. If any criterion fails → return detailed feedback to the responsible agent, not the user
+6. Only report to user: SPRINT N COMPLETE (all criteria met) or BLOCKED: [specific failing criterion]
 
 Do not implement yourself. Coordinate, validate, gate.
 ```
@@ -210,7 +200,7 @@ Do not implement yourself. Coordinate, validate, gate.
 | Sonnet 4.x | Context reset between sprints — write handoff artifact before each reset |
 | Opus 4.6+ | Auto-compaction, continuous session — monitor for context anxiety |
 
-Handoff artifact path: `docs/plans/HANDOFF-[slug]-sprint-N.md` (use `.claude/templates/handoff-template.md` structure).
+Handoff artifact path: `docs/plans/HANDOFF-[slug]-sprint-N.md` (use the structure from `Skill("evolution-core")` § Session Handoff).
 
 Handoff contains: completed tasks, verified state, next sprint contract, open issues, key decisions, modified files, resume commands.
 
@@ -259,7 +249,7 @@ Never retry blindly. Never skip a gate because a task "looks correct."
 
 ## Stopping conditions
 
-- STOP if no plan exists → run `/plan` first
+- STOP if no plan exists → invoke `Skill("planning")` first
 - STOP after 3rd failure on same task → invoke `/debug recover`
 - STOP if agent team runs 10+ task iterations without sprint completion
 - ASK if plan has `[ASSUMED]` items not yet validated
@@ -267,30 +257,28 @@ Never retry blindly. Never skip a gate because a task "looks correct."
 
 ---
 
-## 10. Cleanup (Agent Teams)
+## 10. Cleanup (Coordinated Runs)
 
-After all sprints complete:
-
-```typescript
-// Signal completion, collect final handoffs
-TeamDelete({ team_name: "[feature-slug]" });
-```
+After all sprints complete, collect final handoffs, close any runtime-native team resources if they were created, and leave no background research task uncollected.
 
 ---
 
 ## 11. Completion
 
+Final gate: `Skill("superpowers:verification-before-completion")` — capture full stdout + exit code of type-check / lint / tests; do not declare "complete" without that evidence.
+
+Append a row to `.claude/logs/progress.md` (date, phase, commit SHA) per AGENTS.md cardinal rule 4.
+
+Then hand off to `/verify` for the full post-implementation pipeline (which itself invokes `finishing-a-development-branch` in Phase 10 to surface the merge/PR/keep/discard options menu).
+
 ```
 Implementation complete.
 
-Gates passed:
-  - Type check: ok
-  - Lint: ok
-  - Tests: ok
+Gates passed (evidence captured):
+  - Type check: ok (exit 0)
+  - Lint: ok (exit 0)
+  - Tests: ok (N passed / 0 failed)
   - Sprint contracts: ok (if applicable)
 
-Options:
-  1. PR     → push + open PR
-  2. Keep   → branch ready for review
-  3. /evolve → capture learnings, update AGENTS.md + memory
+Next: /verify   (runs the full 10-phase gate + finishing-a-development-branch menu)
 ```

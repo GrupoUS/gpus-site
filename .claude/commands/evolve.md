@@ -1,9 +1,9 @@
 ---
-description: Capture learnings, run Karpathy-style optimize loops, and trigger GPUS site autoresearch. All routes load `evolution-core` once.
+description: Capture learnings after successful tasks. Updates skills and project AGENTS.md to prevent recurring errors.
 workflow_type: prompt-chaining
 ---
 
-# /evolve — Learning Capture + Optimize + Autoresearch
+# /evolve — Learning Capture
 
 **ARGUMENTS**: $ARGUMENTS
 
@@ -13,22 +13,18 @@ workflow_type: prompt-chaining
 
 | Token in `$ARGUMENTS` | Behavior |
 |---|---|
-| (none) | Manual capture flow (§ 1–5) |
-| `auto [<skill>]` | Skip § 1–5; run AutoResearch Loop per `_shared.md` § 10. Sub-arg targets one skill. Default: every skill with `evals.json`. |
-| `optimize <target>` | **Karpathy `<evolve_request>` loop** — load `evolution-core/references/optimizer.md`. Target = skill name (e.g. `optimize debugger`) or `site:<area>` (e.g. `optimize site:home-hero` → also load `references/gpus-profile.md`). |
-| `handoff` | Write session state per `.claude/templates/handoff-template.md` |
-
-**Implicit override:** if the user pasted an `<evolve_request>...</evolve_request>` XML block anywhere in `$ARGUMENTS`, switch to `optimize` mode regardless of token. If `<input><area>...</area></input>` appears, switch to `optimize site:<area>` mode.
+| (none) | Manual capture flow (§ 1-5) |
+| `auto` | Skip § 1-5, run AutoResearch Loop per `_shared.md` § 10. Target skill is second arg (e.g. `/evolve auto debugger`). Default: all skills with `evals.json`. |
+| `handoff` | Write session state per `Skill("evolution-core")` § Session Handoff |
 
 ---
 
 ## 1. First action
 
 ```typescript
-Skill("evolution-core"); // single load — covers memory, optimizer, gpus-profile via references/
+Skill("superpowers:using-superpowers"); // meta — bootstrap (per _shared.md § 0.5)
+Skill("evolution-core");                // Persistent memory + CLI (NeonDash)
 ```
-
-The skill's routing table picks the right `references/<file>.md` for the detected mode. Do not load deleted skills (`auto-research-gpus`, `evolve-autoresearch`) — they were absorbed into `evolution-core` on 2026-05-01.
 
 ---
 
@@ -57,7 +53,7 @@ Analyze the current conversation to identify:
 [commands run: type-check, lint, test, etc.]
 ```
 
-### 2.2 Persist to evolution-core memory
+### 2.2 Persist to evolution-core
 
 ```bash
 python .claude/skills/evolution-core/scripts/memory_manager.py capture \
@@ -69,22 +65,18 @@ python .claude/skills/evolution-core/scripts/memory_manager.py capture \
 
 ---
 
-## 3. Skill / target routing
+## 3. Skill selection
 
 Based on modified file paths + `_shared.md` § 6 (Skill-to-Domain Matrix), identify affected skills.
 
-Generic mapping (override via `${overlay}/routing-supplements.md` if present):
+Generic mapping (override via `.claude/rules/routing-supplements.md` if present):
 
-| Path / target | Reference loaded |
-|---|---|
-| `${paths.backendRoot}` | `debugger` |
-| `${paths.schemaRoot}` | `debugger` (+ `supabase-postgres-best-practices` for Postgres) |
-| `${paths.frontendRoot}` | `debugger` + `ui-ux-pro-max` (if styling/design) |
-| Performance changes | `performance-optimization` |
-| Skill files themselves | `skill-creator` |
-| Memory infrastructure | `evolution-core/references/memory.md` |
-| `optimize <skill-name>` | `evolution-core/references/optimizer.md` |
-| `optimize site:<area>` or `<input><area>` | `evolution-core/references/optimizer.md` + `evolution-core/references/gpus-profile.md` |
+- `${paths.backendRoot}` → `debugger`
+- `${paths.schemaRoot}` → `debugger` + host database skill if configured
+- `${paths.frontendRoot}` → `debugger` + `gpus-theme` (if styling/design)
+- Performance changes → `performance-optimization`
+- Skill files themselves → `skill-creator`
+- Memory infrastructure → `evolution-core`
 
 Ask user which skills to update if multiple are relevant and not obvious.
 
@@ -92,7 +84,9 @@ Ask user which skills to update if multiple are relevant and not obvious.
 
 ## 4. Improve skills
 
-For each selected skill, add to `references/` or relevant SKILL.md section:
+If this learning calls for editing or creating a SKILL.md (skill body change, new reference doc, frontmatter `description:` update), invoke `Skill("superpowers:writing-skills")` first. It enforces RED-GREEN-REFACTOR discipline on the skill itself (pressure-test the new skill against a subagent before committing). Skip if the learning only adds a new entry to an existing `references/` markdown without changing the SKILL.md body.
+
+For each selected skill, add to `references/` or the relevant SKILL.md section:
 
 ```markdown
 ## Case: [Bug/Problem Name]
@@ -123,11 +117,16 @@ Categorize:
 
 ---
 
-## 5. Append to learnings log
+## 5. Improve AGENTS.md (project-level)
 
-Project chronological learnings live in **`docs/learnings-log.md`** (append-only, new entries on top). Subdirectory `AGENTS.md` files (when present in `${paths.backendRoot}` / `${paths.frontendRoot}` / `${paths.schemaRoot}`) carry domain-specific learnings only; otherwise route everything to `docs/learnings-log.md`.
+Identify the target AGENTS.md from the modified file path:
 
-Append at the **top** of the log (under the header):
+- Edits in `${paths.backendRoot}/**` → backend AGENTS.md if it exists
+- Edits in `${paths.frontendRoot}/**` → frontend AGENTS.md if it exists
+- Edits in `${paths.schemaRoot}/**` → schema AGENTS.md if it exists
+- Otherwise → root `AGENTS.md`
+
+Add a new section:
 
 ```markdown
 ### [YYYY-MM-DD] [Learning Title]
@@ -137,62 +136,18 @@ Append at the **top** of the log (under the header):
 **Problem:** [description]
 **Cause:** [root cause]
 **Solution:** [fix applied]
-**Validation:** [commands run]
 ```
 
-Also surface the new entry as a one-liner in the root `AGENTS.md § Recent learnings (last 3)` section — replace the oldest of the three with the new entry.
-
 ---
 
-## 6. Optimize mode (Karpathy autoresearch)
-
-When `optimize <target>` was selected (or `<evolve_request>` was detected):
-
-1. Bootstrap run from request:
-   ```bash
-   python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_harness.py init-run \
-     --file /tmp/evolve-request.xml
-   ```
-2. Seed deterministic candidates:
-   ```bash
-   python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_mutate.py seed-candidates \
-     --run-dir evals/<skill-slug>/runs/<run-id>
-   ```
-3. Score baseline + each candidate (full sample budget, no shortcut):
-   ```bash
-   python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_score.py score-candidate \
-     --run-dir evals/<skill-slug>/runs/<run-id> \
-     --grade-file evals/<skill-slug>/runs/<run-id>/grades/<id>.json
-   ```
-4. Build response XML + append backlog:
-   ```bash
-   python3 .claude/skills/evolution-core/scripts/evolve_autoresearch_report.py build-response \
-     --run-dir evals/<skill-slug>/runs/<run-id> \
-     --append-backlog
-   ```
-5. Emit `<evolve_response>` in chat **before** running the §2 capture flow on the winning prompt.
-
-**Operational rules** (mirror `references/optimizer.md`):
-
-- One scored target artifact per run. Sibling-file syncs (e.g. updating this command after the optimizer skill changes) happen **between** runs as `program.md`-class edits — never as a second scored target.
-- Crash candidate → at most one quick local fix retry, else log `crash` row in `experiments.tsv` and move on. Never mutate harness / criteria / sample budget to rescue.
-- Self-improvement runs (target = this command or `references/optimizer.md`) require sample pool with at least: 1 ordinary optimize case + 1 self-improvement boundary + 1 crash/failure case.
-
-For `optimize site:<area>`, the GPUS profile drives the priority order (copy → SEO → sales/funnel → conversion UX → performance) and the `<answer>` output shape — see `references/gpus-profile.md`.
-
----
-
-## 7. Summary
+## 6. Summary
 
 ```
 Learning captured successfully.
 
 Memory: evolution-core updated
-Mode: [capture | auto | optimize | handoff]
-Run dir (if optimize): evals/<skill-slug>/runs/<run-id>
 Skills improved: [list]
-Learnings log: docs/learnings-log.md (entry [YYYY-MM-DD] [title])
-AGENTS.md recent-learnings refreshed: [yes/no]
+AGENTS.md updated: [list]
 ```
 
 ---
@@ -200,10 +155,6 @@ AGENTS.md recent-learnings refreshed: [yes/no]
 ## References
 
 - `evolution-core` skill: `.claude/skills/evolution-core/SKILL.md`
-- Memory layer: `.claude/skills/evolution-core/references/memory.md`
-- Karpathy optimizer: `.claude/skills/evolution-core/references/optimizer.md`
-- GPUS site profile: `.claude/skills/evolution-core/references/gpus-profile.md`
-- Autoresearch scripts README: `.claude/skills/evolution-core/scripts/AUTORESEARCH_README.md`
 - `skill-creator` skill: `.claude/skills/skill-creator/SKILL.md`
-- AutoResearch Loop: `.claude/commands/_shared.md` § 10
-- Handoff template: `.claude/templates/handoff-template.md`
+- AutoResearch Loop: `_shared.md` § 10
+- Handoff protocol: `Skill("evolution-core")` § Session Handoff

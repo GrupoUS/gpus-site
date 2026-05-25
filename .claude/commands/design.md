@@ -7,7 +7,7 @@ workflow_type: prompt-chaining
 
 **ARGUMENTS**: $ARGUMENTS
 
-> Orchestration-only. Deep policy lives in `ui-ux-pro-max` (spec) + `frontend-design` (creative execution).
+> Orchestration-only. Deep policy lives in `gpus-theme` (spec) + `frontend-design` (creative execution).
 
 ---
 
@@ -21,12 +21,19 @@ workflow_type: prompt-chaining
 
 ## 0. Context load (WISC)
 
-1. Run `/prime frontend` — loads frontend rules first, then only the required references on demand.
-2. If continuing a prior session → read `.claude/docs/evolution/HANDOFF.md` first.
+```typescript
+Skill("superpowers:using-superpowers"); // meta — bootstrap (per _shared.md § 0.5)
+```
+
+1. Run `/prime frontend` — loads `.claude/rules/DESIGN.md` (merged web-layer rule) first, then only the required references on demand.
+2. If continuing a prior session → read `${rulesDir}/docs/evolution/HANDOFF.md` first.
+
+**Tier 2 (auto-loaded on `apps/web/**`):** `.claude/rules/DESIGN.md` — merged web-layer rule (tokens, mobile scroll owner, polling, mutations).
 
 **Tier 3 references (read on demand only):**
-- Project design system foundation (e.g., `docs/design-specs/00-design-system-foundation.md` or `.claude/rules/DESIGN.md` if exists)
-- LEVER / extend-vs-create philosophy doc — only when deciding extend vs create new component
+- Project design system foundation: `Skill("gpus-theme")` → `references/design-foundation.md`
+- LEVER / extend-vs-create philosophy: `Skill("gpus-theme")` → `references/lever-philosophy.md` — only when deciding extend vs create new component
+- Implementation handoff (design → build): `Skill("gpus-theme")` → `references/implementation-handoff.md`
 - Relevant feature spec — only for the surface being designed
 
 ---
@@ -47,13 +54,13 @@ Per `_shared.md` § 2.
 ## 2. Design tool chain
 
 ```
-Phase 0: explorer + Skill("ui-ux-pro-max") → design spec
+Phase 0: explorer + Skill("gpus-theme") → design spec
 Phase 1: optional — prototype tool (Stitch / Figma plugin / manual) → reference layout
-Phase 2: frontend-specialist + Skill("frontend-design") → component code
+Phase 2: frontend-specialist + Skill("frontend-design:frontend-design") → component code
 Phase 3: debugger + performance-optimizer → validate
 ```
 
-**Key rule:** `ui-ux-pro-max` generates the *spec* (Phase 0). `frontend-design` drives the *creative execution* (Phase 2). They never swap phases.
+**Key rule:** `gpus-theme` generates the *spec* (Phase 0). `frontend-design` drives the *creative execution* (Phase 2). They never swap phases.
 
 ### 2.1 Phase 1 prototype tool selection
 
@@ -69,14 +76,36 @@ Pass `--prototype-tool=stitch|figma|manual` in `$ARGUMENTS` to force a specific 
 
 ## 3. Pre-flight: design research (mandatory L3+)
 
-Before ANY implementation, spawn `explorer` (foreground) to generate a design specification.
+Before ANY implementation, invoke the brainstorming-then-spec chain:
+
+```typescript
+Skill("superpowers:brainstorming"); // produces design spec at docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md
+```
+
+The brainstorming skill walks: project context → clarifying questions (one at a time) → 2-3 approaches with tradeoffs → spec sections with user approval gate → spec written to `docs/superpowers/specs/`. NeonDash design tokens + branding then layer on top via `gpus-theme` in the explorer prompt below.
+
+### 3.1 Impeccable `shape` enrichment (additive, runs BEFORE explorer)
+
+Before spawning `explorer` for the gpus-theme spec, run impeccable's `shape` discovery-interview methodology. **Additive** to brainstorming + gpus-theme — never a replacement.
+
+```typescript
+Skill("impeccable"); // router (setup + register)
+Read(".claude/skills/impeccable/reference/shape.md");
+// node .claude/skills/impeccable/scripts/load-context.mjs  (loads PRODUCT.md + DESIGN.md)
+```
+
+Apply the shape interview cadence (Purpose & Context · Content & Data · States · Constraints), then hand BOTH the brainstorming spec AND the shape brief to the `explorer` agent. The explorer then synthesises the gpus-theme spec using BOTH as input.
+
+**Critical:** `shape` enriches Phase 0 — it does NOT replace gpus-theme. gpus-theme remains the source of truth for tokens, palette anchors, and Stitch asset IDs. Compressing the shape gates because the brainstorming brief feels complete is the dominant failure mode — do not skip.
+
+Spawn `explorer` (foreground) to generate the design specification using `gpus-theme` for token/branding fidelity.
 
 Prompt template:
 
 ```
-Invoke Skill("ui-ux-pro-max") and analyze: [user request]
+Invoke Skill("gpus-theme") and analyze: [user request]
 
-Using ui-ux-pro-max, generate a complete design spec:
+Using gpus-theme, generate a complete design spec:
 1. Style selection (justify against request context)
 2. Color palette (semantic design tokens — never hardcode hex)
 3. Typography pairing (name + scale)
@@ -136,18 +165,18 @@ Fix directly. Skip Phase 0 + background agents.
 ## 6. Skills to load
 
 ```
-Phase 0 (in explorer):           Skill("ui-ux-pro-max")
-Phase 1 (if Stitch):              Skill("<project-design-tokens-skill>")  // provides asset IDs
-Phase 2 (in frontend-specialist): Skill("frontend-design") + Skill("<project-design-tokens-skill>")
+Phase 0 (in explorer):           Skill("gpus-theme")
+Phase 1 (if Stitch):              Skill("gpus-theme")           // provides Stitch asset IDs (SKILL.md § Stitch Design System IDs)
+Phase 2 (in frontend-specialist): Skill("frontend-design:frontend-design") + Skill("gpus-theme")
 ```
 
-If project lacks a design-tokens skill, the design tokens come from `${paths.stylesRoot}/global.css` `@theme` (or equivalent) — pass them explicitly to the agent.
+`gpus-theme` is the canonical NeonDash design-tokens skill — it ships Stitch asset IDs, the GPUS brand anchors, contrast safety rules, motion canon, and progressive-disclosure references. Live token source is `apps/web/src/styles/global.css` `@theme` (canonical) — `assets/theme-tokens.css` is a portable snapshot.
 
 ---
 
 ## 7. 4-phase pipeline
 
-### Phase 0 — Design research (`explorer` + `ui-ux-pro-max`)
+### Phase 0 — Design research (`explorer` + `gpus-theme`)
 
 Always for L3+. Generates structured design spec. Pass spec to frontend-specialist prompt.
 
@@ -166,7 +195,24 @@ If skipping prototype: pass Phase 0 spec directly to Phase 2.
 
 ### Phase 2 — Convert to code
 
-**`frontend-specialist` MUST invoke BOTH `Skill("frontend-design")` and the project design-tokens skill BEFORE writing any code.**
+For L4+ designs (multi-component / full page), invoke `Skill("superpowers:writing-plans")` to convert the Phase 0 spec into an implementation plan at `docs/superpowers/plans/YYYY-MM-DD-<topic>-plan.md` before any code lands. The plan enumerates the per-component build order, prop contracts, and per-component verify steps. Skip for L3 single-component work.
+
+**`frontend-specialist` MUST invoke BOTH `Skill("frontend-design:frontend-design")` and the project design-tokens skill BEFORE writing any code.**
+
+#### Pre-code preparation: impeccable `craft` methodology (additive)
+
+Before declaring DESIGN COMMITMENT, `frontend-specialist` MUST load impeccable's `craft` end-to-end methodology to inform the commitment:
+
+```typescript
+Skill("frontend-design:frontend-design"); // existing, required
+Skill("gpus-theme");                       // existing, required
+Skill("impeccable");                       // router (setup + register)
+Read(".claude/skills/impeccable/reference/craft.md");
+```
+
+Apply craft's pre-code gate sequence (Steps 0–4: project foundation check · shape brief confirmed · direction questions · palette confirmed · mock direction approved-or-delegated). Each gate informs the DESIGN COMMITMENT below — it does not replace it.
+
+**Critical:** `craft` layers on top of `frontend-design:frontend-design`. It does NOT replace the DESIGN COMMITMENT block below, the Maestro auditor gates in Phase 3, or any anti-cliché rule. Compressing gates 2–4 because the shape brief feels complete is the dominant failure mode of this flow — do not skip.
 
 #### Declare DESIGN COMMITMENT (mandatory — before first line of code)
 
@@ -193,6 +239,12 @@ DESIGN COMMITMENT: [Style Name]
 8. `prefers-reduced-motion` support mandatory
 
 ### Phase 3 — Validate
+
+```typescript
+Skill("superpowers:verification-before-completion"); // capture type-check + lint + visual gate evidence
+```
+
+Maestro auditor + UX/visual/code-quality checks below must all be backed by captured output (snapshot path, gate exit code, viewport check). No "looks fine" without evidence.
 
 #### Maestro auditor (auto-rejection gates)
 
@@ -233,17 +285,21 @@ If ANY trigger is true → delete the implementation and restart:
 - [ ] Type-check passes
 - [ ] Lint passes
 
+#### Tail — request a review
+
+For L4+ design surfaces (new page, full page redesign), invoke `Skill("superpowers:requesting-code-review")` to capture BASE/HEAD SHAs + scope + reviewer focus (accessibility, design system fidelity, performance) before handing off to `/verify` Phase 5. Skip for L3 single-component edits — `/verify` will handle the review pass.
+
 ---
 
 ## Anti-patterns
 
 | Don't | Do |
 |---|---|
-| Skip Phase 0 for L3+ | Always run explorer + ui-ux-pro-max first |
+| Skip Phase 0 for L3+ | Always run explorer + gpus-theme first |
 | Run frontend-specialist in background | Foreground only (background silently denies Write/Edit) |
-| Skip Skill("frontend-design") | Invoke before any code in frontend-specialist |
+| Skip Skill("frontend-design:frontend-design") | Invoke before any code in frontend-specialist |
 | Write code before DESIGN COMMITMENT | Declare geometry/typography/palette/effects first |
-| Use ui-ux-pro-max in frontend-specialist | Phase 0 (explorer) only |
+| Use gpus-theme in frontend-specialist | Phase 0 (explorer) only |
 | Hardcode colors | Semantic design tokens |
 | Custom modal from scratch | Design system Dialog primitive |
 | Nested ScrollArea | Single at layout level |

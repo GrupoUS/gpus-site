@@ -3,10 +3,50 @@
   "project": {
     "name": "gpus-site",
     "displayName": "Grupo US — Site Institucional",
+    "purpose": "Static marketing site for Grupo US.",
     "stack": "astro-static-tailwindv4",
+    "stackSummary": "Astro 6 (static-only) · Bun · Tailwind CSS v4 · React 19 (islands; minimal) · Railway · Lucide React · Playfair Display + Inter",
+    "domain": "grupous.com.br",
     "stagingUrl": "http://localhost:4321",
     "productionUrl": "https://grupous.com.br",
-    "locale": "pt-BR"
+    "locale": "pt-BR",
+    "brand": "grupo-us"
+  },
+  "skills": {
+    "brand": "grupo-us",
+    "theme": "gpus-theme",
+    "stack": "astro"
+  },
+  "cardinals": {
+    "renderMode": "static-only",
+    "spa": "forbidden",
+    "ssrAdapter": "forbidden",
+    "contentSsot": "src/content/",
+    "themeSsot": "src/styles/global.css",
+    "iconLibrary": "lucide-react"
+  },
+  "whatsapp": {
+    "enabled": true,
+    "sdrName": "Laura",
+    "sdrE164": "+556294705081",
+    "messagePrefix": "Olá, Laura!",
+    "ssotFile": "src/lib/whatsapp.ts"
+  },
+  "commit": {
+    "scopes": [
+      "site",
+      "theme",
+      "content",
+      "seo",
+      "astro",
+      "redirects",
+      "config",
+      "scripts",
+      ".claude",
+      "deps",
+      "a11y",
+      "perf"
+    ]
   },
   "paths": {
     "backendRoot": "",
@@ -14,7 +54,10 @@
     "schemaRoot": "",
     "stylesRoot": "src/styles",
     "componentsRoot": "src/components",
-    "libRoot": "src/lib"
+    "libRoot": "src/lib",
+    "contentRoot": "src/content",
+    "pagesRoot": "src/pages",
+    "layoutsRoot": "src/layouts"
   },
   "tooling": {
     "packageManager": "bun",

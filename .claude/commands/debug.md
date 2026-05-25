@@ -11,7 +11,7 @@ workflow_type: routing
 > ```
 > /debug                    # default — triage + investigate + fix
 > /debug audit              # full-stack audit (9 dimensions, 4 parallel agents)
-> /debug frontend           # static + Playwright E2E
+> /debug frontend           # static + agent-browser E2E
 > /debug backend            # API/service/handler/middleware
 > /debug auth-db            # auth, permissions, tenant isolation, RLS
 > /debug recover            # failure recovery (after 2+ failed attempts)
@@ -37,6 +37,10 @@ NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST.
 
 If investigation isn't complete, you cannot propose corrections.
 
+### Debugger skill loading (mandatory)
+
+This repository ships `.claude/skills/debugger/SKILL.md` alongside this command. **Project definitions override** Claude Code’s bundled `/debug` prompt-skill when names collide ([skills precedence](https://docs.anthropic.com/en/docs/claude-code/skills)). Before proposing fixes, load the **debugger** skill body for pack selection, **Phase 0–7** (Pre-flight → Diagnose & Reproduce → Parallel Research → Hypothesis Selection → Instrument & Fix (Superpowers chain) → Verification Gate → Evidence Confirmation → Cleanup & Post-mortem), NEVER constraints, and the References index (`references/diagnose.md`, `references/browser-setup.md`, `references/anti-patterns.md`, `references/pack-guides.md`, …). Use **this file** for mode-specific orchestration (`audit`, `frontend`, `recover`, …). Do not paste long catalogs here — defer to the skill’s References table.
+
 ---
 
 ## 0. Mode dispatch
@@ -56,11 +60,17 @@ Modes share the **§ 0.1 Setup** preamble.
 
 ### 0.1 Setup (every mode)
 
+Load the superpowers method layer **before** the NeonDash debugger knowledge layer (per `_shared.md` § 0.5 + § 12):
+
 ```typescript
-Skill("debugger"); // Iron Law + 4-phase methodology
+Skill("superpowers:using-superpowers");        // meta — announce-before-action
+Skill("superpowers:systematic-debugging");     // 4-phase root-cause discipline (observe → hypothesize → test → conclude)
+Skill("debugger");                              // NeonDash anti-pattern catalog, packs, references
 ```
 
-Read `.claude/config.json` (paths, tooling, gates). Project anti-patterns + bug catalog live in `.claude/rules/stability.md § Anti-patterns + Debug triage`.
+Chain rationale: `systematic-debugging` sets the investigation method (no fix without root cause); `debugger` provides project-specific bug patterns + Negative Constraints. Both load — they do not conflict.
+
+Read `.claude/config.json` (paths, tooling, gates, `${rulesDir}`). For project-specific anti-patterns, load via `Skill("debugger")` → `references/anti-patterns.md` (already loaded by debugger skill above).
 
 Run baseline quality gates from `_shared.md` § 1 using `${tooling.typeChecker}` / `${tooling.linter}` / `${tooling.testRunner}`.
 
@@ -91,8 +101,9 @@ Detect error category in <10s:
 | `connection timeout` / `ECONNREFUSED` | Infra/DB | Check connection string + pool |
 
 **Known-pattern shortcut.** Before investigating, check:
-- `.claude/rules/stability.md` (Checklist A-L + Anti-patterns + Debug triage)
+- `.claude/rules/stability.md` (Checklist A-L)
 - Tier 2 domain rules (auto-loaded via routing matrix)
+- `Skill("debugger")` → `references/anti-patterns.md` (project anti-patterns)
 - Recent breaking changes in dependencies (Tavily search if needed)
 
 If error matches a known pattern → apply documented fix directly (L1-L2), no agents.
@@ -107,7 +118,7 @@ Per `_shared.md` § 2.
 
 **L3 — Single agent.** Spawn 1 `debugger` agent (foreground): investigate root cause, return findings table with file:line. DO NOT FIX — report only.
 
-**L4-L5 — Parallel agents.** Spawn in same message:
+**L4-L5 — Parallel agents.** Before spawning, invoke `Skill("superpowers:dispatching-parallel-agents")` to enforce distinct scope + shared return contract. Spawn in same message:
 
 ```
 code-archaeologist (explorer, background):
@@ -118,7 +129,7 @@ code-archaeologist (explorer, background):
 
 regression-hunter (explorer, background):
   - Read .claude/skills/debugger/references/methodology.md (or pack-guides.md)
-  - Cross-check `.claude/rules/stability.md` (anti-patterns + debug triage)
+  - Cross-check stability rules + Skill("debugger") references/anti-patterns.md
   - If MATCH: return pattern + root cause + fix guidance
   - If NO MATCH: top-3 hypotheses with evidence for/against. DO NOT FIX.
 ```
@@ -159,9 +170,12 @@ If agents return contradictory findings or no definitive file:line → escalate 
 
 ### 1.6 Implement fix
 
+**Hard gate (L3+):** Before writing any patch, invoke `Skill("superpowers:test-driven-development")`. The skill requires a **failing reproduction test** that demonstrates the bug. No patch lands without a red test first. L1-L2 trivial fixes (single-line typo, exact-pattern from `references/anti-patterns.md`) are exempt — note the exemption explicitly.
+
 - Fix the SOURCE, not the symptom
 - NEVER "while I'm here…" — scope creep kills debugging
 - Run quality gates AFTER EACH fix
+- After gates pass, invoke `Skill("superpowers:verification-before-completion")` to capture stdout + exit code as evidence before closing the fix.
 
 **Sequential mode (default — same file/flow):** ONE fix at a time.
 
@@ -224,10 +238,10 @@ Per `_shared.md` § 1 using config tooling. Also collect metrics:
 
 ```bash
 # Total source files (adapt extensions per project)
-find ${PATHS_BACKEND_ROOT} ${PATHS_FRONTEND_ROOT} -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.astro" -o -name "*.py" -o -name "*.go" \) | wc -l
+find ${paths.backendRoot} ${paths.frontendRoot} -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.astro" -o -name "*.py" -o -name "*.go" \) | wc -l
 
 # Test files
-find ${PATHS_BACKEND_ROOT} ${PATHS_FRONTEND_ROOT} -type f \( -name "*.test.*" -o -name "*.spec.*" \) | wc -l
+find ${paths.backendRoot} ${paths.frontendRoot} -type f \( -name "*.test.*" -o -name "*.spec.*" \) | wc -l
 
 git log --oneline -20
 ```
@@ -245,7 +259,7 @@ Use prompts verbatim from `templates/audit-agent-prompts.md`:
 - **Agent 3** — `debugger` — Documentation + Missing Flows (D4-D5)
 - **Agent 4** — `frontend-specialist` — UX + Tests/CI (D6-D7)
 
-All `run_in_background: true`, same message. Replace `${PATHS_*}` in prompts from config before spawning.
+All `run_in_background: true`, same message. Resolve `${paths.*}` placeholders from config before spawning.
 
 ### 2.5 While agents run
 
@@ -265,7 +279,7 @@ Before § 2.4, run `codex adversarial-review --scope branch` for an independent 
 
 ---
 
-## 3. Frontend mode — `/debug frontend` (static + Playwright E2E)
+## 3. Frontend mode — `/debug frontend` (static + agent-browser E2E)
 
 **Iron Laws (frontend):**
 ```
@@ -305,14 +319,14 @@ Agent 2 (debugger, background):
 
 ```
 Agent 1 (explorer, background):
-  - Map all routes recursively under ${PATHS_FRONTEND_ROOT}
+  - Map all routes recursively under ${paths.frontendRoot}
   - List: path, component, functionality
   - Identify critical user flows (auth, CRUD, integrations, settings)
   - List expected interactions per flow
   - Return: route table + prioritized journeys
 
 Agent 2 (explorer, background):
-  - Map existing E2E coverage (look for e2e/, tests/e2e, playwright/)
+  - Map existing E2E coverage (look for e2e/, tests/e2e/, playwright/, agent-browser/ — accept any historical layout)
   - For each test: routes covered, assertions, interactions tested
   - Cross-reference; identify routes WITHOUT coverage
   - Return: coverage table (route | tested? | file | quality) + gaps list
@@ -320,47 +334,75 @@ Agent 2 (explorer, background):
 
 ### 3.5 Browser session
 
+Browser stack: `vercel-labs/agent-browser` CLI invoked via Bash. Full reference: `.claude/skills/debugger/references/browser-setup.md`.
+
+Pre-flight (mandatory): `bunx agent-browser --version`. If it fails → STOP, do not silently fall back.
+
 Resolve target URL: `${project.stagingUrl}` from config (override via `/debug frontend url=http://...`).
 
-```
-mcp__playwright__browser_navigate({ url: TARGET_URL })
-mcp__playwright__browser_snapshot()             # accessibility baseline (~120 tokens)
-mcp__playwright__browser_console_messages()
+```bash
+bunx agent-browser open "$TARGET_URL"
+bunx agent-browser snapshot -i -c              # accessibility baseline, interactive + compact
+bunx agent-browser console                     # any error-level messages collected since open
 ```
 
 ### 3.6 Journey loop (per critical flow)
 
-```
-1. Navigate
-2. Snapshot (ALWAYS before interaction — refs go stale)
-3. Interact using refs from snapshot (click / fill / select)
-4. Wait: browser_wait_for({ text: "..." })
-5. Capture: browser_snapshot()  # default 120 tokens
-   browser_take_screenshot()    # only for visual regression (1500 tokens)
-6. Verify: browser_console_messages() + browser_network_requests() (catch 4xx/5xx)
-7. If issue:
-   a) Document: snapshot + console_messages
-   b) Write unit reproduction test → must FAIL (confirms repro)
-   c) Fix in source
-   d) Re-run unit test → must PASS
-   e) Re-test E2E: navigate → snapshot → interact → snapshot
-   f) Run gates (type-check + lint)
+```bash
+# 1. Navigate (or just continue in the existing session)
+bunx agent-browser open "$URL"
+
+# 2. Snapshot (ALWAYS before any ref-based interaction — refs go stale on DOM mutation)
+bunx agent-browser snapshot -i -c
+
+# 3. Interact using refs from snapshot
+bunx agent-browser click @e3
+bunx agent-browser fill  @e4 "value"
+bunx agent-browser select @e5 "option"
+
+# 4. Wait
+bunx agent-browser wait --text "Success"
+bunx agent-browser wait --url "**/dashboard"
+bunx agent-browser wait --load networkidle
+
+# 5. Capture
+bunx agent-browser snapshot -i -c
+bunx agent-browser screenshot ".claude/logs/<flow>-step.png"   # only for visual regression
+bunx agent-browser screenshot ".claude/logs/<flow>-step.png" --annotate  # numbered labels
+
+# 6. Verify
+bunx agent-browser console                     # error-level → FAIL
+bunx agent-browser errors                      # uncaught page errors → FAIL
+bunx agent-browser network requests --filter "api-staging"  # 4xx/5xx → FAIL
+
+# 7. If issue:
+#   a) Document: snapshot + console + errors + network output
+#   b) Write unit reproduction test → must FAIL (confirms repro)
+#   c) Fix in source
+#   d) Re-run unit test → must PASS
+#   e) Re-test E2E: navigate → snapshot → interact → snapshot
+#   f) Run gates (type-check + lint)
 ```
 
 ### 3.7 Viewports
 
+```bash
+bunx agent-browser set viewport 1280 720       # desktop
+bunx agent-browser set viewport 375 667        # mobile
+bunx agent-browser set viewport 768 1024       # tablet (optional)
+# Or full device emulation:
+bunx agent-browser set device "iPhone 15 Pro"
 ```
-Desktop: browser_resize({ width: 1280, height: 720 })
-Mobile:  browser_resize({ width: 375,  height: 667 })
-Tablet:  browser_resize({ width: 768,  height: 1024 })  # optional
-```
+
+There is no bare `resize` subcommand — always `set viewport`.
 
 ### 3.8 Per-step verification
 
 - [ ] Element exists/visible (snapshot)
 - [ ] Interaction produces expected state (snapshot)
-- [ ] No JS errors (console_messages)
-- [ ] No failed requests (network_requests)
+- [ ] No JS errors (`bunx agent-browser console`)
+- [ ] No uncaught page errors (`bunx agent-browser errors`)
+- [ ] No failed app requests (`bunx agent-browser network requests`)
 - [ ] Loading states appear/disappear
 - [ ] Visual feedback after actions (toast/alert)
 - [ ] Navigation returns to correct state
@@ -392,8 +434,8 @@ Date: {date} | Target: {url} | Viewports: Desktop, Mobile
 
 ### 3.10 Cleanup
 
-```
-mcp__playwright__browser_close()
+```bash
+bunx agent-browser close --all
 ```
 
 Run final quality gates per `_shared.md` § 1.
@@ -410,7 +452,7 @@ Run § 0.1, then default flow (§ 1) with focus on:
 
 Spawn `code-archaeologist` + `regression-hunter` (background).
 
-Loaded rules: `.claude/rules/frontend.md` + `.claude/rules/stability.md` (this project has no API/backend; use frontend rules + stability for any handler-shaped task).
+Loaded rules: `.claude/rules/backend.md` + `.claude/rules/integrations.md` + `.claude/rules/stability.md`. Plus `.claude/rules/routing-supplements.md` if present.
 
 ---
 
@@ -424,13 +466,15 @@ Run § 0.1, then default flow (§ 1) with focus on:
 
 Spawn `code-archaeologist` + `regression-hunter` + `db-state-inspector` (background).
 
-Loaded rules: `.claude/rules/stability.md` (this project has no DB/auth; mode mostly N/A — fall back to stability checklist).
+Loaded rules: `.claude/rules/database.md` + `.claude/rules/backend.md` + `.claude/rules/stability.md`. Plus `Skill("debugger")` → `references/anti-patterns.md` (RLS specifics).
 
 ---
 
 ## 6. Recover mode — `/debug recover` (failure recovery)
 
 > Trigger: 2+ failed fix attempts on same hypothesis · quality gate fails 2× · user signals "this isn't working" · confidence < 3 after multi-file investigation.
+
+If the recovery was triggered by code-review feedback (codex review P0/P1, evaluator REVISION_REQUIRED, user pointing to a specific reviewer note), invoke `Skill("superpowers:receiving-code-review")` **before** reading the recovery protocol. The skill enforces technical evaluation of feedback (implement / clarify / pushback) instead of blind agreement.
 
 Load `.claude/templates/recovery-protocol.md` and execute its 5 steps verbatim:
 
