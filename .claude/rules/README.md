@@ -1,57 +1,49 @@
-# Rules — Tier 2 Universal Guardrails
+# Rules — Tier 2 Guardrails (gpus-site)
 
-> Universal do/don't tier-2 rules. Portable to any project.
-> Project-specific values resolve via `.claude/config.json` + tech-stack skills + project skills.
-> Loaded on demand by `/prime` per the routing matrix in `.claude/CLAUDE.md`.
+> Tier-2 rules for **gpus-site** (Astro 6 + React 19 + Tailwind v4 + Bun + static-only MPA, deploy Railway).
+> Universal substance survives portability; project-specific values resolve from `.claude/config.json` + `Skill('astro')` + `Skill('gpus-theme')` + `Skill('grupo-us')`.
+> Loaded on demand by `/prime` per routing matrix in `.claude/CLAUDE.md`, plus auto-load by `globs:` frontmatter when matching files are read.
 
 ## Files
 
 | File | Scope |
 |---|---|
-| `frontend.md` | Component placement, hydration philosophy, content-data SSOT, forms, external surfaces, performance budget, a11y plumbing |
-| `DESIGN.md` | Color tokens, typography, components spec, layout, border radius, iconography, motion, imagery, depth, focus |
-| `stability.md` | Universal A–L checklist, render-mode invariants, performance gates (CWV), smoke template, anti-patterns, debug triage, escalation triggers |
-| `seo.md` | Locale, routes, sitemap, robots, OG/Twitter cards, JSON-LD, CWV thresholds, AI citation (GEO) |
+| `frontend.md` | Component placement, Astro `client:*` routing, Content Collections SSOT, forms, external surfaces, perf budget, a11y, redirect tri-sync |
+| `DESIGN.md` | Color tokens, typography, components spec, layout, radius, iconography, motion, imagery, depth, focus |
+| `stability.md` | A–L checklist, render-mode invariants, CWV gates, smoke template, anti-patterns, debug triage |
+| `seo.md` | pt-BR locale, routes, `@astrojs/sitemap` config, robots, OG/Twitter, JSON-LD, CWV, AI citation (GEO) |
+| `astro.md` | Astro static-only invariants, hydration directive table, Content Collections SSOT, redirect tri-sync, View Transitions opt-in, `client:only` ban, `Layout.astro` contracts |
+| `commit.md` | Conventional Commits + scopes, lefthook pre-commit + manual gate checklist, protected files, branch protection |
+| `mcp.md` | MCP server inventory, terminal discipline (POSIX + Bun-only), PAUSE-THINK-HYPOTHESIZE-EXECUTE debug loop |
+| `commands.md` | 11 slash commands + invocation matrix, skill phase ordering, agent ↔ skill pairings |
 
-## How rules are loaded
+## How rules load
 
-1. `/prime` (auto / backend / frontend / fullstack) reads `.claude/CLAUDE.md` § routing matrix
-2. Routing matrix says "task type X loads rule Y"
-3. Loader reads `.claude/rules/Y.md`
-4. Stops once minimum-viable context loaded
+1. `/prime [auto|frontend]` reads `.claude/CLAUDE.md § Routing matrix`.
+2. Routing matrix maps task signal → rule file(s).
+3. Rules with `globs:` / `paths:` frontmatter auto-load when Claude Code reads files matching the glob.
+4. Stops at minimum-viable context.
 
-## Cross-project portability
+## Stack signals (this project)
 
-Drop `.claude/rules/` into any Claude Code project. Universal substance survives:
-
-- Universal frontend do/don't (hydration, content SSOT, forms, perf, a11y)
-- Universal design do/don't (color, typography, motion, imagery, focus)
-- Universal stability checklist + smoke template
-- Universal SEO + GEO patterns
-
-Stack-specific syntax (Astro `client:*`, Next.js Server Components, SvelteKit `+page.svelte`, Tailwind v4 `@theme`) lives in tech-stack skills. Project values (canonical URL, brand voice, design tokens) live in project skills + `.claude/config.json`.
-
-## Stack signals
-
-When a task touches stack-specific patterns, the rule points to the matching tech-stack skill. Claude auto-loads via skill description match (Anthropic skills auto-trigger model). Common stacks:
-
-| Stack | Skill |
+| Surface | Skill / Rule |
 |---|---|
-| Astro (any version) | `astro` |
-| React / React 19 | `react` (or composite stack skill) |
-| Next.js (Pages / App Router) | `nextjs` |
-| Remix | `remix` |
-| SvelteKit | `sveltekit` |
-| Vite + vanilla | `vite` |
+| `*.astro`, Content Collections, `client:*`, `astro.config.mjs`, View Transitions | `Skill('astro')` + `.claude/rules/astro.md` |
+| React 19 islands (`*.tsx` inside `src/components`) | `Skill('astro')` (React-in-Astro section) |
+| Tailwind v4 `@theme` in `src/styles/global.css` | `Skill('gpus-theme')` + `Skill('astro')` |
 
-## Project signals
+## Project signals (this project)
 
-When a task touches project-specific tokens / brand voice / SSOT helpers, the rule points to the matching project skill. Auto-triggers via skill description match. Examples:
-
-- `<brand>-theme` skill — color palette + token canon
-- `<brand>` skill — brand voice + product canon + WhatsApp / SDR contact SSOT
-- Domain skills (e.g., `<product>-rules` overlay) — repo-specific conventions
+| Surface | Skill |
+|---|---|
+| Navy/Gold HSL token canon + semantic token map | `Skill('gpus-theme')` |
+| Brand voice + product canon + sales journey + CTAs | `Skill('grupo-us')` |
+| WhatsApp Laura SSOT (`WHATSAPP_SDR_E164`, "Olá, Laura!" prefix) | `Skill('grupo-us')` → `references/whatsapp-ssot.md` |
 
 ## Cardinal rules
 
-Per-project cardinal rules (the 8 / 12 / N non-negotiable invariants) live in `.claude/CLAUDE.md`. Rules in this folder support those cardinals universally — they don't override or duplicate them.
+Non-negotiable invariants (8 cardinals) live in **`.claude/CLAUDE.md § Cardinal rules`** (Bun-only, branch protection `dev-test → PR`, no SPA, no SSR override, content via `getCollection`, WhatsApp SSOT, no hardcoded hex outside `@theme`, no layout-property animation). Rules here support those cardinals — never override or duplicate.
+
+## Cross-project portability
+
+Universal substance (`frontend.md`, `DESIGN.md`, `stability.md`, `seo.md`) survives drop-in into another project — swap `gpus-theme` / `grupo-us` skill names + edit `.claude/config.json` (`project.*`, `paths.*`, `tooling.*`, `gates.*`). Project-specific rules (`astro.md`, `commit.md`, `mcp.md`, `commands.md`) reference gpus-site invariants and need adaptation per repo.

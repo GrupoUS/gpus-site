@@ -154,6 +154,13 @@ Codebase search (`Grep` / `Read` / `Glob`) is the **fallback for internal questi
 - `.claude/rules/stability.md` — universal A–L checklist + render-mode invariants + CWV gates + smoke template + anti-patterns + debug triage.
 - `.claude/rules/seo.md` — universal locale, routes, sitemap, robots, OG/Twitter, JSON-LD shape, CWV thresholds, AI citation (GEO).
 
+### Project-specific Tier-2 rules (gpus-site)
+
+- `.claude/rules/astro.md` — Astro static-only invariants, hydration directive table, Content Collections SSOT, redirect tri-sync, `Layout.astro` contracts, View Transitions opt-in.
+- `.claude/rules/commit.md` — Conventional Commits + scopes, lefthook pre-commit + manual gate checklist (lint → astro check → build → external URLs → hex scan → WhatsApp scan → content drift → console.log), protected files, branch protection pointer.
+- `.claude/rules/mcp.md` — MCP server inventory + terminal discipline (POSIX, Bun-only, timeout, no `--no-verify`) + PAUSE-THINK-HYPOTHESIZE-EXECUTE debug loop.
+- `.claude/rules/commands.md` — 11 slash commands + skill phase ordering + agent ↔ skill pairings + stopping conditions quick-ref.
+
 ### Tech-stack skills (auto-trigger via skill description match)
 
 - `.claude/skills/astro/` — Astro framework patterns. **Project overlay:** `references/gpus-overlay.md` (render-mode invariants, redirect tri-sync, hydration project rules, Layout.astro contracts, smoke commands).
