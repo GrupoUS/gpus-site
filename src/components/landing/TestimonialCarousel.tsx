@@ -50,7 +50,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 			<footer className="mt-5 border-t border-gold/10 pt-4">
 				<cite className="flex items-center gap-3 not-italic">
 					<div
-						className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gold/30 to-gold/10 text-sm font-bold text-gold"
+						className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-gold/30 to-gold/10 text-sm font-bold text-gold"
 						aria-hidden="true"
 					>
 						{initials}

@@ -1,3 +1,4 @@
+/* stylelint-disable at-rule-no-unknown -- Tailwind v4 directives (@theme, @utility) */
 @import "tailwindcss";
 
 /* ===== Grupo US — Design System ===== */
