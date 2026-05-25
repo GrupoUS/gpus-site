@@ -1,8 +1,9 @@
-# Grupo US — AGENTS.md
+# AGENTS.md
 
 > Behavioral + orchestrator guide for AI agents. Follows the [agents.md](https://agents.md/) spec.
 > Read by Claude Code, Cursor, Aider, Codex, Continue, and any agents.md-aware tool.
-> Authoritative rules live in `.claude/CLAUDE.md` (cardinals, routing, stopping conditions) and `.claude/rules/` (universal Tier-2). Never duplicate them here.
+> Authoritative rules live in `.claude/CLAUDE.md` (cardinals, routing, stopping conditions) and `.claude/rules/` (Tier-2). Never duplicate them here.
+> Project identity + skill names + cardinals values: `.claude/config.json` (see `project.*`, `skills.*`, `cardinals.*`).
 
 ---
 
@@ -12,7 +13,7 @@
 |---|---|---|
 | 1 (always) | this `AGENTS.md` + `.claude/CLAUDE.md` | session start |
 | 2 (on demand) | `.claude/rules/{frontend,DESIGN,stability,seo,astro,commit,mcp,commands}.md` | routing matrix in `.claude/CLAUDE.md` + `globs:` frontmatter auto-load |
-| 3 (skills + refs) | `.claude/skills/*/SKILL.md` + `references/` | skill auto-trigger (description match) |
+| 3 (skills + refs) | `.claude/skills/*/SKILL.md` + `references/` (and per-project `references/values/`) | skill auto-trigger (description match) |
 | Subdir | `<path>/AGENTS.md` | only when editing files under that path |
 
 **Combined Tier 1 budget:** < 500 lines. If a line in Tier 1 doesn't change behavior, drop it. Subdirectory `AGENTS.md` files **override or supplement** this root file when editing inside that subtree — always check before acting on a scoped task.
@@ -57,7 +58,7 @@
 | `/design [task]` | New UI page or component |
 | `/implement [plan-path]` | Execute approved plan |
 | `/debug [audit\|frontend\|backend\|auth-db\|recover]` | Any error, crash, regression |
-| `/perf [build\|db]` | Performance issue (default = runtime PSI) |
+| `/perf [build\|db]` | Performance issue (default = runtime PSI). `db` mode skipped when `config.json::tooling.database` is empty. |
 | `/verify [quick\|spec-only\|paranoid]` | Post-implementation gate |
 | `/evolve [auto\|handoff]` | Post-task learning capture / autoresearch loop |
 | `/delegate` | Hand task to specialist (7-section protocol) |
@@ -90,23 +91,23 @@ Stopping conditions detail in `.claude/CLAUDE.md § Stopping conditions`. Quick:
 
 Invoke via `Skill("<name>")` BEFORE any domain-specific action — even 1% match. Order: process skills first, domain skills second, implementation skills last.
 
-| Phase | Skills |
+| Phase | Skills (resolved from `config.json::skills`) |
 |---|---|
 | Process (preload via agent `skills:` frontmatter) | `senior-prompt-engineer`, `planning`, `evolution-core` |
-| Tech-stack (auto-trigger via description match) | `astro` |
-| Project | `grupo-us`, `gpus-theme` |
+| Tech-stack (auto-trigger via description match) | `config.json::skills.stack` (currently `astro`) |
+| Project (brand SSOT) | `config.json::skills.brand` + `config.json::skills.theme` (currently `grupo-us`, `gpus-theme`) |
 | Implementation | `ui-ux-pro-max`, `frontend-design`, `skill-creator`, `performance-optimization` |
 
 Agent ↔ skill preload assignments → `senior-prompt-engineer/SKILL.md § 8`.
 
 ### MCP servers (always use `serverIdentifier`)
 
-Read each tool's schema before calling. Prefer MCP over CLI / web guess. Don't use external MCP for purely local ops (git, `bun run build`, repo file reads). Don't introduce backend / DB / payments servers without explicit product requirement.
+Read each tool's schema before calling. Prefer MCP over CLI / web guess. Don't use external MCP for purely local ops (git, build, repo file reads). **Don't introduce MCPs for layers this project doesn't have** (e.g., DB/payments MCP when `config.json::tooling.database` is empty).
 
 | `serverIdentifier` | Use |
 |---|---|
 | `plugin-tavily-tavily` | Web search, URL extract, citations |
-| `plugin-compound-engineering-context7` | Library / framework docs (Astro, Tailwind v4, React 19, etc.) |
+| `plugin-compound-engineering-context7` | Library / framework docs (current stack — see `config.json::project.stackSummary`) |
 | `cursor-ide-browser` | UI verification (lock → act → unlock) |
 | `user-shadcn` | shadcn/ui component patterns |
 | `user-sequentialthinking` | Multi-step reasoning for L4+ ambiguous / high-risk problems |
@@ -118,7 +119,7 @@ Read each tool's schema before calling. Prefer MCP over CLI / web guess. Don't u
 - Non-interactive mandatory: `git commit -m "..."` (never editor), `git log -n N`, `gh --yes`. Prefix `GIT_TERMINAL_PROMPT=0` when git auth might prompt.
 - **Never** pipe `2>&1 | tail/head/grep` to capture output — breaks exit-code detection. Use `; echo "EXIT=$?"` or filter post-run.
 - Stuck command (running > 3× expected): check status; terminate + re-run with corrected non-interactive flags.
-- **Bun only** (`bun install`, `bun run`, `bunx`). Never `npm` / `yarn` / `pnpm`.
+- **Project package manager only** — `config.json::tooling.packageManager` (currently `bun` → `bun install` / `bun run` / `bunx`). Never another PM.
 - Never skip pre-commit hooks (`--no-verify`) unless explicitly requested.
 
 ### Debug on error
@@ -134,11 +135,11 @@ Two consecutive fix attempts on the same hypothesis fail → invoke `/debug reco
 When guidance overlaps, lower number wins:
 
 1. Subdirectory `AGENTS.md` (when editing files under that subtree)
-2. `.claude/rules/*.md` (Tier 2 universal rules — auto-loaded by routing matrix)
+2. `.claude/rules/*.md` (Tier 2 — auto-loaded by routing matrix + `globs:`)
 3. `.claude/CLAUDE.md` (cardinal rules + routing matrix + stopping conditions)
 4. Root `AGENTS.md` (this file — behavioral + orchestrator)
-5. Tech-stack skills (`astro`, etc.) — framework patterns + project overlays
-6. Project skills (`grupo-us`, `gpus-theme`) — brand SSOT, helpers, voice
+5. Tech-stack skills (`config.json::skills.stack`) — framework patterns + project overlays
+6. Brand canon skills (`config.json::skills.brand` + `config.json::skills.theme`) — brand SSOT, helpers, voice
 7. `docs/` (Tier 3 reference, on demand)
 
 ---
@@ -178,7 +179,7 @@ None today (`src/` tree is small enough that root rules apply uniformly). Add wh
 
 ## Commit format
 
-Conventional Commits + lefthook pre-commit + manual gate checklist. Full spec: `.claude/rules/commit.md`.
+Conventional Commits + lefthook pre-commit + manual gate checklist. Scopes from `config.json::commit.scopes`. Full spec: `.claude/rules/commit.md`.
 
 ---
 
@@ -188,26 +189,23 @@ Conventional Commits + lefthook pre-commit + manual gate checklist. Full spec: `
 |---|---|
 | Cardinal rules (8) + routing matrix + stopping conditions + intent classification | `.claude/CLAUDE.md` |
 | Universal frontend / design / stability / SEO rules | `.claude/rules/{frontend,DESIGN,stability,seo}.md` |
-| Astro static-only invariants + redirect tri-sync + `client:*` routing + Content Collections SSOT + `Layout.astro` contracts | `.claude/rules/astro.md` (overlay) + `Skill('astro')` (framework deep-dive, `references/gpus-overlay.md`) |
-| Conventional Commits + lefthook + manual gate checklist + protected files | `.claude/rules/commit.md` |
-| MCP servers + terminal discipline + PAUSE-THINK-HYPOTHESIZE-EXECUTE debug loop | `.claude/rules/mcp.md` |
-| 11 slash commands + skill phase ordering + agent ↔ skill pairings | `.claude/rules/commands.md` |
-| WhatsApp SDR Laura SSOT (`WHATSAPP_SDR_E164`, `whatsappUrlWithText`, `isWhatsAppDestination`, "Olá, Laura!" prefix) | `Skill('grupo-us')` → `references/whatsapp-ssot.md` |
-| Theme tokens canon (HSL Navy/Gold, Tailwind v4 `@theme` syntax) | `Skill('gpus-theme')` |
-| Brand voice / products / journey / CTAs | `Skill('grupo-us')` |
-| Project paths / tooling / gates / protected files | `.claude/config.json` |
+| Stack invariants (current: Astro static-only) + redirect tri-sync + `client:*` routing + Content Collections SSOT + `Layout.astro` contracts | `.claude/rules/astro.md` (overlay) + `Skill('${skills.stack}')` (framework deep-dive); per-project values in `${skills.stack}/references/values/<project>-overlay.md` |
+| Conventional Commits + lefthook + manual gate checklist + protected files | `.claude/rules/commit.md` (scopes from `config.json::commit.scopes`) |
+| MCP servers + terminal discipline + PAUSE-THINK-HYPOTHESIZE-EXECUTE debug loop | `.claude/rules/mcp.md` (PM from `config.json::tooling.packageManager`) |
+| 11 slash commands + skill phase ordering + agent ↔ skill pairings | `.claude/rules/commands.md` (skill names from `config.json::skills`) |
+| WhatsApp SDR SSOT mechanic (URL builder, helper signatures, anti-patterns) | `Skill('${skills.brand}')` → `references/whatsapp-ssot.md` (values from `config.json::whatsapp`) |
+| Theme tokens canon (current: HSL Navy/Gold + Playfair/Inter) | `Skill('${skills.theme}')` → `references/values/<project>-canon.md` |
+| Brand voice / products / journey / CTAs | `Skill('${skills.brand}')` → `references/values/<project>/` |
+| Project identity, paths, tooling, gates, protected files, cardinals values, WhatsApp config, commit scopes | `.claude/config.json` |
 | Multi-agent handoff schema + parallel-batch contract | `Skill('senior-prompt-engineer')` → `references/{agent-handoff-contracts,parallel-batch-contracts}.md` |
 | Autoresearch audit trail + per-area `compound.md` brand memory + `/evolve` run records | `evals/README.md` + `evals/site/<area>/compound.md` |
 | Chronological project decisions | `docs/learnings-log.md` |
+| Bootstrap new Grupo US project from this seed | `.claude/scaffolding/BOOTSTRAP.md` |
 
 If a topic is missing from the table above, add it to the matching rule file or skill and link from here — never paste content into this file.
 
 ---
 
-## Recent learnings (last 3)
+## Recent learnings
 
-- **2026-05-02** — AGENTS.md → behavioral + orchestrator (drop rule duplication, relocate learnings log).
-- **2026-05-02** — `.claude/rules/` generified; project SSOT migrated to `astro` + `grupo-us` skills.
-- **2026-05-01** — `senior-prompt-engineer` rewired as agent-orchestration SSOT (handoff schema, parallel-batch contract, coordinator max-iteration).
-
-Full chronological log → `docs/learnings-log.md`.
+Append-only log lives at `docs/learnings-log.md`. Don't inline chronological entries here — keeps Tier 1 budget tight.

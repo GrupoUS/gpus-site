@@ -5,7 +5,7 @@ Consultar este arquivo antes de afirmar datas, locais, preços ou prazos.
 ## Hierarquia (resumo)
 
 1. **Tom, IDs e roteiro de vendas / IA interna** → Manual Google Docs (`manual-resumo.md`).  
-2. **Copy e estrutura publicada no site institucional Astro** → `src/content/products/*.json` + [AGENTS.md](../../../../AGENTS.md) (sem hardcode fora das collections).  
+2. **Copy e estrutura publicada no site institucional Astro** → `src/content/products/*.json` + [AGENTS.md](../../../../../../AGENTS.md) (sem hardcode fora das collections).  
 3. **URLs e CTAs do funil ao vivo** → páginas em `https://drasacha.com.br/` e links nas próprias JSON (`cta.url`, `externalSiteUrl`).  
 4. **Cultura A.C.T.I.V.A.** → Notion (`cultura-activa.md`).
 
@@ -55,7 +55,7 @@ O manual traz valores **aproximados** e “sujeitos a alteração”.
 
 ## Site institucional vs vitrine Dra. Sacha
 
-- Deploy Astro (canonical configurado): `https://grupous.com.br` — ver [astro.config.mjs](../../../../astro.config.mjs) `site`.  
+- Deploy Astro (canonical configurado): `https://grupous.com.br` — ver [astro.config.mjs](../../../../../../astro.config.mjs) `site`.  
 - Vitrine de produtos e LPs: `https://drasacha.com.br/` e subdomínios citados no manual.
 
 **Decisão:** CTAs “oficiais” para o ecossistema podem divergir entre domínios; priorizar o **link da tarefa** (institucional vs drasacha) e o campo `cta.url` / `externalSiteUrl` do JSON quando a tarefa for o repo.
