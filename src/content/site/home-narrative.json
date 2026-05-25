@@ -1,0 +1,82 @@
+{
+	"title": "Grupo US — Formação e negócios em saúde estética avançada",
+	"description": "Quatro capítulos sobre como donos de clínica em saúde estética avançada constroem autoridade, agenda cheia e faturamento previsível sem se transformar em mais um profissional do mercado.",
+	"chapters": [
+		{
+			"id": "chapter-1",
+			"eyebrow": "Capítulo 01 — Promessa",
+			"headline": "Mais um curso não vai te transformar em referência.",
+			"subheadline": "O que falta no seu consultório raramente é técnica. É um sistema que conecta clínica, gestão e comunidade.",
+			"body": [
+				"Você já investiu em pós, em equipamento, em marketing — e ainda assim a agenda oscila, o paciente certo escapa e a operação depende de você estar presente o tempo todo.",
+				"Aqui o ponto de partida é outro: formar profissionais da saúde em referências. Técnica entrega resultado. Gestão entrega previsibilidade. Comunidade entrega permanência."
+			],
+			"visual": {
+				"type": "gradient",
+				"accent": "gold"
+			},
+			"kpis": [
+				{ "label": "donos de clínica formados", "value": "+1.200" },
+				{ "label": "anos de mentoria ativa", "value": "8" },
+				{ "label": "trilhas integradas", "value": "7" }
+			]
+		},
+		{
+			"id": "chapter-2",
+			"eyebrow": "Capítulo 02 — Método",
+			"headline": "Três pilares que sustentam clínicas que crescem com método.",
+			"subheadline": "Não é técnica de moda, agência de marketing ou consultoria solta. É um sistema continuado de execução.",
+			"body": [
+				"Excelência com entrega real: protocolos clínicos validados, do diagnóstico ao pós-tratamento, com previsibilidade de resultado para o paciente certo.",
+				"Olhar de dono: gestão financeira, comercial, pessoas e processos — para sair do operacional e voltar a tomar decisão de negócio.",
+				"Clareza é a nova gentileza: posicionamento, autoridade e narrativa que filtram o público que paga pelo seu trabalho."
+			],
+			"visual": {
+				"type": "glass",
+				"accent": "mixed"
+			}
+		},
+		{
+			"id": "chapter-3",
+			"eyebrow": "Capítulo 03 — Resultado",
+			"headline": "O ciclo se fecha quando a clínica para de depender de você.",
+			"subheadline": "Autoridade real é a clínica girar nos seus dias de folga — e ainda crescer.",
+			"body": [
+				"O sinal de que o método entrou na prática não é o pico de faturamento isolado. É a constância: agenda preenchida pelo paciente certo, ticket compatível com o valor entregue, equipe alinhada e tempo do dono devolvido para decisão estratégica.",
+				"É isso que separa o profissional que entrega procedimento do dono de clínica que constrói patrimônio."
+			],
+			"visual": {
+				"type": "image",
+				"src": "/images/sacha-about.webp",
+				"alt": "Profissional Grupo US conduzindo atendimento em clínica de saúde estética avançada",
+				"accent": "navy"
+			},
+			"quote": {
+				"text": "Eu parei de vender procedimento e comecei a vender resultado. Isso mudou quem entra na minha clínica e quanto eu cobro.",
+				"author": "Aluna Mentoria Black NEON",
+				"role": "Dona de clínica · Saúde Estética Avançada"
+			}
+		},
+		{
+			"id": "chapter-4",
+			"eyebrow": "Capítulo 04 — Quem ilumina",
+			"headline": "Dra. Sacha Gualberto e um time que vive o que ensina.",
+			"subheadline": "Nós iluminamos. Essa é a frase que abre o manual interno e fecha cada encontro.",
+			"body": [
+				"O Grupo US nasce da prática: clínica própria em operação, comunidade ativa de donos de negócio em saúde estética e uma estrutura que escala método sem terceirizar a alma.",
+				"Atrás dos programas estão Dra. Sacha (visão clínica e cultura), Prof. Maurício (estrutura financeira) e um time que sustenta a entrega — sem promessa milagrosa, sem fórmula importada."
+			],
+			"visual": {
+				"type": "image",
+				"src": "/images/sacha-hero.webp",
+				"alt": "Dra. Sacha Gualberto, fundadora do Grupo US",
+				"accent": "gold"
+			},
+			"ctaSlot": {
+				"label": "Conhecer os programas",
+				"url": "#programas",
+				"helperText": "Comece pela trilha completa abaixo."
+			}
+		}
+	]
+}

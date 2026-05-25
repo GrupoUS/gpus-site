@@ -134,4 +134,52 @@ const team = defineCollection({
 	}),
 });
 
-export const collections = { products, team };
+const site = defineCollection({
+	loader: glob({ pattern: "**/*.json", base: "src/content/site" }),
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		chapters: z
+			.array(
+				z.object({
+					id: z.string(),
+					eyebrow: z.string(),
+					headline: z.string(),
+					subheadline: z.string(),
+					body: z.array(z.string()).min(1),
+					visual: z.object({
+						type: z.enum(["aurora", "glass", "image", "gradient", "mesh"]),
+						src: z.string().optional(),
+						alt: z.string().optional(),
+						accent: z.enum(["gold", "navy", "mixed"]).optional(),
+					}),
+					kpis: z
+						.array(
+							z.object({
+								label: z.string(),
+								value: z.string(),
+							}),
+						)
+						.optional(),
+					quote: z
+						.object({
+							text: z.string(),
+							author: z.string(),
+							role: z.string(),
+						})
+						.optional(),
+					ctaSlot: z
+						.object({
+							label: z.string(),
+							url: z.string(),
+							whatsappMessage: z.string().optional(),
+							helperText: z.string().optional(),
+						})
+						.optional(),
+				}),
+			)
+			.min(1),
+	}),
+});
+
+export const collections = { products, team, site };

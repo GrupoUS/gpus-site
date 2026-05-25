@@ -1,15 +1,23 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
+import { NarrativeChapters } from "../components/cinematic/NarrativeChapters.tsx";
+import ProgramsCompare from "../components/cinematic/ProgramsCompare.astro";
 import AboutPreview from "../components/home/AboutPreview.astro";
 import CTASection from "../components/home/CTASection.astro";
 import Hero from "../components/home/Hero.astro";
 import { JourneyTimeline } from "../components/home/JourneyTimeline.tsx";
-import ProductsGrid from "../components/home/ProductsGrid.astro";
 import StatsSection from "../components/home/StatsSection.astro";
 import { TestimonialCarousel } from "../components/landing/TestimonialCarousel.tsx";
 import Layout from "../layouts/Layout.astro";
 
 const products = await getCollection("products");
+const narrative = await getEntry("site", "home-narrative");
+
+if (!narrative) {
+	throw new Error(
+		"Home narrative missing: expected src/content/site/home-narrative.json",
+	);
+}
 
 /* ── Journey Timeline data ── */
 const canonicalJourney = [
@@ -91,16 +99,35 @@ const homeTestimonials = products
 		})),
 	)
 	.slice(0, 9);
+
+/* ── JSON-LD ItemList for AI citation + rich results ── */
+const sortedProducts = [...products].sort(
+	(a, b) => a.data.order - b.data.order,
+);
+const programsItemList = {
+	"@context": "https://schema.org",
+	"@type": "ItemList",
+	name: "Programas do Grupo US",
+	itemListElement: sortedProducts.map((p, i) => ({
+		"@type": "ListItem",
+		position: i + 1,
+		url: p.data.externalSiteUrl ?? `https://grupous.com.br/${p.data.slug}`,
+		name: p.data.name,
+		description: p.data.tagline,
+	})),
+};
 ---
 
 <Layout
 	title="Grupo US — Formação e negócios em saúde estética avançada"
-	description="Cursos, pós, mentoria e comunidade com a Dra. Sacha Gualberto: trilha da entrada à escala de negócio. Veja os programas do ecossistema e o próximo passo para a sua carreira."
+	description="Quatro capítulos sobre como donos de clínica em saúde estética constroem autoridade, agenda cheia e faturamento previsível com método validado. Conheça os sete programas do ecossistema da Dra. Sacha Gualberto."
 	ogImage="/og/home.png"
 	activeNav="home"
+	jsonLd={programsItemList}
 >
 	<Hero />
-	<ProductsGrid />
+	<NarrativeChapters client:visible chapters={narrative.data.chapters} />
+	<ProgramsCompare />
 	<JourneyTimeline client:visible stages={stages} complementary={complementaryExperiences} />
 	<TestimonialCarousel client:visible testimonials={homeTestimonials} />
 	<StatsSection />

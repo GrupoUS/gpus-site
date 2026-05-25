@@ -1,0 +1,179 @@
+---
+import { getCollection } from "astro:content";
+import SectionHeading from "../shared/SectionHeading.astro";
+
+const products = (await getCollection("products")).sort(
+	(a, b) => a.data.order - b.data.order,
+);
+
+const arrowUpRightPath = '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>';
+const externalLinkPath =
+	'<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>';
+---
+
+<section id="programas" class="px-4 py-24 sm:px-6 lg:py-32" aria-labelledby="programs-compare-heading">
+	<div class="mx-auto max-w-7xl">
+		<div id="programs-compare-heading">
+			<SectionHeading
+				title="Trilha completa do ecossistema"
+				subtitle="Sete programas. Uma promessa: clínica que cresce com método. Compare entrada, perfil, pilares e próximo passo."
+				align="center"
+			/>
+		</div>
+
+		<!-- Desktop: table-like comparison -->
+		<div class="mt-16 hidden lg:block">
+			<div class="overflow-hidden rounded-3xl border border-gold/15 bg-navy-light/30">
+				<div class="grid grid-cols-[1.6fr_1fr_1.4fr_1.6fr_auto] gap-6 border-b border-gold/20 bg-navy/40 px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-gold/80">
+					<div>Programa</div>
+					<div>Categoria</div>
+					<div>Para quem</div>
+					<div>O que destrava</div>
+					<div class="text-right">Próximo passo</div>
+				</div>
+
+				<ul class="divide-y divide-gold/10">
+					{products.map((product) => {
+						const isExternal = Boolean(product.data.externalSiteUrl);
+						const href = product.data.externalSiteUrl ?? `/${product.data.slug}`;
+						const pillarsShort = product.data.pillars
+							.map((p) => p.title)
+							.join(" · ");
+						return (
+							<li class="grid grid-cols-[1.6fr_1fr_1.4fr_1.6fr_auto] items-center gap-6 px-6 py-5 transition-colors duration-200 hover:bg-navy/40">
+								<div class="flex flex-col gap-1">
+									<a
+										href={href}
+										target={isExternal ? "_blank" : undefined}
+										rel={isExternal ? "noopener noreferrer" : undefined}
+										class="font-serif text-lg font-bold text-text-primary transition-colors duration-200 hover:text-gold"
+									>
+										{product.data.name}
+									</a>
+									<span class="text-xs text-text-muted">{product.data.tagline}</span>
+								</div>
+								<div class="text-xs uppercase tracking-wider text-gold/80">
+									{product.data.type}
+								</div>
+								<div class="text-sm leading-relaxed text-text-muted">
+									{product.data.audience}
+								</div>
+								<div class="text-sm leading-relaxed text-text-muted">
+									{pillarsShort}
+								</div>
+								<div class="flex justify-end">
+									<a
+										href={href}
+										target={isExternal ? "_blank" : undefined}
+										rel={isExternal ? "noopener noreferrer" : undefined}
+										class="inline-flex items-center gap-1 rounded-xl border border-gold/30 px-4 py-2 text-sm font-semibold text-gold transition-all duration-200 hover:border-gold hover:bg-gold/10"
+										aria-label={`Acessar ${product.data.name}${isExternal ? " (abre em nova aba)" : ""}`}
+									>
+										{isExternal ? "Acessar" : "Ver programa"}
+										<svg
+											class="h-3.5 w-3.5"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											aria-hidden="true"
+											set:html={isExternal ? externalLinkPath : arrowUpRightPath}
+										/>
+									</a>
+								</div>
+							</li>
+						);
+					})}
+				</ul>
+			</div>
+		</div>
+
+		<!-- Mobile/Tablet: accordion stack via native <details> -->
+		<div class="mt-12 flex flex-col gap-3 lg:hidden">
+			{products.map((product, index) => {
+				const isExternal = Boolean(product.data.externalSiteUrl);
+				const href = product.data.externalSiteUrl ?? `/${product.data.slug}`;
+				return (
+					<details
+						class="group rounded-2xl border border-gold/15 bg-navy-light/30 transition-colors duration-200 open:border-gold/40 open:bg-navy-light/50"
+						data-reveal="up"
+						data-reveal-delay={String(Math.min(index + 1, 6))}
+					>
+						<summary class="flex cursor-pointer items-center justify-between gap-3 px-5 py-4 text-left">
+							<div class="flex flex-col gap-1">
+								<span class="font-serif text-base font-bold text-text-primary">
+									{product.data.name}
+								</span>
+								<span class="text-xs uppercase tracking-wider text-gold/80">
+									{product.data.type}
+								</span>
+							</div>
+							<svg
+								class="h-5 w-5 shrink-0 text-gold transition-transform duration-200 group-open:rotate-180"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path d="m6 9 6 6 6-6" />
+							</svg>
+						</summary>
+						<div class="border-t border-gold/10 px-5 py-4">
+							<dl class="flex flex-col gap-3 text-sm">
+								<div class="flex flex-col gap-1">
+									<dt class="text-xs uppercase tracking-wider text-gold/80">
+										Para quem
+									</dt>
+									<dd class="leading-relaxed text-text-muted">
+										{product.data.audience}
+									</dd>
+								</div>
+								<div class="flex flex-col gap-1">
+									<dt class="text-xs uppercase tracking-wider text-gold/80">
+										O que destrava
+									</dt>
+									<dd class="leading-relaxed text-text-muted">
+										{product.data.pillars.map((p) => p.title).join(" · ")}
+									</dd>
+								</div>
+								<div class="flex flex-col gap-1">
+									<dt class="text-xs uppercase tracking-wider text-gold/80">
+										Tagline
+									</dt>
+									<dd class="leading-relaxed text-text-muted">
+										{product.data.tagline}
+									</dd>
+								</div>
+							</dl>
+							<a
+								href={href}
+								target={isExternal ? "_blank" : undefined}
+								rel={isExternal ? "noopener noreferrer" : undefined}
+								class="btn-base btn-primary gold-glow mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl min-h-11 px-4 text-sm"
+								aria-label={`Acessar ${product.data.name}${isExternal ? " (abre em nova aba)" : ""}`}
+							>
+								{isExternal ? "Acessar programa" : "Ver programa"}
+								<svg
+									class="h-4 w-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									aria-hidden="true"
+									set:html={isExternal ? externalLinkPath : arrowUpRightPath}
+								/>
+							</a>
+						</div>
+					</details>
+				);
+			})}
+		</div>
+	</div>
+</section>
