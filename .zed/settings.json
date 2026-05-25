@@ -2,6 +2,12 @@
   "line_ending": "enforce_lf",
   "load_direnv": "shell_hook",
   "format_on_save": "on",
+  "file_types": {
+    "Plain Text": [
+      "**/.claude/skills/**/assets/*.css",
+      "**/.claude/skills/**/assets/*.template.css"
+    ]
+  },
   "lsp": {
     "oxlint": {
       "initialization_options": {
