@@ -11,7 +11,7 @@
 | Tier | Files | Trigger |
 |---|---|---|
 | 1 (always) | this `AGENTS.md` + `.claude/CLAUDE.md` | session start |
-| 2 (on demand) | `.claude/rules/{frontend,DESIGN,stability,seo}.md` | routing matrix in `.claude/CLAUDE.md` |
+| 2 (on demand) | `.claude/rules/{frontend,DESIGN,stability,seo,astro,commit,mcp,commands}.md` | routing matrix in `.claude/CLAUDE.md` + `globs:` frontmatter auto-load |
 | 3 (skills + refs) | `.claude/skills/*/SKILL.md` + `references/` | skill auto-trigger (description match) |
 | Subdir | `<path>/AGENTS.md` | only when editing files under that path |
 
@@ -178,7 +178,7 @@ None today (`src/` tree is small enough that root rules apply uniformly). Add wh
 
 ## Commit format
 
-Conventional Commits: `feat:` `fix:` `docs:` `refactor:` `chore:` `perf:`. One logical change per commit. Reference touched rule when relevant (e.g., `fix(frontend): WhatsApp SSOT — drop inline wa.me`).
+Conventional Commits + lefthook pre-commit + manual gate checklist. Full spec: `.claude/rules/commit.md`.
 
 ---
 
@@ -188,12 +188,15 @@ Conventional Commits: `feat:` `fix:` `docs:` `refactor:` `chore:` `perf:`. One l
 |---|---|
 | Cardinal rules (8) + routing matrix + stopping conditions + intent classification | `.claude/CLAUDE.md` |
 | Universal frontend / design / stability / SEO rules | `.claude/rules/{frontend,DESIGN,stability,seo}.md` |
-| Astro patterns + render-mode invariants + redirect tri-sync + `Layout.astro` contracts | `astro` skill (auto-trigger) — overlay at `references/gpus-overlay.md` |
-| WhatsApp SDR Laura SSOT (`WHATSAPP_SDR_E164`, `whatsappUrlWithText`, `isWhatsAppDestination`, "Olá, Laura!" prefix) | `grupo-us/references/whatsapp-ssot.md` |
-| Theme tokens canon (HSL Navy/Gold) | `gpus-theme` skill |
-| Brand voice / products / journey / CTAs | `grupo-us` skill |
+| Astro static-only invariants + redirect tri-sync + `client:*` routing + Content Collections SSOT + `Layout.astro` contracts | `.claude/rules/astro.md` (overlay) + `Skill('astro')` (framework deep-dive, `references/gpus-overlay.md`) |
+| Conventional Commits + lefthook + manual gate checklist + protected files | `.claude/rules/commit.md` |
+| MCP servers + terminal discipline + PAUSE-THINK-HYPOTHESIZE-EXECUTE debug loop | `.claude/rules/mcp.md` |
+| 11 slash commands + skill phase ordering + agent ↔ skill pairings | `.claude/rules/commands.md` |
+| WhatsApp SDR Laura SSOT (`WHATSAPP_SDR_E164`, `whatsappUrlWithText`, `isWhatsAppDestination`, "Olá, Laura!" prefix) | `Skill('grupo-us')` → `references/whatsapp-ssot.md` |
+| Theme tokens canon (HSL Navy/Gold, Tailwind v4 `@theme` syntax) | `Skill('gpus-theme')` |
+| Brand voice / products / journey / CTAs | `Skill('grupo-us')` |
 | Project paths / tooling / gates / protected files | `.claude/config.json` |
-| Multi-agent handoff schema + parallel-batch contract | `senior-prompt-engineer/references/{agent-handoff-contracts,parallel-batch-contracts}.md` |
+| Multi-agent handoff schema + parallel-batch contract | `Skill('senior-prompt-engineer')` → `references/{agent-handoff-contracts,parallel-batch-contracts}.md` |
 | Autoresearch audit trail + per-area `compound.md` brand memory + `/evolve` run records | `evals/README.md` + `evals/site/<area>/compound.md` |
 | Chronological project decisions | `docs/learnings-log.md` |
 
