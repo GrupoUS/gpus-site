@@ -21,7 +21,7 @@ const { differentials } = Astro.props;
 		<div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2">
 			{differentials.map((diff, index) => (
 				<div
-					class="glass-card rounded-2xl border-l-4 border-l-gold p-6 md:p-8 transition-all duration-300 hover:border-l-gold-light hover:bg-navy-light/50 hover:shadow-lg hover:shadow-gold/5"
+					class="glass-card rounded-2xl border-l-4 border-l-gold p-6 md:p-8 transition duration-300 hover:border-l-gold-light hover:bg-navy-light/50 hover:shadow-lg hover:shadow-gold/5"
 					data-reveal="right"
 					data-reveal-delay={String(index + 1)}
 				>

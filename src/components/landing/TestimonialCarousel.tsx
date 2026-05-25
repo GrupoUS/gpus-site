@@ -40,7 +40,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 		.join("");
 
 	return (
-		<blockquote className="glass-card flex h-full flex-col rounded-2xl p-6 transition-all duration-300 md:p-8 hover:border-gold/30 hover:shadow-lg hover:shadow-gold/5">
+		<blockquote className="glass-card flex h-full flex-col rounded-2xl p-6 transition duration-300 md:p-8 hover:border-gold/30 hover:shadow-lg hover:shadow-gold/5">
 			<QuoteIcon />
 
 			<p className="flex-1 italic leading-relaxed text-text-primary">
@@ -89,7 +89,7 @@ function DotIndicators({
 					aria-label={`Depoimento ${String(i + 1)} de ${String(total)}`}
 					onClick={() => onSelect(i)}
 					className={cn(
-						"rounded-full transition-all duration-200",
+						"rounded-full transition duration-200",
 						i === current
 							? "h-2.5 w-2.5 bg-gold"
 							: "h-2 w-2 bg-gold/30 hover:bg-gold/60",

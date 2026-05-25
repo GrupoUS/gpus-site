@@ -18,7 +18,7 @@ const { deliverables } = Astro.props;
 		<div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
 			{deliverables.map((item, index) => (
 				<div
-					class="group rounded-2xl border border-gold/10 bg-navy-light/60 p-6 backdrop-blur-sm transition-all duration-300 hover:border-gold/25 hover:shadow-[0_0_20px_hsl(39_44%_65%/0.08)]"
+					class="group rounded-2xl border border-gold/10 bg-navy-light/60 p-6 backdrop-blur-sm transition duration-300 hover:border-gold/25 hover:shadow-[0_0_20px_hsl(39_44%_65%/0.08)]"
 					data-reveal="up"
 					data-reveal-delay={String((index % 3) + 1)}
 				>

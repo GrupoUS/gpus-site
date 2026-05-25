@@ -116,8 +116,11 @@ function CountUp({
 		>
 			<span
 				ref={spanRef}
-				className="block font-serif text-4xl font-bold text-gold md:text-5xl"
-				style={{ textShadow: "0 0 30px rgba(212,175,55,0.3)" }}
+				className="block font-serif text-4xl font-bold tabular-nums text-gold md:text-5xl"
+				style={{
+					textShadow:
+						"0 0 30px color-mix(in srgb, var(--color-gold) 30%, transparent)",
+				}}
 			>
 				{display}
 			</span>

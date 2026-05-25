@@ -14,11 +14,8 @@ const {
 	class: className,
 } = Astro.props;
 
-const baseClasses =
-	"glass-card rounded-2xl p-6 md:p-8 transition-all duration-300";
-const hoverClasses = hoverable
-	? "card-hover-lift cursor-pointer group hover:border-gold/40 hover:shadow-lg hover:shadow-gold/5"
-	: "";
+const baseClasses = "glass-card rounded-2xl p-6 md:p-8";
+const hoverClasses = hoverable ? "card-glow-hover cursor-pointer group" : "";
 const classes = [baseClasses, hoverClasses, className]
 	.filter(Boolean)
 	.join(" ");

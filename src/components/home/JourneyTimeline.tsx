@@ -162,7 +162,7 @@ function MobileDots({
 				<span
 					key={`dot-${String(i)}`}
 					className={cn(
-						"rounded-full transition-all duration-200",
+						"rounded-full transition duration-200",
 						i === activeIndex ? "h-2.5 w-2.5 bg-gold" : "h-2 w-2 bg-gold/30",
 					)}
 					aria-hidden="true"

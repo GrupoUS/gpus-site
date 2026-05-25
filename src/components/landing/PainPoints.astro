@@ -23,7 +23,7 @@ const { audience, painPoints } = Astro.props;
 		<div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 			{painPoints.map((point, index) => (
 				<div
-					class="group glass-card rounded-2xl p-6 md:p-8 hover:border-gold/30 hover:shadow-lg hover:shadow-gold/5 transition-all duration-300"
+					class="group glass-card rounded-2xl p-6 md:p-8 hover:border-gold/30 hover:shadow-lg hover:shadow-gold/5 transition duration-300"
 					data-reveal="up"
 					data-reveal-delay={String(index + 1)}
 				>
