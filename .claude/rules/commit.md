@@ -72,16 +72,14 @@ If CI surfaces hundreds of formatter errors at once, likely line-ending mismatch
 <pm>x biome check --write && git add --renormalize .
 ```
 
-## Branch protection (HARD RULE — non-negotiable)
+## Branch policy (direct-to-main)
 
-`main` is **read-only** mirror of approved + merged work. Workflow: `dev-test → PR → user approves + merges`.
+> Changed 2026-05-26 per user directive. `main` is the **primary working branch**. Commit and push directly to `main`. The previous `dev-test → PR → main` gate is retired.
 
-- **Never** `git checkout main` or work on main.
-- **Never** `git push origin main`.
-- **Never** `gh pr merge --auto` on a PR you opened.
-- **Never** force-push to shared branches.
-
-Detail: `.claude/CLAUDE.md § Branch protection` (when present) + project routing.
+- Working directly on `main` is **allowed** — `git checkout main`, commit on `main`, `git push origin main`.
+- Feature branches + PRs are **optional** — use them for isolation/review when you want; not required for routine work.
+- **Never** force-push to shared branches (still off-limits — destructive and irreversible).
+- A failing pre-commit gate (`lint` / `check` / `build`) still blocks the commit — fix root cause, never `--no-verify`.
 
 ## When to load more
 

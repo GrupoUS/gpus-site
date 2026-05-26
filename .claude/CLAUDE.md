@@ -161,7 +161,7 @@ Codebase search (`Grep` / `Read` / `Glob`) is the **fallback for internal questi
 ### Generified Tier-2 rules (values from `config.json`)
 
 - `.claude/rules/astro.md` — Astro stack invariants, hydration directive table, Content Collections SSOT, redirect tri-sync, View Transitions opt-in. (Loaded when `config.json::skills.stack = astro`.)
-- `.claude/rules/commit.md` — Conventional Commits + scopes (from `config.json::commit.scopes`), lefthook pre-commit + manual gate checklist, protected files, branch protection pointer.
+- `.claude/rules/commit.md` — Conventional Commits + scopes (from `config.json::commit.scopes`), lefthook pre-commit + manual gate checklist, protected files, branch policy (direct-to-main).
 - `.claude/rules/mcp.md` — MCP server inventory + terminal discipline (project PM from `config.json::tooling.packageManager`) + PAUSE-THINK-HYPOTHESIZE-EXECUTE debug loop.
 - `.claude/rules/commands.md` — 11 slash commands + skill phase ordering + agent ↔ skill pairings (skill names from `config.json::skills`) + stopping conditions quick-ref.
 
