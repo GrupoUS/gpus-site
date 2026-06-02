@@ -1,75 +1,62 @@
 ---
 name: design-improve-colorize
-description: Impeccable colorize (phase 4/5) of the Aula Gratuita TRINTAE3 landing — ONE focal text-gradient-gold moment on the Hero highlight + a structural/color lift on the Audience ideal-persona item. Existing tokens only, no new hex.
+description: Impeccable colorize (phase 4/5) of the Grupo US institutional HOME — refined COLOR STRATEGY on existing Navy/Gold tokens: navy depth-step rhythm (surface-recess/raise + section-seam) gives the flat pure-Astro sections tonal weight; gold-gradient on the AboutPreview focal word; fixed a Line-Trap (2px gold left-stripe → full hairline + gold tint on compare rows). Zero new hex; all token-derived color-mix.
 metadata:
   type: project
 ---
 
-# design-improve — PHASE 4/5: COLORIZE (impeccable)
+# design-improve — PHASE 4/5: COLORIZE (impeccable) — HOME
 
-> Supersedes the prior OTB-era colorize record (those components no longer exist post-rebuild).
-> Read F:\Projetos\aula-trintae3\.claude\skills\impeccable\reference\colorize.md (installed).
+> Supersedes the prior aula-trintae3-era colorize record (different project/components).
 
 ## PHASE COMMITMENT
-Restrained strategy (gpus Ouro raro, gold ≤10% surface) — colorize is NOT re-goldenizing what
-bolder de-flooded. Exactly TWO purposeful touches: (1) ONE focal gold-gradient moment on the single
-highest-impact spot — the Hero headline highlight (above-fold, 7xl, first thing seen) — reusing the
-existing `text-gradient-gold` utility; (2) the Audience `highlight:true` ideal-persona item lifted
-to read clearly as "this is you" via stronger border + elevation + accent dot, color carrying
-meaning (wayfinding), not decoration. Existing tokens/utilities ONLY, zero new hex, zero new tokens,
-no motion changes (phase 3 owns motion), no layout-property animation, no CLS.
+- Strategy = **Committed Navy depth, Restrained gold** (per gpus-theme dark-first canon): navy owns the page; gold stays hierarchy/impact, well under ~10% surface.
+- The page had a rhythm gap — island sections carry their own bg, but the pure-Astro ProgramsCompare + AboutPreview sat FLAT on body navy with no tonal step. Gave them deliberate light→dark cadence so sections read as distinct planes.
+- Color introduced ONLY via existing semantic tokens + `color-mix` of the Navy/Gold palette. NO new hex anywhere.
+- Fixed a colorize ABSOLUTE BAN (2px gold left-accent stripe on compare-row hover) → full hairline border + gold background tint.
+- No copy/schema change (Stats/About JSON is confirm-first — untouched).
 
-## Files touched (absolute)
-- F:\Projetos\aula-trintae3\src\components\landing\Hero.astro
-- F:\Projetos\aula-trintae3\src\components\landing\Audience.astro
+## Files touched (absolute) + one-line diff
+- `F:\Projetos\gpus-site\src\styles\global.css` — added 3 token-derived utilities: `surface-recess` (navy→navy+black8% gradient, a deeper pool), `surface-raise` (navy-light28%→navy, a lifted panel), `section-seam` (1px gold@12% full-width top rule). All `color-mix` of existing tokens; 0 new hex.
+- `F:\Projetos\gpus-site\src\components\cinematic\ProgramsCompare.astro` — section gets `surface-recess section-seam` (dense table = deeper plane); **Line-Trap fix**: row hover `border-l-2 border-transparent hover:border-gold` (2px side stripe) → `border border-transparent hover:border-gold/30 hover:bg-gold/[0.06]` (full hairline + tint).
+- `F:\Projetos\gpus-site\src\components\home\AboutPreview.astro` — section gets `surface-raise section-seam` (authority/portrait = lifted panel); focal word `transformação` `text-gold` → `text-gradient-gold` (the section's one impact accent).
+- `F:\Projetos\gpus-site\src\components\home\StatsSection.astro` — added `section-seam` to keep the seam cadence consistent (kept its existing `bg-navy-light/20` step).
 
-## Diff summary (one line per file)
-- Hero.astro — headline highlight span `text-gold` → `text-gradient-gold` (the one focal gold-gradient moment).
-- Audience.astro — `highlight:true` item: border `gold/40`→`gold/50` + `depth-2` elevation; accent dot enlarged `h-2 w-2`→`h-2.5 w-2.5` with `gold-glow` (regular items unchanged).
+## Color decisions (token → where → why)
+- `surface-recess` (navy + black 8%) → ProgramsCompare: comparison table is dense/utilitarian; a darker pool lets gold row-accents + text pop and separates it from the brighter island above.
+- `surface-raise` (navy-light 28%) → AboutPreview: the authority/portrait moment lifts toward the viewer; warmer/lighter plane frames the gold portrait wash.
+- `section-seam` (gold @12%, full hairline top) → Compare + About + Stats: marks section seams with a faint gold thread — wayfinding, never a side stripe.
+- `text-gradient-gold` → "transformação": single graduated-gold focal word = gold-as-impact at the right calm moment (CTA already gold-dense, left flat to respect dosage).
+- `hover:bg-gold/[0.06]` + `hover:border-gold/30` on compare rows → state feedback via tint, replacing the banned stripe.
 
-## Focal color decision + contrast check
-- **Chosen spot: Hero highlight (NOT FinalCTA).** Highest impact: above-the-fold, largest type on
-  the page (lg:text-7xl), the literal headline focal word, seen before any scroll. FinalCTA is
-  below-fold and a full headline — gradienting it would re-flood gold and undo the bolder de-flood.
-  One signature gold moment, exactly as the brief specified (pick one, not both).
-- **Utility reused:** `text-gradient-gold` (global.css:554) — clips a static
-  `linear-gradient(135deg, var(--color-gold), var(--color-gold-light))` onto the text. Static (not
-  the animated `text-shimmer`), so no motion introduced and no reduced-motion concern.
-- **Contrast:** gradient spans gold #d4af37 (≈8:1 on navy) → gold-light #e8c96a (≈10:1 on navy).
-  Both endpoints exceed the WCAG large-text minimum (≥3:1) with large margin; the highlight is
-  display-scale (5xl–7xl), so large-text rules apply. PASS. (`-webkit-text-fill-color: transparent`
-  is the clip mechanism, not a contrast concern — the painted color IS the gradient.)
-- **Audience persona lift:** color is reinforced by non-color signals (border weight, depth-2
-  elevation, larger dot) — not color-alone (a11y). The `text-gold-light` label was already present
-  and unchanged (≈9:1 on the gold/10 tint over navy). No regression.
+## Contrast check results (WCAG AA, computed)
+- text-primary / surface-recess-top: **16.72:1** PASS
+- text-muted / surface-recess-top: **6.81:1** PASS
+- gold / surface-recess-top: **8.30:1** PASS
+- text-primary / surface-raise-top: **15.60:1** PASS
+- text-muted / surface-raise-top: **6.36:1** PASS
+- gold / surface-raise-top: **7.75:1** | gold-light: **10.08:1** PASS (gradient word both stops ≥7.75)
+- gold / navy (row-hover bg): **8.11:1** PASS
+All ≥4.5:1 (body) and ≥3:1 (large/non-text). The darker recess raises ratios vs prior flat navy — no regression.
 
-## Missing token?
-NONE. Both touches used pre-existing utilities/tokens (`text-gradient-gold`, `depth-2`, `gold-glow`,
-`border-gold/50`, `bg-gold/10`, `bg-gold`). No color role was missing; nothing invented. (Per
-constraint: had a role been missing I would have STOPPED and reported rather than add a hex/token.)
+## BLOCKERS (missing color roles)
+- **none.** Every needed role (navy depth steps, gold impact, gold seam, hover state tint) was expressible with existing tokens via `color-mix`. No status/error color needed on HOME (no form/feedback surface here; forms live on /contato, out of scope).
 
-## DEFERRED — overdrive
-- Hero `landing-mesh-bg` is subtle → atmosphere/grain/texture depth layer (mesh already animates
-  `mesh-drift`; overdrive could intensify carefully — verify FPS, keep gold within budget).
-- Glass fatigue: glass-card used in Learn/NextStep/FinalCTA/form/FAQ → reserve glass-card-bright for
-  1–2 focal CTAs.
-- Optional: a single richer surface tint or gilded-frame treatment on the Authority portrait (only
-  if it stays within the gold budget — colorize deliberately left it alone to avoid a second gold
-  focal moment competing with the Hero).
-- Possible Learn-numeral shimmer (deferred from animate) — overdrive call; would add gold motion.
-- Pre-existing content-drift literals (FAQ "Perguntas frequentes", Authority "Quem conduz a aula")
-  remain — out of scope for all visual phases (touches copy/schema).
+## Deferred items owned by overdrive
+- Possible gold-glow pulse rhythm on StatsSection divider / section-to-section atmosphere transitions (drama, not color-strategy).
+- Hero filament intensity ramp.
+- Content-step (confirm-first, NOT color): Stats numbers + About prose → home-narrative.json; typos "estagios"/"Experiencias" in JourneyTimeline.tsx; orphaned aurora-background.tsx cleanup.
 
 ## Maestro 6-gate self-check
-- Safe Split: PASS — no layout change.
-- Glass Trap: PASS — no new glass; over-use catalogued for overdrive.
-- Glow Trap: PASS — only addition is a single small `gold-glow` on the persona dot (one item per
-  grid); the Hero gradient is text-clip, not a halo. Gold surface stays ≤10%.
-- Bento Trap: N/A — no bento grid.
-- Blue Trap: PASS — Navy/Gold only; no new hex; no fintech blue, no purple/indigo.
-- Line Trap: PASS — no side-stripe borders (persona uses a full hairline border + tint + dot, per
-  colorize.md ban on >1px left/right accent stripes); no decorative hairline added.
+- **Safe Split** — PASS. No split-hero touched; AboutPreview stays 7/5 asymmetric.
+- **Bento Trap** — PASS. No bento; ProgramsCompare is a justified comparison table.
+- **Blue Trap** — PASS. All color is Navy/Gold token-derived; zero fintech-blue / purple / new hex.
+- **Line Trap** — PASS + **REMEDIATED**: killed the 2px gold left-accent stripe on compare rows (the exact colorize ban) → full hairline + tint. `section-seam` is a full-width top rule, not a side stripe.
+- **Glass/glow w/o intent** — PASS. No new glass/glow added; surfaces are flat tonal planes (depth via tone, not blur). Existing glass-card islands untouched.
+- **prefers-reduced-motion** — N/A (no animation touched this phase; static color only). Reveal/parallax motion from phase 3 unchanged and still reduced-motion-guarded.
 
-## astro check
-`bunx astro check` → 29 files, **0 errors, 0 warnings, 1 hint** (pre-existing ts(6385) in FROZEN
-src/content.config.ts:25 — not mine, ignored per task).
+## Hex scan (touched files)
+ProgramsCompare / AboutPreview / StatsSection: **0** hardcoded hex (grep clean). global.css additions: all `color-mix(var(--color-*)…)` — 0 hex outside `@theme`. PASS.
+
+## Gate
+`bunx astro check` → **0 errors, 0 warnings** (only pre-existing `z` deprecation hints in protected content.config.ts). Did NOT run build/lint/verify or commit per task constraints.

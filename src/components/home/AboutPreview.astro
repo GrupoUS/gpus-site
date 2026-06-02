@@ -2,17 +2,20 @@
 import Button from "../shared/Button.astro";
 ---
 
-<section class="px-4 py-24 sm:px-6 lg:py-32">
-	<div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
+<section class="surface-raise section-seam seam-bloom px-4 py-24 sm:px-6 lg:py-32">
+	<div class="relative z-[1] mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-[7fr_5fr] lg:gap-20">
 		<!-- Text Column -->
 		<div data-reveal="left">
-			<span class="inline-block rounded-sm border border-gold/30 bg-navy-light/80 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+			<span class="inline-block rounded-sm border border-gold/40 bg-navy-light/80 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-gold">
 				Sobre o Grupo US
 			</span>
 
-			<h2 class="mt-6 font-serif text-3xl font-bold leading-tight text-text-primary md:text-4xl lg:text-5xl">
+			<h2
+				class="mt-6 font-serif font-bold leading-[1.05] tracking-tight text-text-primary"
+				style="font-size: var(--text-h1);"
+			>
 				Liderado por quem vive a{" "}
-				<span class="text-gold">transformação</span>
+				<span class="text-gradient-gold">transformação</span>
 			</h2>
 
 			<p class="mt-6 text-base leading-relaxed text-text-muted md:text-lg">
@@ -37,17 +40,28 @@ import Button from "../shared/Button.astro";
 		</div>
 
 		<div data-reveal="right">
-			<div class="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-2xl border border-gold/10 bg-navy-light lg:max-w-none">
-				<img
-					src="/images/team/sacha.svg"
-					alt="Dra. Sacha Gualberto, CEO do Grupo US"
-					width={600}
-					height={800}
-					class="h-full w-full object-cover object-center"
-					loading="lazy"
-					decoding="async"
-					fetchpriority="low"
-				/>
+			<div class="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-2xl border border-gold/25 bg-navy-light depth-5 lg:max-w-none">
+				<!-- Inner layer owns the scroll parallax so its transform stays
+				     free of the outer reveal animation (motion gotcha: never stack
+				     two competing transform rules on one element). Slight scale
+				     so the parallax offset never exposes an edge. -->
+				<div
+					class="absolute inset-0"
+					data-parallax
+					data-parallax-speed="0.06"
+					style="--parallax-scale:1.08;"
+				>
+					<img
+						src="/images/team/sacha.svg"
+						alt="Dra. Sacha Gualberto, CEO do Grupo US"
+						width={600}
+						height={800}
+						class="h-full w-full object-cover object-center"
+						loading="lazy"
+						decoding="async"
+						fetchpriority="low"
+					/>
+				</div>
 				<div
 					class="pointer-events-none absolute inset-0"
 					style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-gold) 8%, transparent) 0%, transparent 45%, color-mix(in srgb, var(--color-navy) 35%, transparent) 100%);"
@@ -57,3 +71,54 @@ import Button from "../shared/Button.astro";
 		</div>
 	</div>
 </section>
+
+<script>
+	/* Lightweight scroll parallax for [data-parallax] elements.
+	   - Honors prefers-reduced-motion (no-op).
+	   - Skips on coarse/small screens (CSS already neutralizes the offset).
+	   - rAF-throttled; only updates when the element is near the viewport.
+	   - Sets --parallax-y; the CSS transform composes it with --parallax-scale. */
+	function initParallax() {
+		try {
+			const reduce = window.matchMedia(
+				"(prefers-reduced-motion: reduce)",
+			).matches;
+			if (reduce || window.innerWidth <= 768) return;
+
+			const nodes = Array.from(
+				document.querySelectorAll<HTMLElement>("[data-parallax]"),
+			);
+			if (nodes.length === 0) return;
+
+			let ticking = false;
+
+			function update() {
+				const vh = window.innerHeight;
+				for (const node of nodes) {
+					const rect = node.getBoundingClientRect();
+					if (rect.bottom < 0 || rect.top > vh) continue;
+					const speed = Number(node.dataset.parallaxSpeed) || 0.06;
+					/* progress: -1 (below) → 1 (above) as the element travels the viewport */
+					const progress = (rect.top + rect.height / 2 - vh / 2) / vh;
+					const offset = -progress * vh * speed;
+					node.style.setProperty("--parallax-y", `${offset.toFixed(1)}px`);
+				}
+				ticking = false;
+			}
+
+			function onScroll() {
+				if (ticking) return;
+				ticking = true;
+				requestAnimationFrame(update);
+			}
+
+			update();
+			window.addEventListener("scroll", onScroll, { passive: true });
+			window.addEventListener("resize", onScroll, { passive: true });
+		} catch {
+			/* fail silent: CSS resting state (scale only) remains valid */
+		}
+	}
+
+	initParallax();
+</script>

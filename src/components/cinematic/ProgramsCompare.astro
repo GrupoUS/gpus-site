@@ -11,8 +11,8 @@ const externalLinkPath =
 	'<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>';
 ---
 
-<section id="programas" class="px-4 py-24 sm:px-6 lg:py-32" aria-labelledby="programs-compare-heading">
-	<div class="mx-auto max-w-7xl">
+<section id="programas" class="surface-recess section-seam seam-bloom px-4 py-24 sm:px-6 lg:py-32" aria-labelledby="programs-compare-heading">
+	<div class="relative z-[1] mx-auto max-w-7xl">
 		<div id="programs-compare-heading">
 			<SectionHeading
 				title="Trilha completa do ecossistema"
@@ -22,9 +22,9 @@ const externalLinkPath =
 		</div>
 
 		<!-- Desktop: table-like comparison -->
-		<div class="mt-16 hidden lg:block">
-			<div class="overflow-hidden rounded-3xl border border-gold/15 bg-navy-light/30">
-				<div class="grid grid-cols-[1.6fr_1fr_1.4fr_1.6fr_auto] gap-6 border-b border-gold/20 bg-navy/40 px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-gold/80">
+		<div class="mt-16 hidden lg:block" data-reveal="up">
+			<div class="overflow-hidden rounded-3xl border border-gold/25 bg-navy-light/30 depth-4">
+				<div class="grid grid-cols-[1.6fr_1fr_1.4fr_1.6fr_auto] gap-6 border-b-2 border-gold/40 bg-navy/50 px-6 py-5 text-xs font-bold uppercase tracking-[0.22em] text-gold">
 					<div>Programa</div>
 					<div>Categoria</div>
 					<div>Para quem</div>
@@ -33,20 +33,25 @@ const externalLinkPath =
 				</div>
 
 				<ul class="divide-y divide-gold/10">
-					{products.map((product) => {
+					{products.map((product, index) => {
 						const isExternal = Boolean(product.data.externalSiteUrl);
 						const href = product.data.externalSiteUrl ?? `/${product.data.slug}`;
 						const pillarsShort = product.data.pillars
 							.map((p) => p.title)
 							.join(" · ");
 						return (
-							<li class="grid grid-cols-[1.6fr_1fr_1.4fr_1.6fr_auto] items-center gap-6 px-6 py-5 transition-colors duration-200 hover:bg-navy/40">
+							<li
+								data-compare-row
+								data-row-reveal
+								style={`--row-index:${index}`}
+								class="group grid grid-cols-[1.6fr_1fr_1.4fr_1.6fr_auto] items-center gap-6 border border-transparent px-6 py-6 hover:border-gold/30 hover:bg-gold/[0.06]"
+							>
 								<div class="flex flex-col gap-1">
 									<a
 										href={href}
 										target={isExternal ? "_blank" : undefined}
 										rel={isExternal ? "noopener noreferrer" : undefined}
-										class="font-serif text-lg font-bold text-text-primary transition-colors duration-200 hover:text-gold"
+										class="font-serif text-xl font-bold text-text-primary transition-colors duration-200 group-hover:text-gold hover:text-gold"
 									>
 										{product.data.name}
 									</a>
@@ -71,6 +76,7 @@ const externalLinkPath =
 									>
 										{isExternal ? "Acessar" : "Ver programa"}
 										<svg
+											data-row-arrow
 											class="h-3.5 w-3.5"
 											viewBox="0 0 24 24"
 											fill="none"

@@ -116,15 +116,11 @@ function CountUp({
 		>
 			<span
 				ref={spanRef}
-				className="block font-serif text-4xl font-bold tabular-nums text-gold md:text-5xl"
-				style={{
-					textShadow:
-						"0 0 30px color-mix(in srgb, var(--color-gold) 30%, transparent)",
-				}}
+				className="stat-glow block font-serif text-5xl font-bold leading-none tabular-nums text-gold md:text-6xl lg:text-7xl"
 			>
 				{display}
 			</span>
-			<span className="mt-2 block text-sm text-text-muted md:text-base">
+			<span className="mt-3 block text-xs font-semibold uppercase tracking-[0.18em] text-text-muted md:text-sm">
 				{label}
 			</span>
 		</div>
@@ -139,7 +135,7 @@ export function AnimatedStats({ stats, className }: AnimatedStatsProps) {
 	if (prefersReducedMotion) {
 		return (
 			<div className={cn(className)}>
-				<div className="grid grid-cols-2 gap-8 md:gap-12 lg:grid-cols-4 lg:divide-x lg:divide-gold/10">
+				<div className="grid grid-cols-2 gap-10 md:gap-12 lg:grid-cols-4 lg:divide-x lg:divide-gold/25">
 					{stats.map((stat) => (
 						<CountUp
 							key={stat.label}
@@ -169,7 +165,7 @@ export function AnimatedStats({ stats, className }: AnimatedStatsProps) {
 					mass: 1,
 				}}
 			>
-				<div className="grid grid-cols-2 gap-8 md:gap-12 lg:grid-cols-4 lg:divide-x lg:divide-gold/10">
+				<div className="grid grid-cols-2 gap-10 md:gap-12 lg:grid-cols-4 lg:divide-x lg:divide-gold/25">
 					{stats.map((stat, index) => (
 						<m.div
 							key={stat.label}

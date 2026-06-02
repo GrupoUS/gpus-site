@@ -62,6 +62,9 @@
 
 html {
 	scroll-behavior: smooth;
+	/* Offset in-page anchor jumps so targets clear the fixed 60px header
+	   (Header.astro spacer = h-[60px]) — WCAG 2.2 SC 2.4.11. */
+	scroll-padding-top: 5rem;
 }
 
 body {
@@ -73,6 +76,82 @@ body {
 }
 
 /* ===== Custom Utilities ===== */
+
+/* ── Section depth rhythm (colorize) ──
+   Token-derived navy steps that give the flat pure-Astro sections tonal weight
+   and a deliberate light→dark cadence down the page. No new hex — every value
+   is a color-mix of the existing Navy palette. `surface-recess` reads slightly
+   darker than body navy (a pool the eye drops into); `surface-raise` reads one
+   step lighter (a panel that lifts toward the viewer). A hairline gold-tinted
+   top border marks the seam where a section meets the one above it. */
+@utility surface-recess {
+	background: linear-gradient(
+		180deg,
+		color-mix(in srgb, var(--color-navy) 92%, black 8%) 0%,
+		var(--color-navy) 100%
+	);
+}
+
+@utility surface-raise {
+	background: linear-gradient(
+		180deg,
+		color-mix(in srgb, var(--color-navy-light) 28%, var(--color-navy)) 0%,
+		var(--color-navy) 100%
+	);
+}
+
+/* Hairline seam — full-width 1px top rule, never a side stripe (colorize ban). */
+@utility section-seam {
+	border-top: 1px solid color-mix(in srgb, var(--color-gold) 12%, transparent);
+}
+
+/* ── OVERDRIVE: seam atmosphere bloom ──
+   Turns the flat hairline into a cinematic section-to-section transition: a wide,
+   centered gold light blooms up from the seam line, dim by default and lifting
+   to full when the section's heading reveals (driven by the existing
+   [data-reveal].revealed state already in the seam'd sections). It's a wash, not
+   a stripe — full-width, fades to transparent on all sides. z-index:0 keeps it
+   behind content (gotcha #3: glow ::before must sit under the text). */
+@utility seam-bloom {
+	position: relative;
+}
+
+.seam-bloom::before {
+	content: "";
+	position: absolute;
+	inset-inline: 0;
+	top: 0;
+	height: 220px;
+	background: radial-gradient(
+		ellipse 60% 100% at 50% 0%,
+		color-mix(in srgb, var(--color-gold) 9%, transparent) 0%,
+		color-mix(in srgb, var(--color-gold-dark) 4%, transparent) 38%,
+		transparent 72%
+	);
+	opacity: 0.35;
+	transform: scaleY(0.62);
+	transform-origin: top;
+	transition:
+		opacity 0.9s var(--ease-out-soft),
+		transform 0.9s var(--ease-out-soft);
+	pointer-events: none;
+	z-index: 0;
+}
+
+/* Lift the bloom when any revealed element inside the section fires. */
+.seam-bloom:has([data-reveal].revealed)::before {
+	opacity: 1;
+	transform: scaleY(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.seam-bloom::before,
+	.seam-bloom:has([data-reveal].revealed)::before {
+		opacity: 0.6;
+		transform: none;
+		transition: none;
+	}
+}
 
 @utility gold-glow {
 	box-shadow: 0 0 20px color-mix(in srgb, var(--color-gold) 30%, transparent);
@@ -216,6 +295,42 @@ body {
 	}
 }
 
+/* ── OVERDRIVE: stat number glow breathe ──
+   The gold KPI numerals carry a slow, low-amplitude glow swell so the stats band
+   reads as a living signature moment, not a static print. Animates only the
+   text-shadow spread/intensity (paint on a tiny element, no layout, no transform
+   conflict with the island's count-up). Subtle on purpose — peak drama via
+   restraint, not strobing. */
+@keyframes stat-glow-breathe {
+	0%,
+	100% {
+		text-shadow: 0 0 32px color-mix(in srgb, var(--color-gold) 30%, transparent);
+	}
+	50% {
+		text-shadow:
+			0 0 52px color-mix(in srgb, var(--color-gold) 48%, transparent),
+			0 0 18px color-mix(in srgb, var(--color-gold-light) 24%, transparent);
+	}
+}
+
+@utility stat-glow {
+	/* Resting glow (also the fallback when the animation is off) */
+	text-shadow: 0 0 36px color-mix(in srgb, var(--color-gold) 36%, transparent);
+	animation: stat-glow-breathe 4.5s var(--ease-in-out) infinite;
+}
+
+@media (max-width: 768px) {
+	.stat-glow {
+		animation: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.stat-glow {
+		animation: none;
+	}
+}
+
 /* Disable infinite animations on mobile to save GPU */
 @media (max-width: 768px) {
 	.gold-pulse-glow::after {
@@ -275,14 +390,63 @@ body {
 	animation-delay: 0.36s !important;
 }
 
-/* Reveal: visible immediately when user prefers reduced motion */
+/* ── Row cascade reveal (ProgramsCompare desktop table) ──
+   Each row slides up + fades when the parent table shell reveals. Driven by a
+   single observer hit on the shell; rows stagger via per-row delay. Ends in a
+   resting state (no `forwards` lock) so the hover left-accent + sweep below
+   stay live afterward (motion gotcha #1: never let a reveal `forwards` freeze
+   the transform on an element that also animates on hover). */
+@keyframes row-rise {
+	from {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+[data-row-reveal] {
+	opacity: 0;
+}
+
+[data-reveal].revealed [data-row-reveal] {
+	animation: row-rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+	animation-delay: calc(var(--row-index, 0) * 0.07s);
+}
+
+/* ── SectionHeading divider draw-in ──
+   The gold rule grows from a point to full width once its heading reveals. */
+.heading-rule {
+	transform: scaleX(0);
+	transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.12s;
+}
+
+[data-reveal].revealed .heading-rule {
+	transform: scaleX(1);
+}
+
+/* ── Reveal: visible immediately when user prefers reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
 	[data-reveal],
-	[data-reveal].revealed {
+	[data-reveal].revealed,
+	[data-row-reveal],
+	[data-reveal].revealed [data-row-reveal] {
 		opacity: 1;
 		animation: none !important;
 		transform: none;
 		will-change: auto;
+	}
+
+	.heading-rule,
+	[data-reveal].revealed .heading-rule {
+		transform: scaleX(1);
+		transition: none;
+	}
+
+	[data-parallax] {
+		transform: scale(var(--parallax-scale, 1)) !important;
 	}
 }
 
@@ -321,6 +485,83 @@ body {
 /* Card hover lift effect */
 .card-hover-lift:hover {
 	transform: translateY(-6px) scale(1.01);
+}
+
+/* ── Comparison row hover: gold sweep wash (compositor-friendly) ──
+   A masked gold gradient slides across the row on hover. Uses transform on a
+   ::before so the row's own layout/transform stays free for the cascade reveal
+   above. */
+[data-compare-row] {
+	position: relative;
+	overflow: hidden;
+	/* OVERDRIVE: depth via box-shadow only — the row's transform stays reserved
+	   for the cascade reveal (gotcha #2: no competing transforms on one element). */
+	transition:
+		border-color 0.2s ease,
+		background-color 0.2s ease,
+		box-shadow 0.35s var(--ease-out-soft);
+}
+
+[data-compare-row]:hover {
+	box-shadow:
+		0 14px 34px color-mix(in srgb, var(--color-navy) 50%, transparent),
+		0 0 26px color-mix(in srgb, var(--color-gold) 10%, transparent),
+		inset 0 0 0 1px color-mix(in srgb, var(--color-gold) 18%, transparent);
+}
+
+[data-compare-row]::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		100deg,
+		transparent 0%,
+		color-mix(in srgb, var(--color-gold) 7%, transparent) 45%,
+		color-mix(in srgb, var(--color-gold) 10%, transparent) 50%,
+		transparent 100%
+	);
+	transform: translateX(-100%);
+	opacity: 0;
+	transition:
+		transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+		opacity 0.3s ease;
+	pointer-events: none;
+	z-index: 0;
+}
+
+[data-compare-row]:hover::before {
+	transform: translateX(0);
+	opacity: 1;
+}
+
+/* Row content rides above the sweep */
+[data-compare-row] > * {
+	position: relative;
+	z-index: 1;
+}
+
+/* CTA arrow nudge on row hover (shared group-hover surface) */
+[data-compare-row] [data-row-arrow] {
+	transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-compare-row]:hover [data-row-arrow] {
+	transform: translate(2px, -2px);
+}
+
+/* ── Scroll parallax (only on elements whose transform is otherwise free) ──
+   --parallax-y is set by an rAF scroll listener; reduced-motion neutralizes it
+   above. */
+[data-parallax] {
+	will-change: transform;
+	transform: translate3d(0, var(--parallax-y, 0px), 0)
+		scale(var(--parallax-scale, 1));
+}
+
+@media (max-width: 768px) {
+	[data-parallax] {
+		transform: scale(var(--parallax-scale, 1));
+	}
 }
 
 /* ===== Aceternity UI Animations ===== */
@@ -393,6 +634,60 @@ body {
 		inset 0 1px 0 color-mix(in srgb, white 10%, transparent);
 }
 
+/* ── OVERDRIVE: CTA climax halo ──
+   The closing CTA card is the page's single climax surface. A wide gold halo
+   breathes behind it — slower and broader than the WhatsApp button's tight
+   gold-pulse-glow, so the two read as a hierarchy (ambient stage light vs.
+   focused action cue) rather than two competing pulses. box-shadow only (paint,
+   no layout/transform — safe under the wrapper's motion/react y-translate). */
+@keyframes cta-halo-breathe {
+	0%,
+	100% {
+		opacity: 0.45;
+		box-shadow:
+			0 0 60px color-mix(in srgb, var(--color-gold) 14%, transparent),
+			0 0 120px color-mix(in srgb, var(--color-gold-dark) 8%, transparent);
+	}
+	50% {
+		opacity: 0.85;
+		box-shadow:
+			0 0 90px color-mix(in srgb, var(--color-gold) 22%, transparent),
+			0 0 160px color-mix(in srgb, var(--color-gold-dark) 12%, transparent);
+	}
+}
+
+@utility cta-halo {
+	position: relative;
+}
+
+.cta-halo::after {
+	content: "";
+	position: absolute;
+	inset: -2px;
+	border-radius: inherit;
+	z-index: -1;
+	opacity: 0.55;
+	box-shadow:
+		0 0 70px color-mix(in srgb, var(--color-gold) 16%, transparent),
+		0 0 130px color-mix(in srgb, var(--color-gold-dark) 9%, transparent);
+	animation: cta-halo-breathe 6s var(--ease-in-out) infinite;
+	pointer-events: none;
+}
+
+@media (max-width: 768px) {
+	.cta-halo::after {
+		animation: none;
+		opacity: 0.5;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cta-halo::after {
+		animation: none;
+		opacity: 0.5;
+	}
+}
+
 /* ===== Mesh Gradient (Landing Hero) ===== */
 
 @keyframes mesh-drift {
@@ -439,6 +734,118 @@ body {
 		200% 200%,
 		200% 200%;
 	animation: mesh-drift 20s ease-in-out infinite;
+}
+
+/* ===== Hero Backdrop (intentional Navy/Gold composition) ===== */
+/* Replaces the generic aurora/mesh "Blue Trap" tell with a deliberate
+   directional gold-dawn wash anchored to the brand. Static base layer +
+   slow drifting accent; honors prefers-reduced-motion below. */
+@utility hero-backdrop {
+	/* top-right gold dawn — the single hero light source */
+	background:
+		radial-gradient(
+			ellipse 90% 60% at 78% 8%,
+			color-mix(in srgb, var(--color-gold) 16%, transparent) 0%,
+			color-mix(in srgb, var(--color-gold-dark) 8%, transparent) 32%,
+			transparent 64%
+		),
+		/* bottom-left navy depth pool for vertical weight */
+		radial-gradient(
+			ellipse 80% 70% at 18% 100%,
+			color-mix(in srgb, var(--color-navy-lighter) 38%, transparent) 0%,
+			transparent 58%
+		),
+		/* grounding vertical navy gradient */
+		linear-gradient(
+			180deg,
+			var(--color-navy) 0%,
+			color-mix(in srgb, var(--color-navy) 88%, black 12%) 100%
+		);
+}
+
+/* Slow-drifting gold filament layer — structure, not chaos.
+   OVERDRIVE: the drift now opens with a one-time intensity ramp (hero-bloom on
+   the wrapper) so the atmosphere "ignites" on page load, then settles into the
+   perpetual breathing drift. Two compositor properties only (opacity + scale). */
+@keyframes hero-drift {
+	0%,
+	100% {
+		opacity: 0.55;
+		transform: translate3d(0, 0, 0) scale(1.02);
+	}
+	50% {
+		opacity: 0.85;
+		transform: translate3d(2%, -1.5%, 0) scale(1.06);
+	}
+}
+
+/* One-shot ignition: filament blooms from dim+small to full, easing into the
+   loop above. Runs once on load (the wrapper carries it), drift runs on the
+   gradient itself — two layers, no competing transform on one element. */
+@keyframes hero-ignite {
+	0% {
+		opacity: 0;
+		transform: scale(1.18);
+		filter: blur(90px);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+		filter: blur(0);
+	}
+}
+
+@utility hero-filament {
+	background: conic-gradient(
+		from 210deg at 72% 12%,
+		transparent 0deg,
+		color-mix(in srgb, var(--color-gold) 22%, transparent) 24deg,
+		color-mix(in srgb, var(--color-gold-light) 10%, transparent) 52deg,
+		transparent 92deg
+	);
+	filter: blur(60px);
+	animation: hero-drift 16s var(--ease-in-out) infinite;
+	will-change: transform, opacity;
+}
+
+/* The ignition wrapper holds a SECOND, deeper filament echo offset from the
+   primary, giving the hero light source layered depth instead of one flat cone.
+   It blooms in once via hero-ignite, then breathes on a longer, offset cycle so
+   the two filaments never pulse in lockstep (organic, not mechanical). */
+@utility hero-filament-deep {
+	background: conic-gradient(
+		from 168deg at 60% 4%,
+		transparent 0deg,
+		color-mix(in srgb, var(--color-gold-dark) 14%, transparent) 30deg,
+		color-mix(in srgb, var(--color-gold) 8%, transparent) 66deg,
+		transparent 110deg
+	);
+	filter: blur(80px);
+	opacity: 0.7;
+	animation:
+		hero-ignite 1.6s var(--ease-out-soft) 0.1s both,
+		hero-drift 22s var(--ease-in-out) 1.7s infinite;
+	will-change: transform, opacity, filter;
+}
+
+@media (max-width: 768px) {
+	.hero-filament,
+	.hero-filament-deep {
+		animation: none;
+		opacity: 0.6;
+		filter: blur(60px);
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hero-filament,
+	.hero-filament-deep {
+		animation: none;
+		opacity: 0.6;
+		transform: none;
+		filter: blur(60px);
+	}
 }
 
 /* ===== Mousemove Glow Card ===== */

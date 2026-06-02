@@ -1,52 +1,69 @@
 ---
 import Button from "../shared/Button.astro";
-import { AuroraBackground } from "../ui/aurora-background";
 import { HeroEntrance } from "../ui/HeroEntrance";
 import { Spotlight } from "../ui/spotlight";
 import { TextGenerateEffect } from "../ui/text-generate-effect";
 ---
 
-<section class="relative overflow-hidden">
-	<AuroraBackground client:idle className="min-h-screen bg-navy">
-		<Spotlight fill="var(--color-gold)" className="-top-40 left-0 md:left-60 md:-top-20" />
+<section
+	class="hero-backdrop relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-navy"
+>
+	<!-- Intentional Navy/Gold atmosphere: layered drifting gold filaments +
+	     spotlight cone replace the generic aurora/mesh. The deep echo ignites on
+	     load (one-shot bloom) under the primary cone for cinematic depth.
+	     Decorative, reduced-motion + mobile aware. -->
+	<div class="hero-filament-deep pointer-events-none absolute inset-0" aria-hidden="true"></div>
+	<div class="hero-filament pointer-events-none absolute inset-0" aria-hidden="true"></div>
+	<Spotlight fill="var(--color-gold)" className="-top-40 left-0 md:left-60 md:-top-20" />
 
-		<HeroEntrance client:idle className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6">
-			<!-- Gold badge -->
-			<div>
-				<span class="inline-block rounded-full border border-gold/30 bg-navy-light/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-					Formação · Gestão · Comunidade
-				</span>
-			</div>
+	<HeroEntrance client:idle className="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6">
+		<!-- Gold badge -->
+		<div>
+			<span class="inline-block rounded-full border border-gold/40 bg-navy-light/70 px-5 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-gold backdrop-blur-sm">
+				Formação · Gestão · Comunidade
+			</span>
+		</div>
 
-			<!-- Headline with text generate effect -->
-			<div class="mt-8">
+		<!-- Headline: semantic h1 for SEO/a11y (single page h1), with the
+		     animated visual layer marked decorative so the text isn't doubled
+		     for screen readers regardless of island hydration state.
+		     Bolder pass: display-scale clamp + tighter leading for drama. -->
+		<h1
+			class="mt-8 font-serif font-bold leading-[1.02] tracking-tight text-text-primary"
+			style="font-size: var(--text-display);"
+		>
+			<span class="sr-only">
+				Transformamos profissionais da saúde em referências na estética
+				avançada
+			</span>
+			<span aria-hidden="true">
 				<TextGenerateEffect
 					client:idle
 					words="Transformamos profissionais da saúde em referências na estética avançada"
-					className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary"
+					className="font-serif font-bold leading-[1.02] tracking-tight text-text-primary"
 				/>
-			</div>
+			</span>
+		</h1>
 
-			<!-- Subtitle -->
-			<p
-				class="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-text-muted md:text-xl"
-			>
-				Programas com quem lidera o mercado: técnica, gestão e networking para você
-				crescer em autoridade, faturamento e reputação — com trilha clara do primeiro
-				curso à mentoria de escala.
-			</p>
+		<!-- Subtitle -->
+		<p
+			class="mx-auto mt-8 max-w-2xl text-lg font-light leading-relaxed text-text-muted md:text-xl"
+		>
+			Programas com quem lidera o mercado: técnica, gestão e networking para você
+			crescer em autoridade, faturamento e reputação — com trilha clara do primeiro
+			curso à mentoria de escala.
+		</p>
 
-			<!-- CTA Buttons -->
-			<div
-				class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
-			>
-				<Button variant="primary" href="#chapter-1" size="lg">
-					Conhecer o método
-				</Button>
-				<Button variant="outline" href="#programas" size="lg">
-					Ver trilha completa
-				</Button>
-			</div>
-		</HeroEntrance>
-	</AuroraBackground>
+		<!-- CTA Buttons -->
+		<div
+			class="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row"
+		>
+			<Button variant="primary" href="#chapter-1" size="lg">
+				Conhecer o método
+			</Button>
+			<Button variant="outline" href="#programas" size="lg">
+				Ver trilha completa
+			</Button>
+		</div>
+	</HeroEntrance>
 </section>
