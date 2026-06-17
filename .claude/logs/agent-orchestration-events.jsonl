@@ -31,3 +31,4 @@
 {"timestamp": "2026-06-02T19:20:37Z", "prompt_sha256_12": "c56a1dd7d591", "prompt_length": 279, "mode": "routing-hint-only", "recommended_agents": ["debugger", "frontend-specialist", "project-planner", "evaluator", "librarian"]}
 {"timestamp": "2026-06-02T19:52:44Z", "prompt_sha256_12": "3f34d3b75884", "prompt_length": 7, "mode": "routing-hint-only", "recommended_agents": ["frontend-specialist", "performance-optimizer", "project-planner", "evaluator", "librarian"]}
 {"timestamp": "2026-06-02T20:01:49Z", "prompt_sha256_12": "0cabb4be4f1c", "prompt_length": 288, "mode": "routing-hint-only", "recommended_agents": ["frontend-specialist", "performance-optimizer", "project-planner", "evaluator", "librarian"]}
+{"timestamp": "2026-06-02T20:52:13Z", "prompt_sha256_12": "e41c0a008926", "prompt_length": 389, "mode": "routing-hint-only", "recommended_agents": ["debugger", "librarian", "explorer"]}
